@@ -31,6 +31,7 @@ import codecs
 import oblicz_30
 import oblicz_22
 
+import keys
 
 EMOTIONS = (
     'normal',
