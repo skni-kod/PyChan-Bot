@@ -31,7 +31,7 @@ import codecs
 import oblicz_30
 import oblicz_22
 
-import keys
+from keys import *
 
 EMOTIONS = (
     'normal',
@@ -415,6 +415,73 @@ async def beer(context):
                    f"bottles of beer on the wall! "
         beer_bottles_number -= 1
     await context.send(response)
+
+
+WORD = None
+typed = []
+
+
+def random_line(afile):
+    line = next(afile)
+    for num, aline in enumerate(afile, 2):
+        if random.randrange(num): continue
+        line = aline
+    return line
+
+
+@client.command(name='5x5start',
+                description="Start 5x5",
+                brief="Start 5x5",
+                pass_context=True)
+async def start5x5(context):
+    global WORD
+    await context.trigger_typing()
+    with open("5liter.txt", "r", encoding="utf8") as f:
+        WORD = random_line(f).strip()
+        typed.clear()
+        await context.send("**%s **%s" % (WORD[0], " ".join(["\_" for i in range(4)])))
+
+
+@client.command(name='5x5answer',
+                description="Start 5x5",
+                brief="Start 5x5",
+                pass_context=True)
+async def answer5x5(context, answer):
+    global WORD
+    await context.trigger_typing()
+    if WORD is None:
+        await context.send("Game not started. User 5x5start command")
+        return
+
+    if len(answer) != 5:
+        await context.send("Error: Answer should have only 5 letters")
+        return
+
+    l = []
+    nl = []
+    for i, la in enumerate(answer):
+        if WORD[i] == la:
+            l.append("**%s**" % la)
+            nl.append("**%s**" % la)
+            continue
+        if la in WORD:
+            l.append("*%s*" % la)
+        else:
+            l.append(la)
+        nl.append("\_")
+
+    typed.append(" ".join(l))
+
+    await context.send("\n".join(typed + ([" ".join(nl)] if len(typed) < 5 else [])))
+    if WORD == answer:
+        await context.send("Odgadłeś hasło, gratulacje!")
+        WORD = None
+        typed.clear()
+        return
+    if len(typed) >= 5:
+        await context.send("Przegrałeś :-( Hasło to: %s" % WORD)
+        WORD = None
+        typed.clear()
 
 
 async def list_servers():
