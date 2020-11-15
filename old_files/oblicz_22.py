@@ -1,7 +1,7 @@
 from io import StringIO
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 licz_a = lambda x, y: (len(x) * sum(x * y) - sum(x) * sum(y)) / (
             len(x) * sum(x ** 2) - sum(x) ** 2)

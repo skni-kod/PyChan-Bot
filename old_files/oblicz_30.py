@@ -6,11 +6,11 @@ Python Version: 3.5
 License: MiT
 """
 
+from io import StringIO
+
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 import pylab
-from io import StringIO
 
 licz_a = lambda x, y: (len(x) * sum(x * y) - sum(x) * sum(y)) / (
             len(x) * sum(x ** 2) - sum(x) ** 2)
