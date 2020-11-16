@@ -47,19 +47,35 @@ async def bot_diff(context, expression):
 
 @client.command(name='granica',
                 description="Liczy granicę",
-                pass_context=True)
+                pass_context=True,help="Calculate limit; Syntax: ^granica function,limit,side")
 async def bot_limit(context, expression):
     try:
         await context.trigger_typing()
+        if (',') in expression:
+            expression = expression.split(',')
+            if len(expression) == 2:
+                expression.append("+")
+            elif len(expression) > 3:
+                raise Exception()
+
+        else:
+            expression = [expression, oo, "+"]
         print(expression)
         x = Symbol('x')
-        xpr = parse_expr(expression)
-        result = limit(xpr, x, oo)
-        p = pretty(Eq(Limit(xpr, x, oo), result), use_unicode=False)
+        xpr = parse_expr(expression[0])
+        result = limit(xpr, x, expression[1], expression[2])
+        p = pretty(Eq(Limit(xpr, x, expression[1], expression[2]), result), use_unicode=False)
         print(p)
         await context.channel.send("```" + str(p) + "```" + ", " + context.message.author.mention)
     except:
-        await context.channel.send("Coś poszło nie tak :/, pamiętaj potęga to '**'")
+        await context.channel.send(
+            "Coś poszło nie tak :/, Kilka zasad: \n "
+            "1. Pamiętaj potęga to '**' \n"
+            "2. Nieskończoność to 'oo' \n"
+            "3. Granicę lewostronną określasz poprzez '-' a prawostronną poprzez '+' \n"
+            "4. Komenda przyjmuje minimalnie 1 argument a maksymalnie 3 \n"
+            "5. Argumenty podajesz po ',' np 'x/2,oo,-'"
+        )
 
 
 @client.command(pass_context=True)
