@@ -3,6 +3,8 @@ from forecastiopy import *
 from opencage.geocoder import OpenCageGeocode
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
+from functions import *
+from fizyka import *
 
 from keys import *
 
@@ -55,16 +57,16 @@ async def bot_limit(context, expression):
             expression = expression.split(',')
             if len(expression) == 2:
                 expression.append("+")
-            elif len(expression) > 3:
-                raise Exception()
+            elif len(expression) >3:
+                raise Exception ()
 
         else:
             expression = [expression, oo, "+"]
         print(expression)
         x = Symbol('x')
         xpr = parse_expr(expression[0])
-        result = limit(xpr, x, expression[1], expression[2])
-        p = pretty(Eq(Limit(xpr, x, expression[1], expression[2]), result), use_unicode=False)
+        result = limit(xpr, x, expression[1],expression[2])
+        p = pretty(Eq(Limit(xpr, x, expression[1],expression[2]), result), use_unicode=False)
         print(p)
         await context.channel.send("```" + str(p) + "```" + ", " + context.message.author.mention)
     except:
@@ -100,6 +102,17 @@ async def square(context, number):
 async def aboutme(context):
     await context.trigger_typing()
     await context.channel.send("https://chomado.com/wp-content/uploads/2018/09/189828_python.png")
+
+@client.command(name='fizyka', pass_context='True')
+async def fizyka(ctx, data):
+    try:
+        soup = getDataFromAttachment(ctx)
+        klasa = eval(data)
+        a = klasa.zad(data=soup)
+        message = a.oblicz()
+        await ctx.author.send(message)
+    except:
+        await ctx.author.send('Ups, coś poszło nie tak!')
 
 
 @client.command(name='pogoda',
