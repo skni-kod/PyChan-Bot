@@ -31,7 +31,7 @@ class TweetListener(StreamListener):
             name='@'+s["user"]["screen_name"]
             link='https://twitter.com/'+s["user"]["screen_name"]+'/status/'+s["id_str"]
             title=s["user"]["screen_name"]+' - Twitter'
-            print(s)
+            #print(s)
             footer=s["created_at"]
             ft=footer.split(' ')
             footer=ft[1]+' '+ft[2]+' '+ft[5]+' '+ft[3]
