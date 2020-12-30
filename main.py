@@ -1,16 +1,56 @@
+import discord
+import tweepy
+from discord.ext import commands, tasks
 from discord.ext.commands import Bot, when_mentioned_or
+from fizyka import *
 from forecastiopy import *
+from functions import *
+from keys import *
 from opencage.geocoder import OpenCageGeocode
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
-from functions import *
-from fizyka import *
-
-from keys import *
 
 BOT_PREFIX = ("^",)
 client = Bot(command_prefix=when_mentioned_or("^"))
 geocoder = OpenCageGeocode(GEOCODER_KEY)
+TOKEN = ''
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+TWITTER_ACCESS_TOKEN = ''
+TWITTER_ACCESS_SECRET = ''
+tweet_channel=''
+
+tweet=[]
+class TweetListener(StreamListener):
+    def on_status(self, status):
+        global tweet
+        if status.in_reply_to_status_id is None:
+            s=status._json
+            text=s["text"]
+            pp=s["user"]["profile_image_url_https"]
+            name='@'+s["user"]["screen_name"]
+            link='https://twitter.com/'+s["user"]["screen_name"]+'/status/'+s["id_str"]
+            title=s["user"]["screen_name"]+' - Twitter'
+            #print(s)
+            footer=s["created_at"]
+            ft=footer.split(' ')
+            footer=ft[1]+' '+ft[2]+' '+ft[5]+' '+ft[3]
+            TwitterEmbed = discord.Embed(title=title,description=text,url=link, color=0xFF0000)
+            TwitterEmbed.set_footer(text=footer)
+            TwitterEmbed.set_thumbnail(url=pp)
+            TwitterEmbed.set_author(name=name, icon_url=pp)
+            tweet.append(TwitterEmbed)
+TwitterAuth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+TwitterAuth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
+TweetAPI = tweepy.API(TwitterAuth)
+NewListener = TweetListener()
+NewStream = tweepy.Stream(auth=TweetAPI.auth, listener=NewListener)
+NewStream.filter(follow=['insert_tt_id_here'], is_async=True)
+
+@client.event
+async def on_ready():
+    papa_mobile.start()
+    print('Bot ready')
 
 
 @client.command(name='calka',
@@ -169,5 +209,13 @@ async def bot_weather(context, placeName):
     except:
         await context.channel.send("Pewnie znowu api key nieautoryzowany")
 
-
+@tasks.loop(seconds=2)
+async def papa_mobile():
+    global tweet
+    try:
+        channel=client.get_channel(tweet_channel)
+        await channel.send(embed=tweet[0])
+        tweet[:]=[]
+    except:
+        pass
 client.run(TOKEN)
