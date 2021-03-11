@@ -10,3 +10,28 @@ def dec_to_another(to_param, number: int):
         number_copy = number_copy // to_param
         print(f'{number_copy} r {rest}')
     return converted_number
+
+
+def float_to_bin(num, length):
+    temp_2 = ''
+    temp = float(num)
+    for x in range(length):
+        temp = temp * 2
+        if temp < 1:
+            temp_2 += "0"
+        else:
+            temp_2 += "1"
+            temp -= 1
+    return temp_2
+
+
+def ieee754_32(liczba):
+    sign = '0'
+    if liczba[0] == '-':
+        liczba = liczba[1:]
+        sign = '1'
+    number = liczba.split('.')
+    bin_number = [dec_to_another(2, int(number[0]))]
+    bin_number.append(float_to_bin('0.'+number[1], 27))
+    exponent = dec_to_another(2, 127 + len(bin_number[0]) - 1)
+    return (sign+exponent+bin_number[0][1:] + bin_number[1])[:32]
