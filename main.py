@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 
-from commands import Commands
-from help import Help
-from maths import Maths
+from CommandsCogs.commands_cog import Commands
+from CommandsCogs.help_cog import Help
+from CommandsCogs.maths_cog import Maths
 
 # utworzenie instancji bota
 bot = commands.Bot(command_prefix='^')
@@ -11,7 +11,7 @@ bot = commands.Bot(command_prefix='^')
 # usunięcie domyślnej komendy 'help'
 bot.remove_command('help')
 
-# dodanie funkcji z innych plików
+# dodanie funkcji z innych plikówa
 bot.add_cog(Commands(bot))
 bot.add_cog(Help(bot))
 bot.add_cog(Maths(bot))
