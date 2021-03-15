@@ -42,8 +42,7 @@ def dec_float_to_another(to_param, number: float):
               13: 'D', 14: 'E', 15: 'F'}
 
     integer = int(number)
-    fraction = number - int(number)
-
+    fraction = number - integer
     numbers_dict = {'integer': [], 'fraction': [], 'converted': {}}
 
     if integer != 0:
@@ -52,23 +51,52 @@ def dec_float_to_another(to_param, number: float):
             rest = integer % to_param
             converted_integer = digits[rest] + converted_integer
             integer = integer // to_param
-            numbers_dict['integer'].append({integer: rest})
+            numbers_dict['integer'].append({integer: digits[rest]})
         numbers_dict['converted']['integer'] = converted_integer
     else:
         numbers_dict['converted']['integer'] = 0
-
     if fraction != 0:
         converted_fraction = ''
         counter = 0
-        while fraction != 0 or (fraction != 0 and counter < 16):
-            fraction = fraction * 2
+        while fraction != 0 and counter < 16:
+            fraction = fraction * to_param
             integ = int(fraction)
-            converted_fraction = converted_fraction + str(integ)
-            numbers_dict['fraction'].append({fraction: integ})
+            converted_fraction = converted_fraction + digits[integ]
+            numbers_dict['fraction'].append({fraction: digits[integ]})
             fraction = fraction - integ
             counter = counter + 1
         numbers_dict['converted']['fraction'] = converted_fraction
+    else:
+        numbers_dict['converted']['fraction'] = '0'
 
-    numbers_dict['converted']['number'] = numbers_dict['converted']['integer'] + '.' + numbers_dict['converted']['fraction']
+    numbers_dict['converted']['number'] = f"{numbers_dict['converted']['integer']}.{numbers_dict['converted']['fraction']}"
+
+    return numbers_dict
+
+def another_float_to_dec(from_param, number):
+    digits = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'A': 10, 'B': 11, 'C': 12,
+              'D': 13, 'E': 14, 'F': 15}
+
+    dec = 0
+    numbers_dict = {'integer' : {}, 'fraction': {}, 'dec' : 0}
+
+    integer = ''
+    fraction = ''
+
+    if '.' in number:
+        integer = number.split('.')[0]
+        fraction = number.split('.')[1]
+    else:
+        integer = number
+
+    for i, char in enumerate(reversed(integer)):
+        dec = dec + (from_param ** i * digits[char])
+        numbers_dict['integer'][i] = digits[char]
+
+    for i, char in enumerate(fraction, start=1):
+        dec = dec + (from_param ** (-i) * digits[char])
+        numbers_dict['fraction'][-i] = digits[char]
+
+    numbers_dict['dec'] = dec
 
     return numbers_dict
