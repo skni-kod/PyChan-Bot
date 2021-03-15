@@ -16,12 +16,14 @@ class Maths(commands.Cog):
         converted_number = ''
 
         if from_param == 10:
-            converted_number = dec_float_to_another(to_param, number)['converted']['number']
+            converted_number = dec_float_to_another(
+                to_param, number)['converted']['number']
         elif to_param == 10:
-            converted_number = another_float_to_dec(from_param,number)['dec']
+            converted_number = another_float_to_dec(from_param, number)['dec']
         else:
             converted_number = another_float_to_dec(from_param, number)['dec']
-            converted_number = dec_float_to_another(to_param, converted_number)['converted']['number']
+            converted_number = dec_float_to_another(to_param, converted_number)[
+                'converted']['number']
 
         await ctx.send(f'{number} ({from_param}) = {converted_number} ({to_param})')
 
@@ -41,15 +43,20 @@ class Maths(commands.Cog):
                 for dict in numbers_dict['integer']:
                     for x, y in dict.items():
                         message = message + f'{x} r {y}\n'
-                message = message + str(numbers_dict['converted']['integer']) + '\n\n'
+                message = message + \
+                    str(numbers_dict['converted']['integer']) + '\n\n'
             if float(number_param) - int(number_param) != 0:
-                message = message + f'{float(number_param) - int(number_param)} * {to_param}\n'
+                message = message + \
+                    f'{float(number_param) - int(number_param)} * {to_param}\n'
                 for dict in numbers_dict['fraction']:
                     for x, y in dict.items():
                         message = message + f'{x} | {y}\n'
-                message = message + str(numbers_dict['converted']['fraction']) + '\n\n'
+                message = message + \
+                    str(numbers_dict['converted']['fraction']) + '\n\n'
 
-            message = message + f'{number_param} (10) = ' + f"{numbers_dict['converted']['number']} ({to_param})\n"
+            message = message + \
+                f'{number_param} (10) = ' + \
+                f"{numbers_dict['converted']['number']} ({to_param})\n"
             return message
 
         def convert_to_dec(number_param):
@@ -81,7 +88,7 @@ class Maths(commands.Cog):
                 message = message + ' = '
 
             message = message + f'{numbers_dict["dec"]} ({10})\n\n'
-            return [message,numbers_dict["dec"]]
+            return [message, numbers_dict["dec"]]
 
         if from_param == 10:
             message = convert_from_dec(number)
@@ -93,3 +100,45 @@ class Maths(commands.Cog):
             message = message + convert_from_dec(list_h[1])
 
         await ctx.send(message)
+
+    @commands.command(pass_context=True)
+    async def ieee754_32(self, ctx, number: float):
+        data = ieee754_32(str(number))
+        embed = discord.Embed(title='IEEE 754/32BIT',
+                              description='',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Sign',
+                        value=data[0],
+                        inline=False)
+        embed.add_field(name='Exponent',
+                        value=data[1],
+                        inline=False)
+        embed.add_field(name='Significand',
+                        value=data[2],
+                        inline=False)
+        embed.add_field(name='"IEEE 754/32BIT',
+                        value=data[3],
+                        inline=False)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def ieee754_64(self, ctx, number: float):
+        data = ieee754_64(str(number))
+        embed = discord.Embed(title='IEEE 754/64BIT',
+                              description='',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Sign',
+                        value=data[0],
+                        inline=False)
+        embed.add_field(name='Exponent',
+                        value=data[1],
+                        inline=False)
+        embed.add_field(name='Significand',
+                        value=data[2],
+                        inline=False)
+        embed.add_field(name='"IEEE 754/64BIT',
+                        value=data[3],
+                        inline=False)
+
+        await ctx.send(embed=embed)
