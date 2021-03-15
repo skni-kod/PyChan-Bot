@@ -14,6 +14,13 @@ class Commands(commands.Cog):
                             value='Podana komenda nie istnieje',
                             inline=False)
             await ctx.send(embed=embed)
+        elif isinstance(error, commands.BadArgument):
+            await ctx.send('Niepoprawny parametr')
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('Brakuje wymaganego parametru')
+        elif isinstance(error, Exception):
+            await ctx.send('Coś poszło nie tak')
+            print(error)
         else:
             print(error)
 
