@@ -22,7 +22,7 @@ class Ieee754_64(commands.Cog):
         embed.add_field(name='Significand',
                         value=data[2],
                         inline=False)
-        embed.add_field(name='"IEEE 754/64BIT',
+        embed.add_field(name='IEEE 754/64BIT',
                         value=data[3],
                         inline=False)
 
