@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Decorators.decorators import Decorator
 
 
 class Convert_numbers(commands.Cog):
@@ -8,6 +9,7 @@ class Convert_numbers(commands.Cog):
         self.bot = bot
 
     @commands.command(pass_context=True, name='zamiana')
+    @Decorator.pychan_decorator
     async def convert_numbers(self, ctx, from_param: int, to_param: int, number):
         if (from_param < 2 or from_param > 16) or (to_param < 2 or to_param > 16):
             raise commands.errors.BadArgument

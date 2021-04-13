@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Decorators.decorators import Decorator
 
 
 class Ieee754_64(commands.Cog):
@@ -8,6 +9,7 @@ class Ieee754_64(commands.Cog):
         self.bot = bot
 
     @commands.command(pass_context=True, name='ieee754_64')
+    @Decorator.pychan_decorator
     async def ieee754_64(self, ctx, number: float):
         data = ieee754_64(str(number))
         embed = discord.Embed(title='IEEE 754/64BIT',

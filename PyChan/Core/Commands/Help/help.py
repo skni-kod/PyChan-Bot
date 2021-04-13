@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from Core.Decorators.decorators import Decorator
 
 
 class Help(commands.Cog):
@@ -7,6 +8,7 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.group(invoke_without_command=True)
+    @Decorator.pychan_decorator
     async def help(self, ctx):
         embed = discord.Embed(title='Help',
                               description='Wpisz `^help <nazwa_komendy>` aby uzyskać więcej informacji.\n'
