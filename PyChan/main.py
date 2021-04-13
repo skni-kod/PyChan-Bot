@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Core.Commands.commands import Commands
+from Core.core import Core
 
 # utworzenie instancji bota
 bot = commands.Bot(command_prefix='^')
@@ -10,7 +10,7 @@ bot = commands.Bot(command_prefix='^')
 bot.remove_command('help')
 
 # dodanie funkcji z innych plikówa
-bot.add_cog(Commands(bot))
+bot.add_cog(Core(bot))
 
 
 # informacja o uruchomieniu się bota
