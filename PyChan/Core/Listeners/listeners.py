@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from PyChan.Database.database import Database
+from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 class Listeners(commands.Cog):
@@ -17,9 +18,9 @@ class Listeners(commands.Cog):
 
         if str(message.content).lower() == 'pychan!':
             await message.channel.send('Wołałeś mnie Onii-chan?\n'
-                                       'Napisz `^help`, aby dowiedzieć się jakie mam komendy')
+                                       f'Napisz `{get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         settings = {'prefix': '^'}
-        Database.insert_one(Database.db_servers, {'_id': guild.id,'settings':settings})
+        Database.insert_one(Database.db_servers, {'_id': guild.id, 'settings': settings})
