@@ -13,11 +13,11 @@ class Ssh(commands.Cog):
     @commands.command(pass_context=True, name='ssh_update')
     @commands.check(check_if_it_is_me)
     async def ssh_update(self, ctx):
-        os.system("git pull git@github.com:skni-kod/PyChan-Bot.git")
-        mess = await ctx.send(f"Update skończy się za {30} sekund")
+        os.system("cd /home/pi/SkniBot; git pull git@github.com:skni-kod/PyChan-Bot.git; sudo pip3 install -r /home/pi/SkniBot/req.txt")
+        mess = await ctx.send(f"Update zacznie się za {30} sekund")
         for x in range(30):
             time.sleep(1)
-            await mess.edit(content=f"Update skończy się za {30-x-1} sekund")
+            await mess.edit(content=f"Update zacznie się za {30-x-1} sekund")
         await mess.edit(content=":zzz:")
         os.system("sudo reboot")
 
