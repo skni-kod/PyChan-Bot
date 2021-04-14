@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from PyChan.Database.database import Database
+
 
 class Listeners(commands.Cog):
     def __init__(self, bot):
@@ -16,3 +18,8 @@ class Listeners(commands.Cog):
         if str(message.content).lower() == 'pychan!':
             await message.channel.send('Wołałeś mnie Onii-chan?\n'
                                        'Napisz `^help`, aby dowiedzieć się jakie mam komendy')
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        settings = {'prefix': '^'}
+        Database.insert_one(Database.db_servers, {'_id': guild.id,'settings':settings})

@@ -7,8 +7,8 @@ from Core.Decorators.Functions.rate_me import Rate_me
 from Core.Decorators.Functions.sleep_time import Sleep_time
 
 class Decorator():
-    @classmethod
-    def pychan_decorator(self, func):
+    @staticmethod
+    def pychan_decorator(func):
         @functools.wraps(func)
         async def wrapper(bot, ctx, *args, **kwargs):
             # 1% szans że funkcja się nie wykona

@@ -4,10 +4,12 @@ from discord.ext import commands
 from Core.core import Core
 from token_key import token
 
+from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+
 
 def main():
     # utworzenie instancji bota
-    bot = commands.Bot(command_prefix='^')
+    bot = commands.Bot(command_prefix=get_server_prefix)
 
     # usunięcie domyślnej komendy 'help'
     bot.remove_command('help')
