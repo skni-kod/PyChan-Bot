@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Core.Decorators.decorators import Decorator
+from PyChan.Core.Decorators.decorators import Decorator
 
 
 class Help(commands.Cog):
