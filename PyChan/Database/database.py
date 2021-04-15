@@ -2,7 +2,7 @@ import pymongo
 from pymongo import MongoClient
 from pymongo import collection
 
-from PyChan.mongodb_token import mongodb_token
+from mongodb_token import mongodb_token
 
 
 class Database():

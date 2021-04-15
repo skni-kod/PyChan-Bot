@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from PyChan.Database.database import Database
+from Database.database import Database
 
 
 def get_server_prefix(bot, message):

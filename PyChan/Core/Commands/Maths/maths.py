@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
 
-from PyChan.Core.Commands.Maths.Functions.convert_numbers import Convert_numbers
-from PyChan.Core.Commands.Maths.Functions.convert_numbers_plus import Convert_numbers_plus
-from PyChan.Core.Commands.Maths.Functions.ieee754_32 import Ieee754_32
-from PyChan.Core.Commands.Maths.Functions.ieee754_64 import Ieee754_64
+from Core.Commands.Maths.Functions.convert_numbers import Convert_numbers
+from Core.Commands.Maths.Functions.convert_numbers_plus import Convert_numbers_plus
+from Core.Commands.Maths.Functions.ieee754_32 import Ieee754_32
+from Core.Commands.Maths.Functions.ieee754_64 import Ieee754_64
 
 
 class Maths(commands.Cog):

@@ -4,7 +4,7 @@ from discord.ext import commands
 from Core.core import Core
 from token_key import token
 
-from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 def main():

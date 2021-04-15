@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands, tasks
 
-from PyChan.Core.Commands.Utilities.Functions.ssh import Ssh
-from PyChan.Database.database import Database
+from Core.Commands.Utilities.Functions.ssh import Ssh
+from Database.database import Database
 
 class Utilities(commands.Cog):
     def __init__(self, bot):

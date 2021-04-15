@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 
-from PyChan.Core.Commands.commands import Commands
-from PyChan.Core.Errors.errors import Errors
-from PyChan.Core.Listeners.listeners import Listeners
+from Core.Commands.commands import Commands
+from Core.Errors.errors import Errors
+from Core.Listeners.listeners import Listeners
 
 
 class Core(commands.Cog):

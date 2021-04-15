@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from PyChan.Core.Commands.Settings.Functions.change_prefix import Change_prefix
+from Core.Commands.Settings.Functions.change_prefix import Change_prefix
 
 
 class Settings(commands.Cog):

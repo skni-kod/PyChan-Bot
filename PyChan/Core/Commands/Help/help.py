@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-from PyChan.Core.Decorators.decorators import Decorator
-from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Decorators.decorators import Decorator
+from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 class Help(commands.Cog):

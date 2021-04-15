@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from PyChan.Database.database import Database
-from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Database.database import Database
+from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 class Listeners(commands.Cog):

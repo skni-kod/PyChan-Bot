@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-from PyChan.Core.Commands.Maths.Functions.maths_functions import *
-from PyChan.Core.Decorators.decorators import Decorator
+from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Decorators.decorators import Decorator
 
 
 class Ieee754_64(commands.Cog):
