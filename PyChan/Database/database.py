@@ -12,14 +12,19 @@ class Database():
     db_images = db['images']
 
     @staticmethod
-    def get_one(collection, query):
-        collection.find_one(query)
+    def get_one(collection, query, selection = {}):
+        if not selection:
+            return collection.find_one(query)
+        return collection.find_one(query, selection)
 
-        return collection.find_one(query)
 
     @staticmethod
     def insert_one(collection, data):
         collection.insert_one(data)
+
+    @staticmethod
+    def update_one(collection, query, query_to_update):
+        return collection.update_one(query, {'$set': query_to_update}).modified_count == 1
 
     @staticmethod
     def check_connect_with_db():

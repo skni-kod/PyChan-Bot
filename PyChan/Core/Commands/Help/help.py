@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from PyChan.Core.Decorators.decorators import Decorator
+from PyChan.Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 class Help(commands.Cog):
@@ -10,8 +11,9 @@ class Help(commands.Cog):
     @commands.group(invoke_without_command=True)
     @Decorator.pychan_decorator
     async def help(self, ctx):
+        prefix = get_server_prefix(self, ctx)
         embed = discord.Embed(title='Help',
-                              description='Wpisz `^help <nazwa_komendy>` aby uzyskać więcej informacji.\n'
+                              description=f'Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n'
                                           '\n'
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
