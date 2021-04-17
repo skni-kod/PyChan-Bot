@@ -13,7 +13,7 @@ class Ssh(commands.Cog):
     @commands.command(pass_context=True, name='ssh_update')
     @commands.check(check_if_it_is_me)
     async def ssh_update(self, ctx):
-        os.system('sudo bash /home/pi/bot_update.sh')
+        os.system('bash /home/pi/SkniBot/bot_update.sh')
         mess = await ctx.send(f"Update zacznie się za {30} sekund")
         for x in range(30):
             time.sleep(1)
