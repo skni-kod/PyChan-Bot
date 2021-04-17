@@ -15,30 +15,10 @@ def lcm_n(args):
 def string2perm(string):
     string = string.replace('<', '').replace('>', '')
     perm = string.split(' ')
-    perm = [int(x) for x in perm]
+    perm = [int(x) for x in perm if x != ""]
 
     # sprawdzenie czy poprawny zapis:
     return -1 if len(perm) != len(set(perm)) or len(perm) != max(perm) else perm
-
-
-def smart_input(string):
-    strings = string.split('#')
-    cycles = []
-    for string in strings:
-        string = string.rstrip()
-        if len(string) == 0:
-            return -1
-        if match('^<(([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?>$', string):
-            perm = string2perm(string)
-            if perm == -1: return -1
-            cycle = perm2cycles(perm)
-            cycles += cycle
-        elif match('^(\((([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?\))*$', string):
-            cycle = string2cycles(string)
-            cycles += cycle
-        else:
-            return -1
-    return cycles2perm(cycles)
 
 
 def perm2string(perm):
@@ -56,7 +36,7 @@ def string2cycles(string):
 
     items = []
     for i in range(0, len(groups)):
-        groups[i] = groups[i].replace('(', '').replace(')', '').split(' ')
+        groups[i] = groups[i].replace('(', '').replace(')', '').lstrip().rstrip().split(' ')
         temp = []
         for j in groups[i]:
             temp.append(int(j))
@@ -142,6 +122,27 @@ def perm2cycles_without_fixed(perm):
         if len(temp) > 1: cycles.append(temp)
 
     return cycles
+
+
+def smart_input(string):
+    strings = string.split('#')
+    cycles = []
+    for string in strings:
+        string = string.rstrip().lstrip()
+        if len(string) == 0:
+            return -1
+        if match('^<(\s)*(([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?(\s)*>$', string):
+            perm = string2perm(string)
+            if perm == -1: return -1
+            cycle = perm2cycles(perm)
+            cycles += cycle
+        elif match('^(\((\s)*(([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?(\s)*\)(\s)*)+$', string):
+            cycle = string2cycles(string)
+            cycles += cycle
+        else:
+            return -1
+
+    return cycles2perm(cycles)
 
 
 def random_perm(n):
