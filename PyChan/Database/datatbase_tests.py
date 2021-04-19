@@ -1,8 +1,10 @@
 import pymongo
 from database import Database as dB
+from Database.DatabaseClasses.server_class import ServerClass as Server, ServerSystem
 
 testDB = dB.cluster['testDB']
 test_coll1 = testDB['test_coll1']
+servers_db = testDB['servers_db']
 static_data = testDB['static_data']
 
 
@@ -22,13 +24,6 @@ def get_all_items_in_collection(db_name: str, collection_name: str):
     for item in dB.get_all(dB.cluster[db_name][collection_name]):
         list_of_items.append(item)
     return list_of_items
-
-
-print(dB.increment_one(static_data, {}, {'test_number': 7}))
-
-result = get_all_items_in_collection('testDB', 'static_data')
-
-print(result)
 
 
 
