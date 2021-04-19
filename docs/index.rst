@@ -1,10 +1,10 @@
-.. PyChan documentation master file, created by
-   sphinx-quickstart on Tue Mar 16 10:35:10 2021.
+.. PyChan-Bot documentation master file, created by
+   sphinx-quickstart on Tue Apr 20 00:39:04 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PyChan's documentation!
-==================================
+Welcome to PyChan-Bot's documentation!
+======================================
 
 .. toctree::
    :maxdepth: 2
