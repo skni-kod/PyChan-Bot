@@ -67,8 +67,8 @@ html_theme_options = {
     'base_url': 'https://project.github.io/project',
 
     # Set the color and the accent color
-    'color_primary': 'blue',
-    'color_accent': 'light-blue',
+    'color_primary': 'indigo',
+    'color_accent': 'blue',
 
     # Set the repo location to get a badge with stats
     'repo_url': 'https://github.com/skni-kod/PyChan-Bot',

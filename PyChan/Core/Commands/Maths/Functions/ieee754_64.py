@@ -4,13 +4,25 @@ from Core.Commands.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
 
-class Ieee754_64(commands.Cog):
+class Ieee754x64(commands.Cog):
+    """
+    The class which contains ieee754_64 method
+    """
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(pass_context=True, name='ieee754_64')
     @Decorator.pychan_decorator
     async def ieee754_64(self, ctx, number: float):
+        """
+        Sends the reply message to the user
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param number: Number to change
+        :type number: float
+        """
         data = ieee754_64(str(number))
         embed = discord.Embed(title='IEEE 754/64BIT',
                               description='',
