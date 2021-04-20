@@ -6,7 +6,7 @@ from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Listeners(commands.Cog):
-    """Class which contains Bot event methods
+    """Class contains Bot event methods
     """
 
     def __init__(self, bot):

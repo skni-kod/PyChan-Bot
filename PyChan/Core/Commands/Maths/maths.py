@@ -9,7 +9,7 @@ from Core.Commands.Maths.Functions.permutations import Permutations
 
 
 class Maths(commands.Cog):
-    """Class which contains maths methods
+    """Class contains maths methods
     """
     def __init__(self, bot):
         """Constructor method

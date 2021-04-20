@@ -7,7 +7,7 @@ from Core.Listeners.listeners import Listeners
 
 
 class Core(commands.Cog):
-    """Class which loads all Cogs and passes it to main
+    """Class loads all Cogs and passes it to main
     """
     def __init__(self, bot):
         """Constructor method

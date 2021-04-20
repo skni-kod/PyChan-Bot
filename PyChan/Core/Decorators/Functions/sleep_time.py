@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 
 class SleepTime:
-    """Class which contains sleep_time method
+    """Class contains sleep_time method
     """
 
     @classmethod

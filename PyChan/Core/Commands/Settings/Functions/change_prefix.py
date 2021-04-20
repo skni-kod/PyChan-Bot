@@ -6,7 +6,7 @@ from Database.database import Database
 
 
 class ChangePrefix(commands.Cog):
-    """Class which contains command used to change Bot's prefix
+    """Class contains command used to change Bot's prefix
     """
 
     def __init__(self, bot):
@@ -15,7 +15,7 @@ class ChangePrefix(commands.Cog):
         self.bot = bot
 
     class CheckLength:
-        """Class which contains `check_length` method
+        """Class contains `check_length` method
         """
 
         @staticmethod

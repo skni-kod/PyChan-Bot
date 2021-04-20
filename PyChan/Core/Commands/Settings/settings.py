@@ -5,7 +5,7 @@ from Core.Commands.Settings.Functions.change_prefix import ChangePrefix
 
 
 class Settings(commands.Cog):
-    """Class which contains commands with settings
+    """Class contains commands with settings
     """
     def __init__(self, bot):
         """Constructor method

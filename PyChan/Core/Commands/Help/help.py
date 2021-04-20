@@ -5,7 +5,7 @@ from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Help(commands.Cog):
-    """Class which contains help methods
+    """Class contains help methods
     """
     def __init__(self, bot):
         """Constructor method

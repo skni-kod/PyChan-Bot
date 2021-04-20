@@ -4,7 +4,7 @@ from discord.ext import commands
 from Database.database import Database
 
 class GetServerPrefix:
-    """Class which contains command used to get Bot's prefix
+    """Class contains command used to get Bot's prefix
     """
     @staticmethod
     def get_server_prefix(bot, message):

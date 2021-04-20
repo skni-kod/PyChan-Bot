@@ -8,7 +8,7 @@ from Core.Commands.Settings.settings import Settings
 from Core.Commands.Utilities.utilities import Utilities
 
 class Commands(commands.Cog):
-    """Class which contains commands
+    """Class contains commands
     """
     def __init__(self, bot):
         """Constructor method

@@ -4,7 +4,7 @@ import time
 
 
 class Ssh(commands.Cog):
-    """Class which contains ssh methods
+    """Class contains ssh methods
     """
     def __init__(self, bot):
         """Constructor method
@@ -12,7 +12,7 @@ class Ssh(commands.Cog):
         self.bot = bot
 
     class CheckIfItsLeader:
-        """Class which contains check method
+        """Class contains check method
         """
         @staticmethod
         def check_if_it_is_leader(ctx):

@@ -6,7 +6,7 @@ from Core.Decorators.decorators import Decorator
 
 class ConvertNumbersPlus(commands.Cog):
     """
-    The class which contains convert_numbers_plus method
+    The class contains convert_numbers_plus method
     """
     def __init__(self, bot):
         self.bot = bot

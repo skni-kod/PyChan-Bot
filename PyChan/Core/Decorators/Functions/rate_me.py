@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 class RateMe:
-    """Class which contains rate_me method
+    """Class contains rate_me method
     """
 
     @classmethod

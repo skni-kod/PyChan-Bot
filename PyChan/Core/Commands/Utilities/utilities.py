@@ -5,7 +5,7 @@ from Core.Commands.Utilities.Functions.ssh import Ssh
 from Database.database import Database
 
 class Utilities(commands.Cog):
-    """Class which contains commands with utilities
+    """Class contains commands with utilities
     """
     def __init__(self, bot):
         """Constructor method
@@ -29,6 +29,6 @@ class Utilities(commands.Cog):
 
     @check_connect_with_db.before_loop
     async def before_check_connect_with_db(self):
-        """Waits for Bot's start
+        """Waits for Bot to start
         """
         await self.bot.wait_until_ready()

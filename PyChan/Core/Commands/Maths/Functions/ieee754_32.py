@@ -6,7 +6,7 @@ from Core.Decorators.decorators import Decorator
 
 class Ieee754x32(commands.Cog):
     """
-        The class which contains ieee754_32 method
+        The class contains ieee754_32 method
     """
     def __init__(self, bot):
         self.bot = bot

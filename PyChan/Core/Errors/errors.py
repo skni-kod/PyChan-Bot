@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 class Errors(commands.Cog):
-    """Class which handles errors raised by other methods
+    """Class handles errors raised by other methods
     """
 
     def __init__(self, bot):

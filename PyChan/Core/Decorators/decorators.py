@@ -8,12 +8,12 @@ from Core.Decorators.Functions.sleep_time import SleepTime
 
 
 class Decorator():
-    """Class which contains own PyChan decorator
+    """Class contains own PyChan decorator
     """
 
     @staticmethod
     def pychan_decorator(func):
-        """PyChan decorator which processes given function
+        """PyChan decorator processes given function
 
         :param func: Input function
         :return: Function return the same function as given
