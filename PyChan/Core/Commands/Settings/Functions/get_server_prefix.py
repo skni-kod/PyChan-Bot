@@ -18,9 +18,6 @@ class GetServerPrefix:
         :rtype: str
         """
 
-        print(args)
-        print(kwargs)
-
         prefix = None
         try:
             prefix = Database.get_one(Database.db_servers, {'_id': message.guild.id})['settings']['prefix']
