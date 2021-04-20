@@ -8,6 +8,8 @@ from Core.Commands.Settings.settings import Settings
 from Core.Commands.Utilities.utilities import Utilities
 
 class Commands(commands.Cog):
+    """Class which contains commands
+    """
     def __init__(self, bot):
         self.bot = bot
         self.bot.add_cog(Help(bot))

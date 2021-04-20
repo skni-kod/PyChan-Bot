@@ -3,12 +3,23 @@ from discord.ext import commands
 
 
 class Errors(commands.Cog):
+    """Class which handles errors raised by other methods
+    """
+
     def __init__(self, bot):
+        """Constructor method
+        """
         self.bot = bot
 
-    # Przechwytywanie błędu o braku komendy i innych błędów
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        """Function is called when error is raised
+
+        :param ctx: the context in which a command is called
+        :type ctx: discord.ext.commands.Context
+        :param error: contains information about error
+        :type error: discord.ext.commands.CommandError
+        """
         if isinstance(error, commands.errors.CommandNotFound):
             embed = discord.Embed(color=discord.Color.dark_purple())
             embed.add_field(name='Błąd',

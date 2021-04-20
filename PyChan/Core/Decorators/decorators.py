@@ -3,19 +3,38 @@ from discord.ext import commands
 import functools
 import random
 
-from Core.Decorators.Functions.rate_me import Rate_me
-from Core.Decorators.Functions.sleep_time import Sleep_time
+from Core.Decorators.Functions.rate_me import RateMe
+from Core.Decorators.Functions.sleep_time import SleepTime
+
 
 class Decorator():
+    """Class which contains own PyChan decorator
+    """
+
     @staticmethod
     def pychan_decorator(func):
+        """PyChan decorator which processes given function
+
+        :param func: Input function
+        :return: Function return the same function as given
+        """
+
         @functools.wraps(func)
         async def wrapper(bot, ctx, *args, **kwargs):
-            # 1% szans że funkcja się nie wykona
-            if random.randint(1,100) < 2:
-                await Sleep_time.sleep_time(ctx)
+            """Calls function before/after given function
+
+            :param bot: instance of Bot
+            :param ctx: the context in which a command is called
+            :param args: list of arguments
+            :param kwargs: list of keyword arguments
+            """
+
+            # 1% chance that it will happen
+            if random.randint(1, 100) < 2:
+                await SleepTime.sleep_time(ctx)
             else:
                 await func(bot, ctx, *args, **kwargs)
-            # zapytanie o ocene pracy bota
-            await Rate_me.rate_me(ctx)
+            # ask about Bot rate
+            await RateMe.rate_me(ctx)
+
         return wrapper

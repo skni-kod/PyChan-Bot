@@ -6,13 +6,23 @@ from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
 
 
 class Listeners(commands.Cog):
+    """Class which contains Bot event methods
+    """
+
     def __init__(self, bot):
+        """Constructor method
+        """
         self.bot = bot
 
-    # zdarzenia na wpisane słowa
+
     @commands.Cog.listener()
     async def on_message(self, message):
-        # Kończy funkcje, jeśli wiadomość napisał bot
+        """Function is called when messege is sent
+
+        :param message: contains information about message
+        :type message: discord.Message
+        """
+
         if message.author.bot:
             return
 
@@ -22,5 +32,10 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        """Function is called when Bot joins to server
+
+        :param guild: contains information about server
+        :type guild: discord.Guild
+        """
         settings = {'prefix': '^'}
         Database.insert_one(Database.db_servers, {'_id': guild.id, 'settings': settings})
