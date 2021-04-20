@@ -11,6 +11,8 @@ class Commands(commands.Cog):
     """Class which contains commands
     """
     def __init__(self, bot):
+        """Constructor method
+        """
         self.bot = bot
         self.bot.add_cog(Help(bot))
         self.bot.add_cog(Maths(bot))

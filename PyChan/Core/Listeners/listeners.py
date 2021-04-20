@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from Database.database import Database
-from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Listeners(commands.Cog):
@@ -28,7 +28,7 @@ class Listeners(commands.Cog):
 
         if str(message.content).lower() == 'pychan!':
             await message.channel.send('Wołałeś mnie Onii-chan?\n'
-                                       f'Napisz `{get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
+                                       f'Napisz `{GetServerPrefix.get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
