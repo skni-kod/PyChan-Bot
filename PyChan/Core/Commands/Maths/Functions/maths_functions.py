@@ -1,4 +1,15 @@
 def dec_to_another(to_param, number: int):
+    """
+    Convert number to decimal number systems
+
+    :param to_param: Target number system
+
+    :param number: Number to change
+    :type number: int
+
+    :return: Returns a number converted to the decimal system
+    :rtype: int
+    """
     digits = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C',
               13: 'D', 14: 'E', 15: 'F'}
     number_copy = number
@@ -11,6 +22,18 @@ def dec_to_another(to_param, number: int):
 
 
 def float_to_bin(num, length):
+    """
+    Convert float number to binary systems
+
+    :param num: Number to change
+    :type num: float
+
+    :param length: The maximum length of the number in binary system
+    :type length: int
+
+    :return: Returns a number converted to the binary system
+    :rtype: string
+    """
     temp_2 = ''
     temp = float(num)
     for x in range(length):
@@ -24,6 +47,19 @@ def float_to_bin(num, length):
 
 
 def dec_float_to_another(to_param, number: float):
+    """
+    Convert float number to another number system
+
+    :param to_param: Target number system
+    :type to_param: int
+
+    :param number: Number to change
+    :type number: int
+
+    :return: Solution step by step in json format
+    :rtype: dict
+
+    """
     digits = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C',
               13: 'D', 14: 'E', 15: 'F'}
 
@@ -61,6 +97,17 @@ def dec_float_to_another(to_param, number: float):
 
 
 def another_float_to_dec(from_param, number):
+    """
+    Convert float number to decimal number system
+
+    :param from_param: Base number system
+    :type from_param: int
+
+    :param number: Number to change
+
+    :return: Solution step by step in json format
+    :rtype: dict
+    """
     digits = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'A': 10, 'B': 11, 'C': 12,
               'D': 13, 'E': 14, 'F': 15}
 
@@ -90,6 +137,15 @@ def another_float_to_dec(from_param, number):
 
 
 def ieee754_32(liczba):
+    """
+   Convert float number to ieee754 32 bit system
+
+   :param liczba: Base number system
+   :type liczba: float
+
+   :return: List with sign, exponent and mantissa
+   :rtype: list
+   """
     sign = '0'
     if liczba[0] == '-':
         liczba = liczba[1:]
@@ -102,6 +158,15 @@ def ieee754_32(liczba):
 
 
 def ieee754_64(liczba):
+    """
+   Convert float number to ieee754 64 bit system
+
+   :param liczba: Base number system
+   :type liczba: float
+
+   :return: List with sign, exponent and mantissa
+   :rtype: list
+   """
     sign = '0'
     if liczba[0] == '-':
         liczba = liczba[1:]

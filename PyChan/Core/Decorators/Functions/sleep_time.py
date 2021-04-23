@@ -2,9 +2,16 @@ import discord
 from discord.ext import commands
 import random
 
-class Sleep_time():
+class SleepTime:
+    """Class contains sleep_time method
+    """
+
     @classmethod
-    async def sleep_time(self, ctx):
+    async def sleep_time(cls, ctx):
+        """Bot complains that it is tired
+
+        :param ctx: the context in which a command is called
+        """
         embed = discord.Embed(title='',
                               description='',
                               color=discord.Color.dark_purple())

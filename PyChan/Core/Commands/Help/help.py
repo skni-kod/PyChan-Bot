@@ -1,17 +1,26 @@
 import discord
 from discord.ext import commands
 from Core.Decorators.decorators import Decorator
-from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Help(commands.Cog):
+    """Class contains help methods
+    """
     def __init__(self, bot):
+        """Constructor method
+        """
         self.bot = bot
 
     @commands.group(invoke_without_command=True)
     @Decorator.pychan_decorator
     async def help(self, ctx):
-        prefix = get_server_prefix(self, ctx)
+        """Sends message with built-in funtions
+
+        :param ctx: the context in which a command is called
+        :type ctx: discord.ext.commands.Context
+        """
+        prefix = GetServerPrefix.get_server_prefix(self, ctx)
         embed = discord.Embed(title='Help',
                               description=f'Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n'
                                           '\n'

@@ -2,25 +2,40 @@ import discord
 from discord.ext import commands
 
 from Database.database import Database
-from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Listeners(commands.Cog):
+    """Class contains Bot event methods
+    """
+
     def __init__(self, bot):
+        """Constructor method
+        """
         self.bot = bot
 
-    # zdarzenia na wpisane słowa
+
     @commands.Cog.listener()
     async def on_message(self, message):
-        # Kończy funkcje, jeśli wiadomość napisał bot
+        """Function is called when messege is sent
+
+        :param message: contains information about message
+        :type message: discord.Message
+        """
+
         if message.author.bot:
             return
 
         if str(message.content).lower() == 'pychan!':
             await message.channel.send('Wołałeś mnie Onii-chan?\n'
-                                       f'Napisz `{get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
+                                       f'Napisz `{GetServerPrefix.get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        """Function is called when Bot joins to server
+
+        :param guild: contains information about server
+        :type guild: discord.Guild
+        """
         settings = {'prefix': '^'}
         Database.insert_one(Database.db_servers, {'_id': guild.id, 'settings': settings})

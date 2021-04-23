@@ -4,13 +4,33 @@ from Core.Commands.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
 
-class Convert_numbers(commands.Cog):
+class ConvertNumbers(commands.Cog):
+    """
+    The class contains convert_numbers method
+    """
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(pass_context=True, name='zamiana')
     @Decorator.pychan_decorator
     async def convert_numbers(self, ctx, from_param: int, to_param: int, number):
+        """
+        Sends the reply message to the user
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param from_param: Base number system
+        :type from_param: int
+
+        :param to_param: Target number system
+        :type to_param: int
+
+        :param number: Number to change
+        :type number: str
+
+        :raises commands.errors.BadArgument: User entered wrong arguments
+        """
         if (from_param < 2 or from_param > 16) or (to_param < 2 or to_param > 16):
             raise commands.errors.BadArgument
 

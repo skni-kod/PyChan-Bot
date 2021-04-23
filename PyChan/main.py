@@ -4,22 +4,22 @@ from discord.ext import commands
 from Core.core import Core
 from token_key import token
 
-from Core.Commands.Settings.Functions.get_server_prefix import get_server_prefix
+from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 def main():
-    # utworzenie instancji bota
-    bot = commands.Bot(command_prefix=get_server_prefix)
-
-    # usunięcie domyślnej komendy 'help'
+    """Main function where the bot instance is created
+    Default command 'help' is removed and is added cog file 'Core'
+    Function 'get_server_prefix' is assigned 'command_prefix' and gets the prefix depending on the server on which the function is called
+    """
+    bot = commands.Bot(command_prefix=GetServerPrefix.get_server_prefix)
     bot.remove_command('help')
-
-    # dodanie funkcji z innych plikówa
     bot.add_cog(Core(bot))
 
-    # informacja o uruchomieniu się bota
     @bot.event
     async def on_ready():
+        """is called when Bot is ready
+        """
         print('Bot is ready')
 
     bot.run(token)
