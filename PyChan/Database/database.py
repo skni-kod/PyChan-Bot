@@ -3,21 +3,23 @@ from sqlalchemy import create_engine, ForeignKey, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import validates
 
+import datetime
+
 import discord
 from discord.ext import commands
 
 
-class DataBase:
-    engine = create_engine('sqlite:///PyChan.db')
+class Database:
+    engine = create_engine('sqlite:///Database/PyChan.db')
     Base = declarative_base()
     session = sessionmaker(bind=engine)()
 
-    class Guilds(Base):
+    class Guild(Base):
         __tablename__ = 'guilds'
 
-        id = Column(Integer, primary_key=True)
+        guild_id = Column(Integer, primary_key=True)
         name = Column(String)
-        join_date = Column(String)
+        join_date = Column(String, default=datetime.datetime.now())
         members_count = Column(Integer)
 
         @validates('id')
@@ -35,7 +37,7 @@ class DataBase:
         @validates('members_count')
         def validate_members_count(self, key, members_count):
             if not type(members_count) == int:
-                raise NameError('[Validates] Server - members_count')
+                raise NameError('[Validates] Guild - members_count')
             return id
 
     class Member(Base):
@@ -43,7 +45,7 @@ class DataBase:
 
         id = Column(Integer, primary_key=True)
         member_id = Column(Integer)
-        server_id = Column(Integer, ForeignKey('guilds.id'))
+        guild_id = Column(Integer, ForeignKey('guilds.id'))
 
         @validates('id')
         def validate_address_id(self, key, id):
@@ -68,7 +70,7 @@ class DataBase:
 
         id = Column(Integer, primary_key=True)
         guild_id = Column(Integer, ForeignKey('guilds.id'))
-        prefix = Column(String)
+        prefix = Column(String, default='^')
 
         @validates('id')
         def validate_id(self, key, id):
@@ -92,7 +94,7 @@ class DataBase:
         __tablename__ = 'servers_shiets'
 
         id = Column(Integer, primary_key=True)
-        server_id = Column(Integer, ForeignKey('servers.id'))
+        guild_id = Column(Integer, ForeignKey('guilds.id'))
         value = Column(String)
         miner = Column(String)
         date = Column(String)
@@ -104,7 +106,7 @@ class DataBase:
             return id
 
         @validates('server_id')
-        def validate_server_id(self, key, server_id):
+        def validate_server_id(self, key, guild_id):
             if not type(server_id) == int:
                 raise NameError('[Validates] ServerShiet - server_id')
             return server_id
@@ -128,6 +130,10 @@ class DataBase:
             return date
 
     @classmethod
+    def create_database(cls):
+        Database.Base.metadata.create_all(Database.engine)
+
+    @classmethod
     def add(cls, _class, **parameters):
         try:
             cls.session.add(_class(**parameters))
@@ -135,7 +141,24 @@ class DataBase:
         except Exception as error:
             print('\n[ERROR DB]', *error.args)
 
-    Base.metadata.create_all(engine)
+    @classmethod
+    def add_guild(cls, id):
+        try:
+            cls.session.add(cls.Guild(guild_id=id))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('add g')
+
+    @classmethod
+    def add_member(cls, id, g_id):
+        try:
+            cls.session.add(cls.Member(member_id=id, guild_id=g_id))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('add m')
+
 
     @classmethod
     def get_all(cls, _class, filter):
@@ -146,16 +169,19 @@ class DataBase:
         return None
 
     @classmethod
-    def get_first(cls, _class, filter):
+    def get_first(cls, _class, *filter):
         try:
-            return cls.session.query(_class).filter(filter).first()
+            return cls.session.query(_class).filter(*filter).first()
         except Exception as error:
             print('\n[ERROR DB]', *error.args)
+            print('get')
         return None
 
     @classmethod
-    def check_database(cls, bot):
+    def update_database(cls, bot):
         for guild in bot.guilds:
+            if not Database.get_first(Database.Guild, Database.Guild.id==guild.id):
+                Database.add_guild(guild.id)
             for member in guild.members:
-                if not DataBase.get_first(Guild,member_id=member.id):
-                    DataBase.add(Member,member_id=member.id,guild_id=guild.id)
+                if not Database.get_first(Database.Member, Database.Member.member_id==member.id, Database.Member.guild_id==guild.id):
+                    Database.add_member(member.id, guild.id)

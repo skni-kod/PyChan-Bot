@@ -6,6 +6,8 @@ from token_key import token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
+from Database.database import Database
+
 
 def main():
     """Main function where the bot instance is created
@@ -20,6 +22,9 @@ def main():
     async def on_ready():
         """is called when Bot is ready
         """
+        #Database.create_database()
+        #Database.update_database(bot)
+
         print('Bot is ready')
 
     bot.run(token)

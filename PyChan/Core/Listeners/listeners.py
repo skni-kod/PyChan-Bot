@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Database.database import DataBase
+from Database.database import Database
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
@@ -13,7 +13,6 @@ class Listeners(commands.Cog):
         """Constructor method
         """
         self.bot = bot
-
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -38,4 +37,10 @@ class Listeners(commands.Cog):
         :type guild: discord.Guild
         """
 
-        DataBase.add(DataBase.Server,id=guild.id)
+        Database.add_guild(guild.id)
+        for member in guild.members:
+            Database.add_member(member.guild_id, guild.id)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, ctx, member):
+        Database.add_member(member.guild_id, guild.guild_id)
