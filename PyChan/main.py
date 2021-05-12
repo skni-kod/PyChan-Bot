@@ -14,7 +14,8 @@ def main():
     Default command 'help' is removed and is added cog file 'Core'
     Function 'get_server_prefix' is assigned 'command_prefix' and gets the prefix depending on the server on which the function is called
     """
-    bot = commands.Bot(command_prefix=GetServerPrefix.get_server_prefix)
+    intents = discord.Intents(messages=True, guilds=True, members=True, reactions = True)
+    bot = commands.Bot(command_prefix=GetServerPrefix.get_server_prefix, intents=intents)
     bot.remove_command('help')
     bot.add_cog(Core(bot))
 
@@ -22,8 +23,8 @@ def main():
     async def on_ready():
         """is called when Bot is ready
         """
-        #Database.create_database()
-        #Database.update_database(bot)
+        Database.create_database()
+        Database.update_database(bot)
 
         print('Bot is ready')
 

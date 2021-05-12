@@ -22,7 +22,7 @@ class Database:
         join_date = Column(String, default=datetime.datetime.now())
         members_count = Column(Integer)
 
-        @validates('id')
+        @validates('guild_id')
         def validate_id(self, key, id):
             if not (type(id) == int and len(str(id)) == 18):
                 raise NameError('[Validates] Guild - id')
@@ -44,8 +44,8 @@ class Database:
         __tablename__ = 'members'
 
         id = Column(Integer, primary_key=True)
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
         member_id = Column(Integer)
-        guild_id = Column(Integer, ForeignKey('guilds.id'))
 
         @validates('id')
         def validate_address_id(self, key, id):
@@ -69,7 +69,7 @@ class Database:
         __tablename__ = 'settings'
 
         id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer, ForeignKey('guilds.id'))
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
         prefix = Column(String, default='^')
 
         @validates('id')
@@ -94,7 +94,7 @@ class Database:
         __tablename__ = 'servers_shiets'
 
         id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer, ForeignKey('guilds.id'))
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
         value = Column(String)
         miner = Column(String)
         date = Column(String)
@@ -180,8 +180,10 @@ class Database:
     @classmethod
     def update_database(cls, bot):
         for guild in bot.guilds:
-            if not Database.get_first(Database.Guild, Database.Guild.id==guild.id):
-                Database.add_guild(guild.id)
+            print(guild.name)
+            #if not Database.get_first(Database.Guild, Database.Guild.guild_id==guild.id):
+            Database.add_guild(guild.id)
             for member in guild.members:
-                if not Database.get_first(Database.Member, Database.Member.member_id==member.id, Database.Member.guild_id==guild.id):
+                if not member.bot:
+                    #if not Database.get_first(Database.Member, Database.Member.member_id==member.id, Database.Member.guild_id==guild.id):
                     Database.add_member(member.id, guild.id)
