@@ -203,8 +203,5 @@ fabric.properties
 #Discord token
 token_key.py
 
-#MongoDB token
-mongodb_token.py
-
 #Database
-.db
+*.db
