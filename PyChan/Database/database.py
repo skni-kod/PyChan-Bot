@@ -3,14 +3,17 @@ from sqlalchemy import create_engine, ForeignKey, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import validates
 
+import discord
+from discord.ext import commands
+
 
 class DataBase:
     engine = create_engine('sqlite:///PyChan.db')
     Base = declarative_base()
     session = sessionmaker(bind=engine)()
 
-    class Server(Base):
-        __tablename__ = 'servers'
+    class Guilds(Base):
+        __tablename__ = 'guilds'
 
         id = Column(Integer, primary_key=True)
         name = Column(String)
@@ -20,13 +23,13 @@ class DataBase:
         @validates('id')
         def validate_id(self, key, id):
             if not (type(id) == int and len(str(id)) == 18):
-                raise NameError('[Validates] Server - id')
+                raise NameError('[Validates] Guild - id')
             return id
 
         @validates('name')
         def validate_name(self, key, name):
             if not type(name) == str:
-                raise NameError('[Validates] Server - name')
+                raise NameError('[Validates] Guild - name')
             return name
 
         @validates('members_count')
@@ -35,12 +38,12 @@ class DataBase:
                 raise NameError('[Validates] Server - members_count')
             return id
 
-    class User(Base):
-        __tablename__ = 'users'
+    class Member(Base):
+        __tablename__ = 'members'
 
         id = Column(Integer, primary_key=True)
-        user_id = Column(Integer)
-        server_id = Column(Integer, ForeignKey('servers.id'))
+        member_id = Column(Integer)
+        server_id = Column(Integer, ForeignKey('guilds.id'))
 
         @validates('id')
         def validate_address_id(self, key, id):
@@ -48,23 +51,23 @@ class DataBase:
                 raise NameError('[Validates] User - id')
             return id
 
-        @validates('user_id')
+        @validates('member_id')
         def validate_user_id(self, key, user_id):
             if not type(user_id) == int:
                 raise NameError('[Validates] User - user_id')
             return user_id
 
-        @validates('server_id')
-        def validate_server_id(self, key, server_id):
-            if not type(server_id) == int:
-                raise NameError('[Validates] User - server_id')
-            return server_id
+        @validates('guild_id')
+        def validate_server_id(self, key, guild_id):
+            if not type(guild_id) == int:
+                raise NameError('[Validates] User - guild_id')
+            return guild_id
 
     class Settings(Base):
         __tablename__ = 'settings'
 
         id = Column(Integer, primary_key=True)
-        server_id = Column(Integer, ForeignKey('servers.id'))
+        guild_id = Column(Integer, ForeignKey('guilds.id'))
         prefix = Column(String)
 
         @validates('id')
@@ -73,11 +76,11 @@ class DataBase:
                 raise NameError('[Validates] Settings - id')
             return id
 
-        @validates('server_id')
-        def validate_server_id(self, key, server_id):
-            if not type(server_id) == int:
-                raise NameError('[Validates] Settings - server_id')
-            return server_id
+        @validates('guild_id')
+        def validate_server_id(self, key, guild_id):
+            if not type(guild_id) == int:
+                raise NameError('[Validates] Settings - guild_id')
+            return guild_id
 
         @validates('prefix')
         def validate_prefix(self, key, prefix):
@@ -149,3 +152,10 @@ class DataBase:
         except Exception as error:
             print('\n[ERROR DB]', *error.args)
         return None
+
+    @classmethod
+    def check_database(cls, bot):
+        for guild in bot.guilds:
+            for member in guild.members:
+                if not DataBase.get_first(Guild,member_id=member.id):
+                    DataBase.add(Member,member_id=member.id,guild_id=guild.id)

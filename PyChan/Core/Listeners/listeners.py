@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Database.database import Database
+from Database.database import DataBase
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
@@ -37,5 +37,5 @@ class Listeners(commands.Cog):
         :param guild: contains information about server
         :type guild: discord.Guild
         """
-        settings = {'prefix': '^'}
-        Database.insert_one(Database.db_servers, {'_id': guild.id, 'settings': settings})
+
+        DataBase.add(DataBase.Server,id=guild.id)
