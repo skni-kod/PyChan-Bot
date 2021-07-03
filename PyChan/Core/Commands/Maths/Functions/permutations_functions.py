@@ -5,23 +5,61 @@ from re import match
 
 
 def lcm(a, b):
+    """
+    Least common multiple of two numbers
+
+    :param a: First number
+    :type a: int
+    :param b: Second number
+    :type b: int
+
+    :return: Returns least common multiple of two numbers
+    :rtype: int
+    """
     return a * b // gcd(a, b)
 
 
 def lcm_n(args):
+    """
+    Least common multiple of many numbers
+
+    :param args: List of numbers
+    :type args: list
+
+    :return: Returns least common multiple of numbers in list
+    :rtype: int
+    """
     return reduce(lcm, args)
 
 
 def string2perm(string):
+    """
+    Convert string from user input to permutation in one-line notation as list
+
+    :param string: Permutation as string
+    :type string: string
+
+    :return: Returns permutation in one-line notation as list
+    :rtype: list
+    """
     string = string.replace('<', '').replace('>', '')
     perm = string.split(' ')
     perm = [int(x) for x in perm if x != ""]
 
-    # sprawdzenie czy poprawny zapis:
+    # check if correct format:
     return -1 if len(perm) != len(set(perm)) or len(perm) != max(perm) else perm
 
 
 def perm2string(perm):
+    """
+    Convert permutation in one-line notation as list to string
+
+    :param perm: Permutation as list
+    :type perm: list
+
+    :return: Returns permutation in one-line notation as string
+    :rtype: string
+    """
     string = "<"
     for x in range(len(perm)):
         string += str(perm[x])
@@ -32,6 +70,15 @@ def perm2string(perm):
 
 
 def string2cycles(string):
+    """
+    Convert string from user input to permutation in cycle notation as list
+
+    :param string: Permutation as string
+    :type string: string
+
+    :return: Returns permutation in cycle notation as list
+    :rtype: list
+    """
     groups = string.split(')(')
 
     items = []
@@ -46,6 +93,15 @@ def string2cycles(string):
 
 
 def cycles2string(cycles):
+    """
+    Convert permutation in cycle notation as list to string
+
+    :param cycles: Permutation in cycle notation as list
+    :type cycles: list
+
+    :return: Returns permutation as string
+    :rtype: string
+    """
     string = ""
     for cycle in cycles:
         string += "("
@@ -58,6 +114,15 @@ def cycles2string(cycles):
 
 
 def perm2cycles(items):
+    """
+    Convert permutation in one-line notation to permutation in cycle notation
+
+    :param items: Permutation in one-line notation
+    :type items: list
+
+    :return: Returns permutation in cycle notation
+    :rtype: list
+    """
     cycles = []
     used = []
 
@@ -82,6 +147,15 @@ def perm2cycles(items):
 
 
 def cycles2perm(cycles):
+    """
+    Convert permutation in cycle notation to permutation in one-line notation
+
+    :param cycles: Permutation in cycle notation
+    :type cycles: list
+
+    :return: Returns permutation in one-line notation
+    :rtype: list
+    """
     n = max([item for sublist in cycles for item in sublist])
 
     perm = [x for x in range(1, n + 1)]
@@ -101,6 +175,15 @@ def cycles2perm(cycles):
 
 
 def perm2cycles_without_fixed(perm):
+    """
+    Convert permutation in one-line notation to permutation in cycle notation without fixed points
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns permutation in cycle notation without fixed points
+    :rtype: list
+    """
     cycles = []
     used = []
 
@@ -125,6 +208,16 @@ def perm2cycles_without_fixed(perm):
 
 
 def smart_input(string):
+    """
+    Convert string from user input to permutation in one-line notation as list.
+    Function will accept both: one-line and cycle notation. There is also a way to multiply permutations by '#' sign
+
+    :param string: Permutation as string
+    :type string: string
+
+    :return: Returns permutation in one-line notation as list
+    :rtype: list
+    """
     strings = string.split('#')
     cycles = []
     for string in strings:
@@ -146,6 +239,15 @@ def smart_input(string):
 
 
 def random_perm(n):
+    """
+    Randomize permuatation in specified Sn
+
+    :param n: Max number in permutation
+    :type n: int
+
+    :return: Returns permutation in one-line notation as list
+    :rtype: list
+    """
     perm = []
     random_from = [i for i in range(1, n + 1)]
     while len(random_from) > 0:
@@ -157,6 +259,15 @@ def random_perm(n):
 
 
 def all_inversions(perm):
+    """
+    Generate all inversions of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns list with all inversions
+    :rtype: list
+    """
     inversions = []
     for i in range(len(perm)):
         for j in range(i + 1, len(perm)):
@@ -167,10 +278,28 @@ def all_inversions(perm):
 
 
 def all_inversions_count(perm):
+    """
+    Counts all inversions of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns number of all inversions
+    :rtype: number
+    """
     return len(all_inversions(perm))
 
 
 def inversion_vector(perm):
+    """
+    Generate inversion vector of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns inversion vector of permutation
+    :rtype: list
+    """
     invers = all_inversions(perm)
     vector = [0] * len(perm)
 
@@ -182,6 +311,15 @@ def inversion_vector(perm):
 
 
 def perm_cpd(perm):
+    """
+    Counts cycles of even length
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns number of cycles of even length
+    :rtype: list
+    """
     cycles = perm2cycles(perm)
     cpd = 0
     for x in cycles:
@@ -191,6 +329,15 @@ def perm_cpd(perm):
 
 
 def perm_cpnd(perm):
+    """
+    Counts cycles of odd length
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns number of cycles of odd length
+    :rtype: list
+    """
     cycles = perm2cycles(perm)
     cpnd = 0
     for x in cycles:
@@ -200,6 +347,15 @@ def perm_cpnd(perm):
 
 
 def perm_type(perm):
+    """
+    Type of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns type of permutation
+    :rtype: list
+    """
     perm_type = []
     cycles = perm2cycles(perm)
     for i in range(1, len(perm) + 1):
@@ -213,11 +369,29 @@ def perm_type(perm):
 
 
 def perm_order(perm):
+    """
+    Order of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns order of permutation
+    :rtype: int
+    """
     cycles = perm2cycles(perm)
     return lcm_n([len(x) for x in cycles])
 
 
 def perm_inverse(perm):
+    """
+    Inverse permutation (raised to the power of -1)
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns inverse permutation
+    :rtype: list
+    """
     inversed = []
     for i in range(1, len(perm) + 1):
         inversed.append(perm.index(i) + 1)
@@ -226,12 +400,30 @@ def perm_inverse(perm):
 
 
 def move(cycle):
+    """
+    Push last element of cycle to first position
+
+    :param cycle: One cycle of permutation in cycles notation
+    :type cycle: list
+
+    :return: Returns moved cycle
+    :rtype: list
+    """
     cycle.insert(0, cycle[-1])
     cycle.pop(-1)
     return (cycle)
 
 
-def cannonical_cyclic_notation(perm):
+def canonical_cycle_notation(perm):
+    """
+    Convert permutation in one-line notation to permutation in canonical cycle notation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns permutation in canonical cycle notation
+    :rtype: list
+    """
     cycles = perm2cycles(perm)
     ccn = []
     for x in cycles:
@@ -243,10 +435,28 @@ def cannonical_cyclic_notation(perm):
 
 
 def perm_sign(perm):
+    """
+    Sign of permutation
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns sign of permutation
+    :rtype: int
+    """
     return (-1) ** all_inversions_count(perm)
 
 
 def perm_number(perm):
+    """
+    Number of permutation in list in lexicographic order
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns number of permutation
+    :rtype: int
+    """
     vector = inversion_vector(perm)
     vector.reverse()
     number = 0
@@ -260,6 +470,15 @@ def perm_number(perm):
 
 
 def next_in_lex(perm):
+    """
+    Generate permutation with one number higher in list in lexicographic order
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns next permutation in list in lexicographic order
+    :rtype: list
+    """
     sorted = perm.copy()
     sorted.sort()
     sorted.reverse()
@@ -296,6 +515,17 @@ def next_in_lex(perm):
 
 
 def perm_list(n, filename):
+    """
+    Generate full list of permutation in lexicographic order in Sn and save it to file
+
+    :param n: max number in permutation in one-line notation
+    :type n: int
+    :param filename: path to file, where the result will be saved
+    :type filename: string
+
+    :return: Returns next permutation in list in lexicographic order
+    :rtype: list
+    """
     perm = [x for x in range(1, n + 1)]
     with open(filename, "wt", encoding="UTF-8") as file:
         file.write(f"Wszystkie permutacje w porządku leksykograficznym należące do S{n}\n")
@@ -306,6 +536,17 @@ def perm_list(n, filename):
 
 
 def perm_from_number(number, n):
+    """
+    Generate permutation with given number
+
+    :param number: Number of permutation in list in lexicographic order
+    :type number: int
+    :param n: max number in permutation in one-line notation
+    :type n: int
+
+    :return: Returns permutation with given number
+    :rtype: list
+    """
     perm = [0] * n
     vector = [0] * n
     for i in range(n):
@@ -320,36 +561,101 @@ def perm_from_number(number, n):
 
 
 def is_derangement(perm):
+    """
+    Check if permutation is derangement
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is derangement
+    :rtype: bool
+    """
     cycles = perm2cycles(perm)
     return not any([True for x in cycles if len(x) == 1])
 
 
 def is_involution(perm):
+    """
+    Check if permutation is involution
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is involution
+    :rtype: bool
+    """
     cycles = perm2cycles(perm)
     return not any([True for x in cycles if len(x) > 2])
 
 
 def is_transposition(perm):
+    """
+    Check if permutation is transposition
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is transposition
+    :rtype: bool
+    """
     cycles = perm2cycles_without_fixed(perm)
     return False if len(cycles) == 0 else (len(cycles) == 1 and len(cycles[0]) == 2)
 
 
 def is_onecyclic(perm):
+    """
+    Check if permutation is onecyclic
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is onecyclic
+    :rtype: bool
+    """
     cycles = perm2cycles(perm)
     return len(cycles) == 1
 
 
 def is_even(perm):
+    """
+    Check if permutation is even
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is even
+    :rtype: bool
+    """
     cycles = perm2cycles_without_fixed(perm)
     return len(cycles) % 2 == 0
 
 
 def is_odd(perm):
+    """
+    Check if permutation is odd
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+
+    :return: Returns True if permutation is odd
+    :rtype: bool
+    """
     cycles = perm2cycles_without_fixed(perm)
     return len(cycles) % 2 != 0
 
 
 def perm_power(perm, power):
+    """
+    Raises a permutation to a power
+
+    :param perm: Permutation in one-line notation
+    :type perm: list
+    :param power: Power to which the permutation will be raised
+    :type power: int
+
+    :return: Returns permutation raised to power
+    :rtype: list
+    """
     cycles = perm2cycles(perm)
     order = perm_order(perm)
     power2 = abs(power)
