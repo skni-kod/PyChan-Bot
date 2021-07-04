@@ -27,7 +27,7 @@ class Help(commands.Cog):
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Matematyka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`',
+                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
                         inline=False)
 
         await ctx.send(embed=embed)
@@ -88,5 +88,15 @@ class Help(commands.Cog):
                         inline=False)
         embed.add_field(name='Dodatkowe informacje',
                         value='Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`',
+                        inline=False)
+        await ctx.send(embed=embed)
+
+    @help.command(name='booth')
+    async def permutacje_help(self, ctx):
+        embed = discord.Embed(title='Algorytm Booth\'a',
+                              description='Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`booth <P> <Q>` - gdzie P i Q to liczby całkowite',
                         inline=False)
         await ctx.send(embed=embed)
