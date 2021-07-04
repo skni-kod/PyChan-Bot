@@ -176,3 +176,126 @@ def ieee754_64(liczba):
     bin_number.append(float_to_bin('0.'+number[1], 53))
     exponent = dec_to_another(2, 1023 + len(bin_number[0]) - 1)
     return [sign, exponent, (bin_number[0][1:] + bin_number[1])[:51], (sign+exponent+bin_number[0][1:] + bin_number[1])[:64]]
+
+
+def twos_complement(dec):
+    if dec >= 0:
+        binint = "{0:b}".format(dec)
+        if binint[0] == "1": binint = "0" + binint
+    else:
+        dec2 = abs(dec + 1)
+        binint_r = "{0:b}".format(dec2)
+
+        binint = "1"
+        for bit in binint_r:
+            if bit == "1":
+                binint += "0"
+            else:
+                binint += "1"
+
+    return binint
+
+
+def bin_extend_in_U2(binint, amount):
+    for i in range(amount):
+        binint = binint[0] + binint
+
+    return binint
+
+
+def twos_complement_equal_length(dec1, dec2):
+    bin1 = twos_complement(dec1)
+    bin1n = twos_complement(-dec1)
+    bin2 = twos_complement(dec2)
+
+    len1 = len(bin1)
+    len1n = len(bin1n)
+    len2 = len(bin2)
+
+    while len1 != len2 or len1n != len2:
+        minimal = min(len1, len1n, len2)
+        maximal = max(len1, len1n, len2)
+        if minimal == maximal:
+            return
+        if len1 == minimal:
+            bin1 = bin_extend_in_U2(bin1, maximal - minimal)
+        if len1n == minimal:
+            bin1n = bin_extend_in_U2(bin1n, maximal - minimal)
+        if len2 == minimal:
+            bin2 = bin_extend_in_U2(bin2, maximal - minimal)
+
+        len1 = len(bin1)
+        len1n = len(bin1n)
+        len2 = len(bin2)
+
+    return [bin1, bin1n, bin2]
+
+
+def bin_add_U2(bin1, bin2):
+    result = ""
+    moving = 0
+    for i in range(len(bin1) - 1, -1, -1):
+        if moving:
+            if bin1[i] == "0" and bin2[i] == "0":
+                result = "1" + result
+                moving = 0
+            elif bin1[i] == "0" and bin2[i] == "1":
+                result = "0" + result
+            elif bin1[i] == "1" and bin2[i] == "0":
+                result = "0" + result
+            elif bin1[i] == "1" and bin2[i] == "1":
+                result = "1" + result
+        elif not moving:
+            if bin1[i] == "0" and bin2[i] == "0":
+                result = "0" + result
+            elif bin1[i] == "0" and bin2[i] == "1":
+                result = "1" + result
+            elif bin1[i] == "1" and bin2[i] == "0":
+                result = "1" + result
+            elif bin1[i] == "1" and bin2[i] == "1":
+                result = "0" + result
+                moving = 1
+    return result
+
+
+def booth(dec1, dec2):
+    steps = [["Krok", "A", "Q", "Q-1", "Operacja"]]
+    conversion = twos_complement_equal_length(dec1, dec2)
+    P = conversion[0]
+    P_n = conversion[1]
+    Q = conversion[2]
+    A = "0" * len(Q)
+    q = "0"
+    step = 0
+    shr_count = 0
+    while True:
+        if shr_count == len(Q):
+            steps.append(["", A, Q, q, "STOP"])
+            return [steps, A + Q]
+
+        if (Q[-1] == "0" and q == "0") or (Q[-1] == "1" and q == "1"):
+            steps.append([str(step), A, Q, q, "SHR"])
+            q = Q[-1]
+            Q = A[-1] + Q[0:-1]
+            A = A[0] + A[0:-1]
+            shr_count += 1
+        elif Q[-1] == "0" and q == "1":
+            steps.append([str(step), A, Q, q, "+P"])
+            steps.append(["", P, "", "", "ADD"])
+            A = bin_add_U2(A, P)
+            steps.append(["", A, Q, q, "SHR"])
+            q = Q[-1]
+            Q = A[-1] + Q[0:-1]
+            A = A[0] + A[0:-1]
+            shr_count += 1
+        elif Q[-1] == "1" and q == "0":
+            steps.append([str(step), A, Q, q, "-P"])
+            steps.append(["", P_n, "", "", "ADD"])
+            A = bin_add_U2(A, P_n)
+            steps.append(["", A, Q, q, "SHR"])
+            q = Q[-1]
+            Q = A[-1] + Q[0:-1]
+            A = A[0] + A[0:-1]
+            shr_count += 1
+
+        step += 1

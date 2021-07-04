@@ -4,3 +4,4 @@ dnspython
 Sphinx
 sphinx-autoapi
 sphinx-material
+tabulate
