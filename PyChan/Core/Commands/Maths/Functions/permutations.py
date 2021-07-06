@@ -60,7 +60,7 @@ class Permutations(commands.Cog):
                         value=f"```{'To ostatnia permutacja w porządku leksykograficznym' if next_in_lex(perm) == -1 else perm2string(next_in_lex(perm))}```",
                         inline=True)
         embed.add_field(name="Poprzednia permutacja: ",
-                        value=f"```{perm2string(perm_from_number(perm_number(perm) - 1, len(perm)))}```",
+                        value=f"```{'To pierwsza permutacja w porządku leksykograficznym' if perm_number(perm) == 0 else perm2string(perm_from_number(perm_number(perm) - 1, len(perm)))}```",
                         inline=True)
         embed.add_field(name="Rząd permutacji:",
                         value=f"```{perm_order(perm)}```",
