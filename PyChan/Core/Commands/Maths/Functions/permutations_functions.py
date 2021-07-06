@@ -240,7 +240,7 @@ def smart_input(string):
 
 def random_perm(n):
     """
-    Randomize permuatation in specified Sn
+    Randomize permutation in specified Sn
 
     :param n: Max number in permutation
     :type n: int
@@ -285,7 +285,7 @@ def all_inversions_count(perm):
     :type perm: list
 
     :return: Returns number of all inversions
-    :rtype: number
+    :rtype: int
     """
     return len(all_inversions(perm))
 
@@ -318,7 +318,7 @@ def perm_cpd(perm):
     :type perm: list
 
     :return: Returns number of cycles of even length
-    :rtype: list
+    :rtype: int
     """
     cycles = perm2cycles(perm)
     cpd = 0
@@ -336,7 +336,7 @@ def perm_cpnd(perm):
     :type perm: list
 
     :return: Returns number of cycles of odd length
-    :rtype: list
+    :rtype: int
     """
     cycles = perm2cycles(perm)
     cpnd = 0
@@ -411,7 +411,7 @@ def move(cycle):
     """
     cycle.insert(0, cycle[-1])
     cycle.pop(-1)
-    return (cycle)
+    return cycle
 
 
 def canonical_cycle_notation(perm):
@@ -532,7 +532,8 @@ def perm_list(n, filename):
         for i in range(factorial(n)):
             file.write(f"[{i}]\t\t{perm2string(perm)}\n")
             perm = next_in_lex(perm)
-            if perm == -1: break
+            if perm == -1:
+                break
 
 
 def perm_from_number(number, n):
