@@ -4,17 +4,35 @@ from Core.Commands.Maths.Functions.permutations_functions import *
 
 
 class Permutations(commands.Cog):
+    """
+        The class contains permutations method
+    """
     def __init__(self, bot):
         self.bot = bot
 
     @commands.group(invoke_without_command=True, pass_context=True, name='permutacje', aliases=['p', 'perm'])
     async def permutacje(self, ctx):
+        """
+        Sends the reply message to the user with supported permutations functions
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+        """
         await ctx.send(embed=discord.Embed(
             title="Wspierane polecenia to ```^p info/potega/generuj/losuj```. Więcej informacji pod ```^help permutacje```",
             color=discord.Color.dark_purple()))
 
     @permutacje.command(name='info')
     async def info(self, ctx, *, permstring):
+        """
+        Sends some basics info about permutation
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param permstring: Permutation as string
+        :type permstring: string
+        """
         perm = smart_input(permstring.rstrip())
         if perm == -1:
             await ctx.send(embed=discord.Embed(title="Błędny zapis permutacji!", color=discord.Color.dark_purple()))
@@ -80,6 +98,18 @@ class Permutations(commands.Cog):
 
     @permutacje.command(name='potega', aliases=["potęga"])
     async def potega(self, ctx, power: int, *, permstring):
+        """
+        Sends permutation raised to given power
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param power: Exponent of the power
+        :type power: int
+
+        :param permstring: Permutation as string
+        :type permstring: string
+        """
         perm = smart_input(permstring.rstrip())
         if perm == -1:
             await ctx.send(embed=discord.Embed(title="Błędny zapis permutacji!", color=discord.Color.dark_purple()))
@@ -117,6 +147,15 @@ class Permutations(commands.Cog):
 
     @permutacje.command(name='losuj')
     async def losuj(self, ctx, n: int):
+        """
+        Sends random permutation
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param n: Max number in permutation
+        :type n: int
+        """
         if n < 1 or n > 20:
             await ctx.send(embed=discord.Embed(title="Numer poza zakresem. Podaj liczbę od 1 do 20",
                                                color=discord.Color.dark_purple()))
@@ -125,12 +164,24 @@ class Permutations(commands.Cog):
         perm = random_perm(n)
         embed = discord.Embed(title=f"Losowa permutacja w S{n}:",
                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
-                                          f"Cyklicznie:\n```{cycles2string(perm2cycles(perm))}```",
+                                          f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
 
     @permutacje.command(name='generuj')
     async def generuj(self, ctx, number: int, n: int):
+        """
+        Sends permutation generated from given number
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+
+        :param number: Number of permutation
+        :type number: int
+
+        :param n: Max number in permutation
+        :type n: int
+        """
         if number > factorial(n) - 1 or number < 0:
             await ctx.send(
                 embed=discord.Embed(title=f"Podany numer nie występuje w S{n}", color=discord.Color.dark_purple()))
@@ -138,6 +189,6 @@ class Permutations(commands.Cog):
         perm = perm_from_number(number, n)
         embed = discord.Embed(title=f"Permutacja o numerze `{number}` w `S{n}`:",
                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
-                                          f"Cyklicznie:\n```{cycles2string(perm2cycles(perm))}```",
+                                          f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
