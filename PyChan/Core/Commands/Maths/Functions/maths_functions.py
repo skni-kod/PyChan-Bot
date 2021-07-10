@@ -179,6 +179,15 @@ def ieee754_64(liczba):
 
 
 def twos_complement(dec):
+    """
+    Convert decimal integer number to U2
+
+    :param dec: Number to change
+    :type dec: int
+
+    :return: Number in U2
+    :rtype: string
+    """
     if dec >= 0:
         binint = "{0:b}".format(dec)
         if binint[0] == "1": binint = "0" + binint
@@ -197,13 +206,38 @@ def twos_complement(dec):
 
 
 def bin_extend_in_U2(binint, amount):
-    for i in range(amount):
+    """
+    Extends number in U2
+
+    :param binint: Number to extend in U2
+    :type binint: string
+
+    :param amount: number of characters to be added
+    :type amount: int
+
+    :return: Number in U2
+    :rtype: string
+    """
+    for _ in range(amount):
         binint = binint[0] + binint
 
     return binint
 
 
 def twos_complement_equal_length(dec1, dec2):
+    """
+    Convert two decimal integer numbers to U2, that both are the same length
+
+    :param dec1: First number to change to U2
+    :type dec1: int
+
+    :param dec2: Second number to change to U2
+    :type dec2: int
+
+    :return: Numbers in U2 in list: [First number, The number opposite to the first number, Second number]
+    :rtype: list
+    """
+    # conversion
     bin1 = twos_complement(dec1)
     bin1n = twos_complement(-dec1)
     bin2 = twos_complement(dec2)
@@ -212,6 +246,7 @@ def twos_complement_equal_length(dec1, dec2):
     len1n = len(bin1n)
     len2 = len(bin2)
 
+    # extending until same length
     while len1 != len2 or len1n != len2:
         minimal = min(len1, len1n, len2)
         maximal = max(len1, len1n, len2)
@@ -232,6 +267,18 @@ def twos_complement_equal_length(dec1, dec2):
 
 
 def bin_add_U2(bin1, bin2):
+    """
+    Adds two binary numbers in U2
+
+    :param bin1: First number in U2
+    :type bin1: string
+
+    :param bin2: Second number in U2
+    :type bin2: string
+
+    :return: Result of adding in U2
+    :rtype: string
+    """
     result = ""
     moving = 0
     for i in range(len(bin1) - 1, -1, -1):
@@ -259,6 +306,17 @@ def bin_add_U2(bin1, bin2):
 
 
 def booth(dec1, dec2):
+    """
+    Generates step by step solution of multiplication of two integers with the booth algorithm
+
+    :param dec1: First number
+    :type dec1: int
+    :param dec2: Second number
+    :type dec2: int
+
+    :return: List of steps and solution: [[steps], solution]
+    :rtype: list
+    """
     steps = [["Krok", "A", "Q", "Q-1", "Operacja"]]
     conversion = twos_complement_equal_length(dec1, dec2)
     P = conversion[0]
