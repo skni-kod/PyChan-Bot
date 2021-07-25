@@ -80,7 +80,7 @@ class Help(commands.Cog):
         embed.add_field(name='Składnia',
                         value='`permutacje info <permutacja>` - wyświetla informacje o permutacji\n'
                               '`permutacje losuj <Sn>` - losuje permutacje w podanym Sn\n'
-                              '`permutacje potega <permutacja> <wykładnik>` - Podnosi permutację do potęgi\n'
+                              '`permutacje potega <wykładnik> <permutacja>` - Podnosi permutację do potęgi\n'
                               '`permutacje generuj <numer permutacji> <Sn>` - Generuje permutację na podstawie numeru w porządku leksykograficznym\n',
                         inline=False)
         embed.add_field(name='Aliasy komendy',
