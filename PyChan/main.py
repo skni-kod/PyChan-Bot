@@ -24,6 +24,10 @@ def main():
 
     bot.run(token)
 
+    # hjkllhjk;gsdfdfghjkls;gsdfjkl;sdfgjkl;dfsgklj;
+
+    # fghjklnfghljk;hfg;jklghfdjkl;dfghjkl;fgdhjl;k
+
 
 if __name__ == '__main__':
     main()
