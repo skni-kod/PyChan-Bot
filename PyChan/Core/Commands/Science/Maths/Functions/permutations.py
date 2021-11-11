@@ -1,12 +1,13 @@
 import discord
 from discord.ext import commands
-from Core.Commands.Maths.Functions.permutations_functions import *
+from Core.Commands.Science.Maths.Functions.permutations_functions import *
 
 
 class Permutations(commands.Cog):
     """
         The class contains permutations method
     """
+
     def __init__(self, bot):
         self.bot = bot
 

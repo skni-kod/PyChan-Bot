@@ -3,9 +3,10 @@ import os
 import time
 
 
-class Ssh(commands.Cog):
+class SSH(commands.Cog):
     """Class contains ssh methods
     """
+
     def __init__(self, bot):
         """Constructor method
         """
@@ -40,5 +41,3 @@ class Ssh(commands.Cog):
             await mess.edit(content=f"Update zacznie się za {30-x-1} sekund")
         await mess.edit(content=":zzz:")
         os.system("sudo reboot")
-
-

@@ -28,7 +28,13 @@ class Help(commands.Cog):
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Matematyka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`, `ocr`',
+                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
+                        inline=False)
+        embed.add_field(name='Obraz',
+                        value='`ocr`',
+                        inline=False)
+        embed.add_field(name='SKNIKOD',
+                        value='`listaCzlonkow`',
                         inline=False)
 
         await ctx.send(embed=embed)
@@ -107,5 +113,12 @@ class Help(commands.Cog):
         embed = discord.Embed(title='OCR',
                               description='Wyciąga tekst z obrazka i wysyła na czat \n'
                                           'Należy pamiętać o dołączeniu obrazka .jpg lub .png do wiadomości',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+
+    @help.command(name='listaCzlonkow')
+    async def ocr_help(self, ctx):
+        embed = discord.Embed(title='listaCzlonkow',
+                              description='Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami',
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
