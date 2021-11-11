@@ -106,7 +106,7 @@ class Database:
             return id
 
         @validates('server_id')
-        def validate_server_id(self, key, guild_id):
+        def validate_server_id(self, key, server_id):
             if not type(server_id) == int:
                 raise NameError('[Validates] ServerShiet - server_id')
             return server_id
@@ -159,7 +159,6 @@ class Database:
             print('\n[ERROR DB]', *error.args)
             print('add m')
 
-
     @classmethod
     def get_all(cls, _class, filter):
         try:
@@ -181,9 +180,10 @@ class Database:
     def update_database(cls, bot):
         for guild in bot.guilds:
             print(guild.name)
-            #if not Database.get_first(Database.Guild, Database.Guild.guild_id==guild.id):
-            Database.add_guild(guild.id)
+            if not Database.get_first(Database.Guild, Database.Guild.guild_id == guild.id):
+                Database.add_guild(guild.id)
+
             for member in guild.members:
                 if not member.bot:
-                    #if not Database.get_first(Database.Member, Database.Member.member_id==member.id, Database.Member.guild_id==guild.id):
-                    Database.add_member(member.id, guild.id)
+                    if not Database.get_first(Database.Member, Database.Member.member_id == member.id, Database.Member.guild_id == guild.id):
+                        Database.add_member(member.id, guild.id)

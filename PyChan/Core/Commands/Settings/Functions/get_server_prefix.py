@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from Database.database import Database
 
+
 class GetServerPrefix:
     """Class contains command used to get Bot's prefix
     """
@@ -20,7 +21,8 @@ class GetServerPrefix:
 
         prefix = None
         try:
-            prefix = Database.get_one(Database.db_servers, {'_id': message.guild.id})['settings']['prefix']
+            prefix = Database.get_one(Database.db_servers, {'_id': message.guild.id})[
+                'settings']['prefix']
         except:
             pass
 
