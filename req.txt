@@ -1,7 +1,7 @@
 discord.py
-pymongo
-dnspython
 Sphinx
 sphinx-autoapi
 sphinx-material
+sqlalchemy
 tabulate
+

@@ -1,311 +1,204 @@
-import pymongo
-from pymongo import MongoClient
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, ForeignKey, Column, Integer, String
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import validates
 
+import datetime
 
-from mongodb_token import mongodb_token
+import discord
+from discord.ext import commands
 
 
 class Database:
-    cluster = MongoClient(mongodb_token)
-    db = cluster['PyChan']
-    db_servers = db['servers']
-    db_images = db['images']
+    engine = create_engine('sqlite:///Database/PyChan.db')
+    Base = declarative_base()
+    session = sessionmaker(bind=engine)()
+
+    class Guild(Base):
+        __tablename__ = 'guilds'
+
+        guild_id = Column(Integer, primary_key=True)
+        name = Column(String)
+        join_date = Column(String, default=datetime.datetime.now())
+        members_count = Column(Integer)
+
+        @validates('guild_id')
+        def validate_id(self, key, id):
+            if not (type(id) == int and len(str(id)) == 18):
+                raise NameError('[Validates] Guild - id')
+            return id
+
+        @validates('name')
+        def validate_name(self, key, name):
+            if not type(name) == str:
+                raise NameError('[Validates] Guild - name')
+            return name
+
+        # @validates('members_count')
+        # def validate_members_count(self, key, members_count):
+        #     if not type(members_count) == int:
+        #         raise NameError('[Validates] Guild - members_count')
+        #     return id
+
+    class Member(Base):
+        __tablename__ = 'members'
+
+        id = Column(Integer, primary_key=True)
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
+        member_id = Column(Integer)
+
+        @validates('id')
+        def validate_address_id(self, key, id):
+            if not type(id) == int:
+                raise NameError('[Validates] User - id')
+            return id
+
+        @validates('member_id')
+        def validate_user_id(self, key, user_id):
+            if not type(user_id) == int:
+                raise NameError('[Validates] User - user_id')
+            return user_id
+
+        @validates('guild_id')
+        def validate_server_id(self, key, guild_id):
+            if not type(guild_id) == int:
+                raise NameError('[Validates] User - guild_id')
+            return guild_id
+
+    class Settings(Base):
+        __tablename__ = 'settings'
+
+        id = Column(Integer, primary_key=True)
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
+        prefix = Column(String, default='^')
+
+        @validates('id')
+        def validate_id(self, key, id):
+            if not type(id) == int:
+                raise NameError('[Validates] Settings - id')
+            return id
+
+        @validates('guild_id')
+        def validate_server_id(self, key, guild_id):
+            if not type(guild_id) == int:
+                raise NameError('[Validates] Settings - guild_id')
+            return guild_id
+
+        @validates('prefix')
+        def validate_prefix(self, key, prefix):
+            if not type(prefix) == str:
+                raise NameError('[Validates] Settings - prefix')
+            return prefix
+
+    class ServerShiet(Base):
+        __tablename__ = 'servers_shiets'
+
+        id = Column(Integer, primary_key=True)
+        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
+        value = Column(String)
+        miner = Column(String)
+        date = Column(String)
+
+        @validates('id')
+        def validate_id(self, key, id):
+            if not type(id) == int:
+                raise NameError('[Validates] ServerShiet - id')
+            return id
+
+        @validates('server_id')
+        def validate_server_id(self, key, server_id):
+            if not type(server_id) == int:
+                raise NameError('[Validates] ServerShiet - server_id')
+            return server_id
+
+        @validates('value')
+        def validate_value(self, key, value):
+            if not type(value) == str:
+                raise NameError('[Validates] ServerShiet - value')
+            return value
+
+        @validates('miner')
+        def validate_miner(self, key, miner):
+            if not type(miner) == str:
+                raise NameError('[Validates] ServerShiet - miner')
+            return miner
+
+        @validates('date')
+        def validate_date(self, key, date):
+            if not type(date) == str:
+                raise NameError('[Validates] ServerShiet - date')
+            return date
 
     @classmethod
-    def get_one(cls, collection: pymongo.collection, query: dict, selection=None) -> dict:
-        """Returns data in as dict, and if found nothing,
-         or failed by other means returns empty dict {}, so keep that in mind
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class
-            query {dict} -- query, something like {'_id': 1}
-
-        Keyword Arguments:
-            selection {dict} -- dict containing query, like {'_id': 1}
-
-        Raises:
-            TypeError -- description
-
-        Returns:
-            dict -- data as dict, could be empty if failed
-        """
-        if selection is not None:
-            return collection.find_one(query, selection)
-        return collection.find_one(query)
+    def create_database(cls):
+        Database.Base.metadata.create_all(Database.engine)
 
     @classmethod
-    def get_many(cls, collection: pymongo.collection, query: dict, selection=None) -> list:
-        """
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class
-            query {dict} -- dict, something like {'_id': 1}
-
-        Keyword Arguments:
-            selection {dict} -- Dict containing query, like {'_id': 1}
-
-        Raises:
-            TypeError -- description
-
-        Returns:
-           list -- List of returned objects, could be empty
-        """
-        if selection is not None:
-            total_data = collection.find(query, selection)
-        else:
-            total_data = collection.find(query)
-
-        list_of_data = [data for data in total_data]
-
-        return list_of_data
-
-    @classmethod
-    def get_all(cls, collection: pymongo.collection, selection=None) -> list:
-        """Returns list of found dictionaries, reduced to
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class
-
-        Keyword Arguments:
-            selection {dict} -- Dict containing query, like {'_id': 1}
-
-        Raises:
-            TypeError -- description
-
-        Returns:
-            list -- List of returned objects, could be empty
-        """
-
-        if selection is not None:
-            return cls.get_many(collection, {}, selection=selection)
-        else:
-            return cls.get_many(collection, {})
-
-    @classmethod
-    def insert_one(cls, collection: pymongo.collection, data: dict) -> bool:
-        """ Make sure to not try to insert _id that is already in collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class
-            data {dict} -- data to insert, something like {'_id': 1, 'text': "something"}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            pymongo.errors.DuplicateKeyError -- if {_id} is already in database
-
-        Returns:
-            bool -- Returns True if successfully inserted, False otherwise
-        """
-        return collection.insert_one(data).acknowledged
-
-    @classmethod
-    def insert_many(cls, collection: pymongo.collection, list_of_data: list) -> int:
-        """ Make sure to not try to insert _ids that are already in collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            list_of_data {list} -- list of dicts with data to insert,
-            something like [{'_id': 1, 'text': "something"}, {'_id': 2}]
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            pymongo.errors.DuplicateKeyError -- if {_id} is already in database
-
-        Returns:
-            bool -- Count of items that were successfully inserted
-        """
-        return collection.insert_many(list_of_data).inserted_ids.__len__()
-
-    @classmethod
-    def update_one(cls, collection: pymongo.collection, query: dict, data_to_update: dict) -> bool:
-        """Updates one item in collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-            data_to_update {dict} -- dict, something like {'value1': 1}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            bool -- Returns True if operation was successful, False otherwise
-        """
-        return collection.update_one(query, {'$set': data_to_update}).acknowledged
-
-    @classmethod
-    def update_many(cls, collection: pymongo.collection, query: dict, data_to_update: dict) -> int:
-        """Updates multiple items in collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-            data_to_update {dict} -- dict, something like {'value1': 1}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of items that matched the query
-        """
-        return collection.update_many(query, {'$set': data_to_update}).matched_count
-
-    @classmethod
-    def update_all(cls, collection: pymongo.collection, data_to_update: dict) -> int:
-        """Updates multiple items in collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            data_to_update {dict} -- dict, something like {'value1': 1}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of items that matched the query
-        """
-        return cls.update_many(collection, {}, data_to_update)
-
-    @classmethod
-    def delete_one(cls, collection: pymongo.collection, query: dict) -> bool:
-        """Deletes one item from collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            bool -- Returns True if successfully deleted one item
-        """
-        return collection.delete_one(query).deleted_count == 1
-
-    @classmethod
-    def delete_many(cls, collection: pymongo.collection, query: dict) -> int:
-        """Deletes multiple items from collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of deleted items
-        """
-        return collection.delete_many(query).deleted_count
-
-    @classmethod
-    def delete_all(cls, collection: pymongo.collection) -> int:
-        """Deletes all items in the collection
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of deleted items
-        """
-        return cls.delete_many(collection, {})
-
-    @classmethod
-    def increment_one(cls, collection: pymongo.collection, query: dict, data_to_increment: dict) -> bool:
-        """Increments one item, for example {'value1': 12, 'value2': -4},
-         it would increase value1 by 12 and decrease value2 by 4
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-            data_to_increment -- dict, something like {'value1': -11}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            bool -- Returns True if operation was successful, False otherwise
-        """
-        return collection.update_one(query, {'$inc': data_to_increment}).acknowledged
-
-    @classmethod
-    def increment_many(cls, collection: pymongo.collection, query: dict, data_to_increment: dict) -> int:
-        """Increments many items by values specified in dict,
-         for example {'value1': 12, 'value2': -4},
-         it would increase value1 by 12 and decrease value2 by 4,
-         of all the items that matched query
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            query {dict} -- dict, something like {'_id': 1}
-            data_to_increment -- dict, something like {'value1': -11}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of items found by query
-        """
-        return collection.update_many(query, {'$inc': data_to_increment}).matched_count
-
-    @classmethod
-    def increment_all(cls, collection: pymongo.collection, data_to_increment: dict) -> int:
-        """Increments all items in collection items by values specified in dict,
-         for example {'value1': 12, 'value2': -4},
-         it would increase value1 by 12 and decrease value2 by 4
-
-        Arguments:
-            collection {pymongo.collection} -- database collection class instance
-            data_to_increment -- dict, something like {'value1': -11}
-
-        Keyword Arguments:
-            kwarg {[type]} -- [description]
-
-        Raises:
-            TypeError -- [description]
-
-        Returns:
-            int -- Returns count of items found by query
-        """
-        return cls.increment_many(collection, {}, data_to_increment)
-
-    @classmethod
-    def check_connect_with_db(cls):
+    def add(cls, _class, **parameters):
         try:
-            Database.cluster.server_info()
-            print('[MongoDB] Baza połączona')
-        except Exception as err:
-            return err
-        return True
+            cls.session.add(_class(**parameters))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
 
+    @classmethod
+    def add_guild(cls, id):
+        try:
+            cls.session.add(cls.Guild(guild_id=id))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('add g')
+
+    @classmethod
+    def add_guild_settings(cls, id):
+        try:
+            cls.session.add(cls.Settings(guild_id=id))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('add g')
+
+    @classmethod
+    def add_member(cls, id, g_id):
+        try:
+            cls.session.add(cls.Member(member_id=id, guild_id=g_id))
+            cls.session.commit()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('add m')
+
+    @classmethod
+    def get_all(cls, _class, filter):
+        try:
+            return cls.session.query(_class).filter(filter).all()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+        return None
+
+    @classmethod
+    def get_first(cls, _class, *filter):
+        try:
+            return cls.session.query(_class).filter(*filter).first()
+        except Exception as error:
+            print('\n[ERROR DB]', *error.args)
+            print('get')
+        return None
+
+    @classmethod
+    def update_database(cls, bot):
+        for guild in bot.guilds:
+            print(guild.name)
+            if not Database.get_first(Database.Guild, Database.Guild.guild_id == guild.id):
+                Database.add_guild(guild.id)
+                guild_db = Database.get_first(
+                    Database.Guild, Database.Guild.guild_id == guild.id)
+                guild_db.name = guild.name
+                guild_db.members_count = guild.member_count
+            for member in guild.members:
+                if not member.bot:
+                    if not Database.get_first(
+                            Database.Member, Database.Member.member_id == member.id, Database.Member.guild_id == guild.id):
+                        Database.add_member(member.id, guild.id)
+            if not Database.get_first(Database.Settings, Database.Settings.guild_id == guild.id):
+                Database.add_guild_settings(guild.id)

@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from Database.database import Database
 
+
 class GetServerPrefix:
     """Class contains command used to get Bot's prefix
     """

@@ -14,7 +14,6 @@ class Listeners(commands.Cog):
         """
         self.bot = bot
 
-
     @commands.Cog.listener()
     async def on_message(self, message):
         """Function is called when messege is sent
@@ -37,5 +36,11 @@ class Listeners(commands.Cog):
         :param guild: contains information about server
         :type guild: discord.Guild
         """
-        settings = {'prefix': '^'}
-        Database.insert_one(Database.db_servers, {'_id': guild.id, 'settings': settings})
+
+        Database.add_guild(guild.id)
+        for member in guild.members:
+            Database.add_member(member.guild_id, guild.id)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, ctx, member):
+        Database.add_member(member.guild_id, guild.guild_id)
