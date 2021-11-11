@@ -21,8 +21,7 @@ class GetServerPrefix:
 
         prefix = None
         try:
-            prefix = Database.get_one(Database.db_servers, {'_id': message.guild.id})[
-                'settings']['prefix']
+            prefix = Database.get_one(Database.db_servers, {'_id': message.guild.id})['settings']['prefix']
         except:
             pass
 
