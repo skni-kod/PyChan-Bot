@@ -4,4 +4,3 @@ sphinx-autoapi
 sphinx-material
 sqlalchemy
 tabulate
-

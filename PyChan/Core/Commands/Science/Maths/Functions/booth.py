@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 from tabulate import tabulate
 
@@ -35,7 +35,8 @@ class BoothAlgorithm(commands.Cog):
         multiply = liczba1 * liczba2
         multiply_u2 = twos_complement(multiply)
         if len(multiply_u2) < len(booth_result[1]):
-            multiply_u2 = bin_extend_in_U2(multiply_u2, len(booth_result[1]) - len(multiply_u2))
+            multiply_u2 = bin_extend_in_U2(
+                multiply_u2, len(booth_result[1]) - len(multiply_u2))
         if multiply_u2 != booth_result[1]:
             await ctx.send("Błąd podczas obliczeń")
             return

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
 

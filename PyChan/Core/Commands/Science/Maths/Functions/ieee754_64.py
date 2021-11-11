@@ -1,19 +1,19 @@
 import discord
 from discord.ext import commands
-from Core.Commands.Maths.Functions.maths_functions import *
+from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
 
-class Ieee754x32(commands.Cog):
+class Ieee754x64(commands.Cog):
     """
-        The class contains ieee754_32 method
+    The class contains ieee754_64 method
     """
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='ieee754_32')
+    @commands.command(pass_context=True, name='ieee754_64')
     @Decorator.pychan_decorator
-    async def ieee754_32(self, ctx, number: float):
+    async def ieee754_64(self, ctx, number: float):
         """
         Sends the reply message to the user
 
@@ -23,8 +23,8 @@ class Ieee754x32(commands.Cog):
         :param number: Number to change
         :type number: float
         """
-        data = ieee754_32(str(number))
-        embed = discord.Embed(title='IEEE 754/32BIT',
+        data = ieee754_64(str(number))
+        embed = discord.Embed(title='IEEE 754/64BIT',
                               description='',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Sign',
@@ -36,7 +36,7 @@ class Ieee754x32(commands.Cog):
         embed.add_field(name='Significand',
                         value=data[2],
                         inline=False)
-        embed.add_field(name='"IEEE 754/32BIT',
+        embed.add_field(name='IEEE 754/64BIT',
                         value=data[3],
                         inline=False)
 

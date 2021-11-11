@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 
-from Core.Commands.Maths.Functions.booth import BoothAlgorithm
-from Core.Commands.Maths.Functions.convert_numbers import ConvertNumbers
-from Core.Commands.Maths.Functions.convert_numbers_plus import ConvertNumbersPlus
-from Core.Commands.Maths.Functions.ieee754_32 import Ieee754x32
-from Core.Commands.Maths.Functions.ieee754_64 import Ieee754x64
-from Core.Commands.Maths.Functions.permutations import Permutations
+from Core.Commands.Science.Maths.Functions.booth import BoothAlgorithm
+from Core.Commands.Science.Maths.Functions.convert_numbers import ConvertNumbers
+from Core.Commands.Science.Maths.Functions.convert_numbers_plus import ConvertNumbersPlus
+from Core.Commands.Science.Maths.Functions.ieee754_32 import Ieee754x32
+from Core.Commands.Science.Maths.Functions.ieee754_64 import Ieee754x64
+from Core.Commands.Science.Maths.Functions.permutations import Permutations
 
 
 class Maths(commands.Cog):
