@@ -27,7 +27,7 @@ class Help(commands.Cog):
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Matematyka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
+                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`, `ocr`',
                         inline=False)
 
         await ctx.send(embed=embed)
@@ -92,11 +92,19 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
 
     @help.command(name='booth')
-    async def permutacje_help(self, ctx):
+    async def booth_help(self, ctx):
         embed = discord.Embed(title='Algorytm Booth\'a',
                               description='Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Składnia',
                         value='`booth <P> <Q>` - gdzie P i Q to liczby całkowite',
                         inline=False)
+        await ctx.send(embed=embed)
+
+    @help.command(name='ocr')
+    async def ocr_help(self, ctx):
+        embed = discord.Embed(title='OCR',
+                              description='Wyciąga tekst z obrazka i wysyła na czat \n'
+                                          'Należy pamiętać o dołączeniu obrazka .jpg lub .png do wiadomości',
+                              color=discord.Color.dark_purple())
         await ctx.send(embed=embed)

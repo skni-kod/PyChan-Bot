@@ -206,6 +206,9 @@ token_key.py
 #MongoDB token
 mongodb_token.py
 
+#OCR Space token
+ocr_token.py
+
 #FrontEnd
 .DS_Store
 node_modules
