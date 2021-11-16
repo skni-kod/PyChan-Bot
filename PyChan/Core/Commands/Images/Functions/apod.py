@@ -6,6 +6,10 @@ from apod_token import apod_token
 class ApodImage(commands.Cog):
     def __init__ (self, bot):
         self.bot = bot
+    """
+    Sends a request to NASA's Astronomy picture of the day via API
+    and gets an image (or video) along with a description
+    """
 
     @commands.command(pass_context=True, name='apod')
     async def apod(self, ctx):
@@ -16,13 +20,15 @@ class ApodImage(commands.Cog):
                             description= data.json()['explanation'],
                             color=discord.Color.dark_purple())
 
+        """
+        If it gets an image, it is embedded with the description
+        If it's a video, it's sent separately from description
+        """
+
         if("youtube.com" in imgurl):
             await ctx.send(imgurl)
         else:
             embed.set_image(url = imgurl)
 
         await ctx.send(embed = embed)
-
-
-
         
