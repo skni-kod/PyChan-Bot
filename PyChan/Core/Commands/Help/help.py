@@ -31,7 +31,7 @@ class Help(commands.Cog):
                         value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
                         inline=False)
         embed.add_field(name='Obraz',
-                        value='`ocr`',
+                        value='`ocr`, `qr`',
                         inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
@@ -113,6 +113,14 @@ class Help(commands.Cog):
         embed = discord.Embed(title='OCR',
                               description='Wyciąga tekst z obrazka i wysyła na czat \n'
                                           'Należy pamiętać o dołączeniu obrazka .jpg lub .png do wiadomości',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+
+    @help.command(name='qr')
+    async def qr_help(self, ctx):
+        embed = discord.Embed(title='QR',
+                              description='Tworzy kod QR\n'
+                                          'Przyjmuje link do strony jako argument',
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
 
