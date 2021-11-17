@@ -1,1 +1,0 @@
-apod_token = "4Z3lTbHEIlQEQSRxtgAyrkbyIvVPO5eAZFJS1BXM"
