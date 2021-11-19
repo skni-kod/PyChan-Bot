@@ -31,7 +31,7 @@ class Help(commands.Cog):
                         value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
                         inline=False)
         embed.add_field(name='Obraz',
-                        value='`ocr`, `apod`',
+                        value='`ocr`, `apod`, `qr`',
                         inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
@@ -117,6 +117,17 @@ class Help(commands.Cog):
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
 
+    @help.command(name='qr')
+    async def qr_help(self, ctx):
+        embed = discord.Embed(title='QR',
+                              description='Tworzy kod QR\n'
+                                          'Przyjmuje link do strony jako argument',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`qr <link>`',
+                        inline=False)
+        await ctx.send(embed=embed)
+
     @help.command(name='apod')
     async def apod_help(self, ctx):
         embed = discord.Embed(title='Astronomy picture of the day',
@@ -125,7 +136,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
 
     @help.command(name='listaCzlonkow')
-    async def ocr_help(self, ctx):
+    async def get_members_projects_help(self, ctx):
         embed = discord.Embed(title='listaCzlonkow',
                               description='Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami',
                               color=discord.Color.dark_purple())
