@@ -203,12 +203,14 @@ fabric.properties
 #Discord token
 token_key.py
 
-
 #Database
 *.db
 
 #OCR Space token
 ocr_token.py
+
+#Riot token
+riot_token.py
 
 #FrontEnd
 .DS_Store
