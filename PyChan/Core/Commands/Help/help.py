@@ -36,6 +36,9 @@ class Help(commands.Cog):
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
                         inline=False)
+        embed.add_field(name='Tekst',
+                        value='`ciekawostka`',
+                        inline=False)
         
 
         await ctx.send(embed=embed)
@@ -141,5 +144,13 @@ class Help(commands.Cog):
                               description='Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami',
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
+
+    @help.command(name='ciekawostka')
+    async def facts_help(self, ctx):
+        embed = discord.Embed(title='ciekawostka',
+                              description='Wysyła losową ciekawostkę',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+
 
     
