@@ -27,17 +27,18 @@ class Help(commands.Cog):
                                           '\n'
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
-        embed.add_field(name='Matematyka',
+        embed.add_field(name='Nauka',
                         value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
                         inline=False)
         embed.add_field(name='Obraz',
                         value='`ocr`, `apod`, `qr`',
                         inline=False)
+        embed.add_field(name='Tekst',
+                        value='`ciekawostka`',
+                        inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
                         inline=False)
-        
-
         await ctx.send(embed=embed)
 
     @help.command(name='zamiana')
@@ -142,4 +143,9 @@ class Help(commands.Cog):
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
 
-    
+    @help.command(name='ciekawostka')
+    async def fun_fact_help(self, ctx):
+        embed = discord.Embed(title='ciekawostka',
+                              description='Wysyła losową ciekawostkę',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)

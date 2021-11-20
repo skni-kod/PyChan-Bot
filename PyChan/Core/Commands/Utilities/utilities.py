@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 from Core.Commands.Utilities.Functions.ssh import SSH
 from Core.Commands.Utilities.Functions.qr_generator import QR
