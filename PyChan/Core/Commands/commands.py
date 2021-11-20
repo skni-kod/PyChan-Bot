@@ -6,6 +6,7 @@ from Core.Commands.Images.images import Images
 from Core.Commands.Science.science import Science
 from Core.Commands.Settings.settings import Settings
 from Core.Commands.SKNIKOD.skni_kod import SKNIKOD
+from Core.Commands.Text.text import Text
 from Core.Commands.Utilities.utilities import Utilities
 
 
@@ -22,4 +23,5 @@ class Commands(commands.Cog):
         self.bot.add_cog(Science(bot))
         self.bot.add_cog(SKNIKOD(bot))
         self.bot.add_cog(Settings(bot))
+        self.bot.add_cog(Text(bot))
         self.bot.add_cog(Utilities(bot))
