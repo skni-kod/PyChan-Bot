@@ -11,6 +11,8 @@ SESION_ID = "53616c7465645f5f9cbbb1a00de4996a946bbe9bfc3dc7508ef03f4522d0298cc9b
 
 @tasks.loop(minutes=15)
 async def AoC_loop(message, arg):
+    embed = discord.Embed(title="Advent of Code",
+                          color=discord.Color.dark_purple())
     leaderboard_id = int(arg)
     api_url = "https://adventofcode.com/{}/leaderboard/private/view/{}".format(
         datetime.datetime.today().year - 1,
@@ -23,10 +25,11 @@ async def AoC_loop(message, arg):
         tab.append([r.json()['members'][key]['name'],
                    int(r.json()['members'][key]['stars'])])
     tab = sorted(tab, key=itemgetter(1), reverse=True)
-    data = ''
     for l in tab:
-        data += (f'{l[0]} <Gwiazdki>:{l[1]}\n')
-    await message.edit(content=data)
+        embed.add_field(name=l[0],
+                        value=f"```<Gwiazdki>: {l[1]}```", inline=False)
+
+    await message.edit(embed=embed)
 
 
 class AoC(commands.Cog):
