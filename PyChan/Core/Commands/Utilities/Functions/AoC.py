@@ -15,20 +15,24 @@ async def AoC_loop(message, arg):
                           color=discord.Color.dark_purple())
     leaderboard_id = int(arg)
     api_url = "https://adventofcode.com/{}/leaderboard/private/view/{}".format(
-        datetime.datetime.today().year - 1,
+        datetime.datetime.today().year,
         leaderboard_id)
     r = requests.get(
         "{}.json".format(api_url),
         cookies={"session": SESION_ID})
+    data = r.json()
     tab = []
-    for key in r.json()['members'].keys():
-        tab.append([r.json()['members'][key]['name'],
-                   int(r.json()['members'][key]['stars'])])
+    for key in data['members'].keys():
+        tab.append([data['members'][key]['name'],
+                   int(data['members'][key]['stars']),
+                   data['members'][key]['completion_day_level']])
     tab = sorted(tab, key=itemgetter(1), reverse=True)
+    a = "'"
     for l in tab:
+        days = str(list(l[2].keys())).replace(
+            '[', '').replace(']', '').replace("'", '')
         embed.add_field(name=l[0],
-                        value=f"```<Gwiazdki>: {l[1]}```", inline=False)
-
+                        value=f"```<Gwiazdki>: {l[1]}\n<Ukończone dni> {days}```", inline=False)
     await message.edit(embed=embed)
 
 
@@ -44,5 +48,5 @@ class AoC(commands.Cog):
     @ commands.command(pass_context=True, name='AoC')
     async def AoC(self, ctx, arg):
 
-        message = await ctx.send("Starting...")
+        message = await ctx.send("-")
         AoC_loop.start(message, arg)
