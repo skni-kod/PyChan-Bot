@@ -16,7 +16,7 @@ def get_delta_time():
     return str(datetime.timedelta(seconds=output))
 
 
-@tasks.loop(seconds=5)
+@tasks.loop(minutes=15)
 async def AoC_loop(message, arg):
     embed = discord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}",
                           color=discord.Color.dark_purple())
