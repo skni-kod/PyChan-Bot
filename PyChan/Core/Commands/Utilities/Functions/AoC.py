@@ -77,13 +77,15 @@ def embed_data(extracted_data) -> list[Embed]:
         days = str(list(l[2].keys())).replace(
             '[', '').replace(']', '').replace("'", '')
         if l[1]:
-            if counter < 10:
+            if counter < 9:
                 embed_tab[counter_2].add_field(name=l[0],
                                                value=f"```<Punkty>: {l[3]}\n<Gwiazdki>: {l[1]}\n<Ukończone dni> {days}```", inline=False)
                 counter += 1
             else:
                 embed_tab.append(discord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}",
                                                color=discord.Color.dark_purple()))
+                embed_tab[counter_2].add_field(name=l[0],
+                                               value=f"```<Punkty>: {l[3]}\n<Gwiazdki>: {l[1]}\n<Ukończone dni> {days}```", inline=False)
                 counter = 0
                 counter_2 += 1
     return embed_tab
