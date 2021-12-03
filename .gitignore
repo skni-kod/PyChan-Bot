@@ -209,6 +209,8 @@ token_key.py
 #OCR Space token
 ocr_token.py
 
+apod_token.py
+
 #Riot token
 riot_token.py
 
