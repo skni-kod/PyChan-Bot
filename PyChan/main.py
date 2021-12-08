@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from Core.core import Core
-from token_key import token
+from config import discord_token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 from Database.database import Database
@@ -29,7 +29,7 @@ def main():
 
         print('Bot is ready')
 
-    bot.run(token)
+    bot.run(discord_token)
 
 
 if __name__ == '__main__':

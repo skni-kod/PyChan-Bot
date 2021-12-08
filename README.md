@@ -1,7 +1,11 @@
 # PyChan-Bot
 
-Installing requirments:
+Installing requirements:  
 ```pip install -r req.txt```
 
-Run:
+Configuration:  
+```cp config.py.sample config.py```  
+```your_editor_of_choice config.py```
+
+Run:  
 ```python main.py```
