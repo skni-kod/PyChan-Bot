@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import requests
 import json
-from ocr_token import ocr_token
+from config import ocr_token
 
 
 def send_ocr_request(url):

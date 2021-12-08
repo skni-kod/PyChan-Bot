@@ -1,7 +1,7 @@
 import requests
 import discord
 from discord.ext import commands
-from apod_token import apod_token
+from config import apod_token
 
 class ApodImage(commands.Cog):
     def __init__ (self, bot):
