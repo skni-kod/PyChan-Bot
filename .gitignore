@@ -203,6 +203,8 @@ fabric.properties
 #Discord token
 token_key.py
 
+#Config file
+config.py
 
 #Database
 *.db
