@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands
 from ossapi import Ossapi, GameMode
+from config import osu_token
 
 
 class Osu(commands.Cog):
@@ -15,7 +16,7 @@ class Osu(commands.Cog):
         Constructor method
         """
         self.bot = bot
-        self.osu = Ossapi(os.getenv("OSU_API_KEY"))
+        self.osu = Ossapi(osu_token)
 
     @commands.command(pass_context=True, name='osu')
     async def osu(self, ctx: discord.ext.commands.Context, *username):
