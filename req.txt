@@ -4,3 +4,5 @@ sphinx-autoapi
 sphinx-material
 sqlalchemy
 tabulate
+networkx
+matplotlib

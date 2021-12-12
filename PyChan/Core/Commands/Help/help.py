@@ -28,7 +28,7 @@ class Help(commands.Cog):
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Nauka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
+                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`, `prufer`, `graf`',
                         inline=False)
         embed.add_field(name='Obraz',
                         value='`ocr`, `apod`, `qr`',
@@ -148,4 +148,31 @@ class Help(commands.Cog):
         embed = discord.Embed(title='ciekawostka',
                               description='Wysyła losową ciekawostkę',
                               color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+
+    @help.command(name='graf')
+    async def graf_help(self, ctx):
+        embed = discord.Embed(title='graf',
+                              description='Funkcja do rysowania grafów nieskierowanych.',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`graf rysuj [lista wierzchołków] [lista krawędzi]` - wyświetla informacje o permutacji.',
+                        inline=False)
+        embed.add_field(name='Aliasy komendy',
+                        value='`graf`, `g`',
+                        inline=False)
+        embed.add_field(name='Dodatkowe informacje',
+                        value='W liście wierzchołków nie trzeba uwzględniać tych, które są wymienione w liście krawędzi.\n'
+                              'Przykład użycia: `g rysuj [] [(1,2)(1,3)(2,3)]` - generuje graf pełny K3',
+                        inline=False)
+        await ctx.send(embed=embed)
+
+    @help.command(name='prufer')
+    async def prufer_help(self, ctx):
+        embed = discord.Embed(title='prufer',
+                              description='Funkcja do rysowania drzewa z kodu Prüfera.',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`prufer <kod>`',
+                        inline=False)
         await ctx.send(embed=embed)
