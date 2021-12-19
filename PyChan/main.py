@@ -5,6 +5,7 @@ from Core.core import Core
 from token_key import token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
+from Core.Commands.Settings.Functions.change_status import ChangeStatus
 from Database.database import Database
 
 
@@ -26,6 +27,8 @@ def main():
         """
         Database.create_database()
         Database.update_database(bot)
+        change_status = ChangeStatus(bot)
+        change_status.change_status.start()
 
         print('Bot is ready')
 
