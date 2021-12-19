@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from Core.Commands.Text.Functions.bored.bored import BoredAPI
 
 from Core.Commands.Text.Functions.fun_fact import FunFact
 
@@ -13,3 +14,4 @@ class Text(commands.Cog):
         """
         self.bot = bot
         self.bot.add_cog(FunFact(bot))
+        self.bot.add_cog(BoredAPI(bot))
