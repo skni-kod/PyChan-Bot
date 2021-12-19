@@ -5,19 +5,11 @@ import random
 
 from Core.Decorators.Functions.rate_me import RateMe
 from Core.Decorators.Functions.sleep_time import SleepTime
-from Core.Decorators.Functions.change_status import ChangeStatus
 
 
 class Decorator():
     """Class contains own PyChan decorator
     """
-
-    def __init__(self, bot):
-        """Constructor method
-        """
-        self.bot = bot
-        self.bot.add_cog(ChangeStatus(bot))
-
 
     @staticmethod
     def pychan_decorator(func):

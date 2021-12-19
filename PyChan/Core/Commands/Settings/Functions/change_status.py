@@ -7,7 +7,7 @@ class ChangeStatus(commands.Cog):
     self.bot = bot
 
   @commands.Cog.listener()
-  async def on_ready(self):
+  async def on_connect(self):
     status = cycle([discord.Activity(type=discord.ActivityType.watching, name='^help'),
                     discord.Game('Snake')])
 
