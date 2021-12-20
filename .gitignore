@@ -215,6 +215,9 @@ ocr_token.py
 #Astronomy picture of the day token
 apod_token.py
 
+#Tokens
+config.py
+
 #FrontEnd
 .DS_Store
 node_modules
