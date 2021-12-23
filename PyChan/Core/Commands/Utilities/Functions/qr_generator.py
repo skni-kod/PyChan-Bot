@@ -11,7 +11,7 @@ class QR(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(pass_context=True, name='qr')
+    @commands.command(pass_context=True, name='qr', category='Obraz')
 
     async def qr(self, ctx, arg):
         embed = discord.Embed()

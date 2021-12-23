@@ -30,7 +30,7 @@ class OCR(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(pass_context=True, name='ocr')
+    @commands.command(pass_context=True, name='ocr', category='Obraz')
     async def ocr(self, ctx):
         """
         Gets image from attachment and extracts text from it

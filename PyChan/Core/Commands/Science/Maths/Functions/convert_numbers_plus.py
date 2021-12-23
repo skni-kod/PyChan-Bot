@@ -11,7 +11,7 @@ class ConvertNumbersPlus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='zamiana+')
+    @commands.command(pass_context=True, name='zamiana+', category='Nauka')
     @Decorator.pychan_decorator
     async def convert_numbers_plus(self, ctx, from_param: int, to_param: int, number):
         """

@@ -11,7 +11,7 @@ class Permutations(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(invoke_without_command=True, pass_context=True, name='permutacje', aliases=['p', 'perm'])
+    @commands.group(invoke_without_command=True, pass_context=True, name='permutacje', aliases=['p', 'perm'], category='Nauka')
     async def permutacje(self, ctx):
         """
         Sends the reply message to the user with supported permutations functions

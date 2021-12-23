@@ -11,7 +11,7 @@ class Graphs(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(pass_context=True, name='prufer')
+    @commands.command(pass_context=True, name='prufer', category='Nauka')
     async def prufer(self, ctx, *, code):
         """
         Sends the reply message to the user with graph image
@@ -51,14 +51,7 @@ class Graphs(commands.Cog):
                                                description="Kod zawiera liczbę większą niż długość kodu + 2.",
                                                color=discord.Color.dark_purple()))
 
-    @commands.command(pass_context=True, name='rysuj')
-    async def rysuj(self, ctx, *, args):
-        args = args.split()
-        vertices = args[0].split(',')
-        edges = args[1].split(',')
-        print(f"1: {vertices}\n 2: {edges}")
-
-    @commands.group(invoke_without_command=True, pass_context=True, name='graf', aliases=['g'])
+    @commands.group(invoke_without_command=True, pass_context=True, name='graf', aliases=['g'], category='Nauka')
     async def graf(self, ctx):
         """
         Sends the reply message to the user with supported graphs functions
