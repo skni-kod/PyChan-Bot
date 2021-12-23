@@ -27,7 +27,24 @@ class Osu(commands.Cog):
         :type ctx: discord.ext.commands.Context
         """
         username = ' '.join(username)
-        rank = self.osu.get_user(username, GameMode.STD).rank
-        await ctx.reply("dfzvfgd: " + str(rank))
+        user = rank = self.osu.get_user(username, GameMode.STD)
+        if not user:
+            return await ctx.reply('Taki gracz nie istnieje!')
 
+        embed = discord.Embed(color=discord.Color.dark_purple())
+        embed.set_author(name=f"Profil {user.username}",
+                         url=f'https://osu.ppy.sh/u/{user.user_id}',
+                         icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
 
+        embed.description = f"""
+        **Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})
+        **PP:** {user.pp_raw}
+        **Celność:** {round(user.accuracy, 2)}%
+        **Liczba zagrań:** {user.playcount}
+        **Poziom:** {user.level}
+        """
+
+        embed.set_footer(text=f'Dołączył {str(user.join_date)}')
+        embed.set_thumbnail(url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
+
+        await ctx.send(embed=embed)
