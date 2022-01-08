@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\PyChan",
+    "\\PyChan\\Core",
+    "\\PyChan\\Core\\Commands",
+    "\\PyChan\\Core\\Commands\\Help",
+    "\\PyChan\\Core\\Commands\\Text",
+    "\\PyChan\\Core\\Commands\\Text\\Functions",
+    "\\PyChan\\Core\\Commands\\Utilities",
+    "\\PyChan\\Core\\Commands\\Utilities\\Functions",
+    "\\PyChan\\Database"
+  ],
+  "SelectedNode": "\\PyChan\\Core\\Commands\\Text\\Functions\\covid.py",
+  "PreviewInSolutionExplorer": false
+}
