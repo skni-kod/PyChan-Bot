@@ -87,3 +87,44 @@ class Osu(commands.Cog):
             """
 
         await ctx.send(embed=embed)
+
+    @commands.command(pass_context=True, name='recent')
+    async def recent(self, ctx: discord.ext.commands.Context, *username):
+        username = ' '.join(username)
+
+        user = self.osu.get_user(username, GameMode.STD)
+        if not user:
+            return await ctx.reply('Taki gracz nie istnieje!')
+
+        recent = self.osu.get_user_recent(user.user_id, mode=ossapi.GameMode.STD, limit=1, user_type=ossapi.UserLookupKey.ID)
+        if not recent or not len(recent):
+            return await ctx.reply('Coś poszło nie tak')
+        recent = recent[0]
+
+        beatmap = self.osu.get_beatmaps(beatmap_id=recent.beatmap_id)
+        if not beatmap or not len(beatmap):
+            return await ctx.reply('Mapa którą zagrał gracz nie istnieje!')
+        beatmap = beatmap[0]
+
+        embed = discord.Embed(color=discord.Color.dark_purple())
+        embed.set_author(
+            name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] +{recent.mods.short_name()} ({round(beatmap.star_rating, 2)})',
+            url=f'https://osu.ppy.sh/b/{beatmap.beatmap_id}',
+            icon_url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
+
+        combo = 'FC' if recent.perfect else f'x{recent.max_combo}/{beatmap.max_combo}'
+        hits = f'[{recent.count_300}/{recent.count_100}/{recent.count_50}/{recent.count_miss}]'
+        pp = round(recent.pp, 2) if recent.pp else 0
+        accuracy = (recent.count_300 * 300 + recent.count_100 * 100 + recent.count_50 * 50)
+        accuracy /= (recent.count_300 + recent.count_100 + recent.count_50 + recent.count_miss) * 300
+        accuracy = round(accuracy * 100, 2)
+
+        embed.description = f"""
+        ● {recent.rank} | {accuracy}%
+        ● {recent.score} | {combo} | {hits} | {pp}PP
+        """
+
+        embed.set_thumbnail(url=f'https://b.ppy.sh/thumb/{beatmap.beatmapset_id}l.jpg')
+        embed.set_footer(text=str(recent.date))
+
+        await ctx.reply(embed=embed)
