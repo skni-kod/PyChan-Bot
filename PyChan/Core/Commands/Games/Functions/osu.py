@@ -76,8 +76,9 @@ class Osu(commands.Cog):
         embed.set_thumbnail(url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
         embed.description = ''
         for play in plays:
-            accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50) / 300
-            accuracy = round(accuracy, 2)
+            accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50)
+            accuracy /= (play.count_300 + play.count_100 + play.count_50 + play.count_miss) * 300
+            accuracy = round(accuracy * 100, 2)
             embed.description += f"""
             **[{"artist"} - {"song"} [{"diff"}]](https://osu.ppy.sh/b/{"id"}) +{play.mods.short_name()}** ({"stars"})
             ● {"todo completion"} ● **{round(play.pp, 2)}PP** {"todo pp for fc"}
