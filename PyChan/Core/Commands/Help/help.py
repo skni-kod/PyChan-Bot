@@ -34,7 +34,7 @@ class Help(commands.Cog):
                         value='`ocr`, `apod`, `qr`',
                         inline=False)
         embed.add_field(name='Tekst',
-                        value='`ciekawostka`,`covid`',
+                        value='`ciekawostka`,`covid`,`KanyeQuote`',
                         inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
@@ -150,6 +150,13 @@ class Help(commands.Cog):
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
 
+    @help.command(name='KanyeQuote')
+    async def fun_fact_help(self, ctx):
+        embed = discord.Embed(title='Kanye West Quote',
+                              description='Wysyła losowy cytat Kanye Westa',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+        
     @help.command(name='covid') 
     async def covid_help(self, ctx):
         embed = discord.Embed(title = 'covid',
