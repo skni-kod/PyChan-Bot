@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 
+from riotwatcher import LolWatcher, ApiError
+
 try:
-    from riot_token import token
+    from Riot_token import token
 except ImportError:
     raise ImportError('Riot token not found!')
 
@@ -25,6 +27,12 @@ class SummonerInfo(commands.Cog):
 
         data = data.json()
 
+        my_region = 'eun1'
+        lol_watcher = LolWatcher(token)
+
+
+        my_ranked_stats = lol_watcher.league.by_summoner(my_region, data['id'])
+
         embed = discord.Embed(title=f'{data["name"]}',
                               color=discord.Color.dark_purple())
         embed.add_field(name='ID',
@@ -33,5 +41,10 @@ class SummonerInfo(commands.Cog):
         embed.add_field(name='Poziom konta',
                         value=f'{data["summonerLevel"]}',
                         inline=False)
+        embed.add_field(name='Ranga',
+                        value=f'`{my_ranked_stats}`',
+                        inline=False)
+
 
         await ctx.send(embed=embed)
+
