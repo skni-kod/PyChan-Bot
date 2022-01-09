@@ -22,7 +22,7 @@ class Osu(commands.Cog):
     @commands.command(pass_context=True, name='osu')
     async def osu(self, ctx: discord.ext.commands.Context, *username):
         """
-        Gets image from attachment and extracts text from it
+        Shows statistics for a given user
 
         :param ctx: The context in which a command is called
         :type ctx: discord.ext.commands.Context
@@ -53,7 +53,7 @@ class Osu(commands.Cog):
     @commands.command(pass_context=True, name='osutop')
     async def osutop(self, ctx: discord.ext.commands.Context, *username):
         """
-        Gets image from attachment and extracts text from it
+        Shows best plays for a given user
 
         :param ctx: The context in which a command is called
         :type ctx: discord.ext.commands.Context
@@ -91,6 +91,12 @@ class Osu(commands.Cog):
 
     @commands.command(pass_context=True, name='recent')
     async def recent(self, ctx: discord.ext.commands.Context, *username):
+        """
+        Shows the most recent play for a given user
+
+        :param ctx: The context in which a command is called
+        :type ctx: discord.ext.commands.Context
+        """
         username = ' '.join(username)
 
         user = self.osu.get_user(username, GameMode.STD)
