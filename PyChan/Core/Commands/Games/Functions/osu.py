@@ -83,12 +83,15 @@ class Osu(commands.Cog):
             accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50)
             accuracy /= (play.count_300 + play.count_100 + play.count_50 + play.count_miss) * 300
             accuracy = round(accuracy * 100, 2)
+
+            combo = 'FC' if play.perfect else f'x{play.max_combo}/{beatmap.max_combo}'
+            hits = f'[{play.count_300}/{play.count_100}/{play.count_50}/{play.count_miss}]'
+            pp = round(play.pp, 2)
+
             embed.description += f"""
-            **[{beatmap.artist} - {beatmap.title} [{beatmap.version}]](https://osu.ppy.sh/b/{beatmap.beatmap_id}) \
-            +{play.mods.short_name()}** **{round(beatmap.star_rating, 2)}**★
-            ● **{play.rank}** ● **{round(play.pp, 2)}PP**
-            ● {'**FC**' if play.perfect else f'({play.max_combo}/{beatmap.max_combo})x'} {accuracy}%
-            ● [{play.count_300}/{play.count_100}/{play.count_50}/{play.count_miss}] {play.score}
+            **[{beatmap.artist} - {beatmap.title} [{beatmap.version}]](https://osu.ppy.sh/b/{beatmap.beatmap_id}) +{play.mods.short_name()}** **{round(beatmap.star_rating, 2)}**★
+            ● **{play.rank}** ● **{pp}PP** ● **{accuracy}%**
+            ● {play.score} | {combo} | {hits}
             ● {str(play.date)}
             """
 
@@ -121,8 +124,7 @@ class Osu(commands.Cog):
 
         embed = discord.Embed(color=discord.Color.dark_purple())
         embed.set_author(
-            name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] \
-            +{recent.mods.short_name()} ({round(beatmap.star_rating, 2)})',
+            name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] +{recent.mods.short_name()} {round(beatmap.star_rating, 2)}★',
             url=f'https://osu.ppy.sh/b/{beatmap.beatmap_id}',
             icon_url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
 
@@ -134,11 +136,11 @@ class Osu(commands.Cog):
         accuracy = round(accuracy * 100, 2)
 
         embed.description = f"""
-        ● {recent.rank} | {accuracy}%
-        ● {recent.score} | {combo} | {hits} | {pp}PP
+        ● **{recent.rank}** ● **{pp}PP** ● **{accuracy}%**
+        ● {recent.score} | {combo} | {hits}
         """
 
         embed.set_thumbnail(url=f'https://b.ppy.sh/thumb/{beatmap.beatmapset_id}l.jpg')
         embed.set_footer(text=str(recent.date))
 
-        await ctx.reply(embed=embed)
+        await ctx.send(embed=embed)
