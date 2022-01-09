@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from Core.Commands.Settings.Functions.change_prefix import ChangePrefix
+from Core.Commands.Settings.Functions.change_status import ChangeStatus
 
 
 class Settings(commands.Cog):
@@ -12,4 +13,5 @@ class Settings(commands.Cog):
         """
         self.bot = bot
         self.bot.add_cog(ChangePrefix(bot))
+        self.bot.add_cog(ChangeStatus(bot))
 

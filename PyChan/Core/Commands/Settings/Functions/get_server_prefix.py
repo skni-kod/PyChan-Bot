@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+from config import default_prefix
 from Database.database import Database
 
 
@@ -26,5 +26,5 @@ class GetServerPrefix:
             pass
 
         if prefix is None:
-            return '^'
+            return default_prefix
         return prefix

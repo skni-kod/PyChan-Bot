@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import requests
 import json
-from ocr_token import ocr_token
+from config import ocr_token
+import os
 
 
 def send_ocr_request(url):
@@ -15,7 +16,7 @@ def send_ocr_request(url):
     :rtype: string
     """
     data = {'url': url, 'isOverlayRequired': False, 'apikey': ocr_token, 'language': 'pol'}
-    r = requests.post('https://api.ocr.space/parse/image', data=data, timeout=5)
+    r = requests.post('https://api.ocr.space/parse/image', data=data, timeout=10)
     return r.content.decode()
 
 
@@ -43,7 +44,15 @@ class OCR(commands.Cog):
                 try:
                     output = json.loads(send_ocr_request(ctx.message.attachments[0].url))
                     if output["OCRExitCode"] == 1 and output["IsErroredOnProcessing"] is False:
-                        await ctx.send(f"```{output['ParsedResults'][0]['ParsedText']}```")
+                        if len(output['ParsedResults'][0]['ParsedText'])>2000:
+                            with open('ocr.txt', 'w', encoding="UTF-8") as file:
+                                file.write(output['ParsedResults'][0]['ParsedText'])
+
+                            file = discord.File("ocr.txt")
+                            await ctx.send(file=file)
+                            os.remove("ocr.txt")
+                        else:
+                            await ctx.send(f"```{output['ParsedResults'][0]['ParsedText']}```")
                     else:
                         await ctx.send("Wystąpił błąd. Spróbuj ponownie za chwilę.")
                 except Exception as e:
