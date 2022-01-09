@@ -1,5 +1,3 @@
-import os
-
 import discord
 import ossapi
 from discord.ext import commands
@@ -76,15 +74,22 @@ class Osu(commands.Cog):
         embed.set_thumbnail(url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
         embed.description = ''
         for play in plays:
+
+            beatmap = self.osu.get_beatmaps(beatmap_id=play.beatmap_id)
+            if not beatmap or not len(beatmap):
+                return await ctx.reply('Coś poszło nie tak')
+            beatmap = beatmap[0]
+
             accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50)
             accuracy /= (play.count_300 + play.count_100 + play.count_50 + play.count_miss) * 300
             accuracy = round(accuracy * 100, 2)
             embed.description += f"""
-            **[{"artist"} - {"song"} [{"diff"}]](https://osu.ppy.sh/b/{"id"}) +{play.mods.short_name()}** ({"stars"})
-            ● {"todo completion"} ● **{round(play.pp, 2)}PP** {"todo pp for fc"}
-            ● {'**FC**' if play.perfect else f'({play.max_combo}/{"beatmapcombo"})x'} {accuracy}%
+            **[{beatmap.artist} - {beatmap.title} [{beatmap.version}]](https://osu.ppy.sh/b/{beatmap.beatmap_id}) \
+            +{play.mods.short_name()}** **{round(beatmap.star_rating, 2)}**★
+            ● **{play.rank}** ● **{round(play.pp, 2)}PP**
+            ● {'**FC**' if play.perfect else f'({play.max_combo}/{beatmap.max_combo})x'} {accuracy}%
             ● [{play.count_300}/{play.count_100}/{play.count_50}/{play.count_miss}] {play.score}
-            ● Score set {str(play.date)}
+            ● {str(play.date)}
             """
 
         await ctx.send(embed=embed)
@@ -103,7 +108,8 @@ class Osu(commands.Cog):
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        recent = self.osu.get_user_recent(user.user_id, mode=ossapi.GameMode.STD, limit=1, user_type=ossapi.UserLookupKey.ID)
+        recent = self.osu.get_user_recent(user.user_id, mode=ossapi.GameMode.STD, limit=1,
+                                          user_type=ossapi.UserLookupKey.ID)
         if not recent or not len(recent):
             return await ctx.reply('Coś poszło nie tak')
         recent = recent[0]
@@ -115,7 +121,8 @@ class Osu(commands.Cog):
 
         embed = discord.Embed(color=discord.Color.dark_purple())
         embed.set_author(
-            name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] +{recent.mods.short_name()} ({round(beatmap.star_rating, 2)})',
+            name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] \
+            +{recent.mods.short_name()} ({round(beatmap.star_rating, 2)})',
             url=f'https://osu.ppy.sh/b/{beatmap.beatmap_id}',
             icon_url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
 
