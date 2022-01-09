@@ -16,5 +16,5 @@ class BoredAPI(commands.Cog):
         url = "https://www.boredapi.com/api/activity/"  # from api to json
         response = get(url)
         dic = response.json()
-
-        await ctx.send("Weź sobie " + dic["activity"])
+        activity = str(dic["activity"])
+        await ctx.send("Let's " + activity.lower())
