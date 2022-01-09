@@ -34,7 +34,7 @@ class Help(commands.Cog):
                         value='`ocr`, `apod`, `qr`',
                         inline=False)
         embed.add_field(name='Tekst',
-                        value='`ciekawostka`,`covid`,`KanyeQuote`',
+                        value='`ciekawostka`,`covid`,`KanyeQuote`, `nudzesie`',
                         inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
@@ -149,6 +149,12 @@ class Help(commands.Cog):
                               description='Wysyła losową ciekawostkę',
                               color=discord.Color.dark_purple())
         await ctx.send(embed=embed)
+    
+    @help.command(name='nudzesie')
+    async def bored_help(self, ctx):
+        embed = discord.Embed(title='nudzesie',
+                              description='Wysyła losowe zadanie poboczne',
+                              color=discord.Color.dark_purple())
 
     @help.command(name='KanyeQuote')
     async def fun_fact_help(self, ctx):
