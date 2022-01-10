@@ -35,13 +35,11 @@ class Osu(commands.Cog):
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
 
-        embed.description = f"""
-        **Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})
-        **PP:** {user.pp_raw}
-        **Celność:** {round(user.accuracy, 2)}%
-        **Liczba zagrań:** {user.playcount}
-        **Poziom:** {user.level}
-        """
+        embed.description = (f'**Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})\n' 
+                             f'**PP:** {user.pp_raw}\n'
+                             f'**Celność:** {round(user.accuracy, 2)}%\n'
+                             f'**Liczba zagrań:** {user.playcount}\n'
+                             f'**Poziom:** {user.level}')
 
         embed.set_footer(text=f'Dołączył {str(user.join_date)}')
         embed.set_thumbnail(url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
@@ -88,12 +86,13 @@ class Osu(commands.Cog):
             hits = f'[{play.count_300}/{play.count_100}/{play.count_50}/{play.count_miss}]'
             pp = round(play.pp, 2)
 
-            embed.description += f"""
-            **[{beatmap.artist} - {beatmap.title} [{beatmap.version}]](https://osu.ppy.sh/b/{beatmap.beatmap_id}) +{play.mods.short_name()}** **{round(beatmap.star_rating, 2)}**★
-            ● **{play.rank}** ● **{pp}PP** ● **{accuracy}%**
-            ● {play.score} | {combo} | {hits}
-            ● {str(play.date)}
-            """
+            embed.description += (f'**[{beatmap.artist} - {beatmap.title} [{beatmap.version}]]'
+                                  f'(https://osu.ppy.sh/b/{beatmap.beatmap_id}) '
+                                  f'+{play.mods.short_name()}** '
+                                  f'**{round(beatmap.star_rating, 2)}**★\n'
+                                  f'● **{play.rank}** ● **{pp}PP** ● **{accuracy}%**\n'
+                                  f'● {play.score} | {combo} | {hits}\n'
+                                  f'● {str(play.date)}\n')
 
         await ctx.send(embed=embed)
 
@@ -135,10 +134,8 @@ class Osu(commands.Cog):
         accuracy /= (recent.count_300 + recent.count_100 + recent.count_50 + recent.count_miss) * 300
         accuracy = round(accuracy * 100, 2)
 
-        embed.description = f"""
-        ● **{recent.rank}** ● **{pp}PP** ● **{accuracy}%**
-        ● {recent.score} | {combo} | {hits}
-        """
+        embed.description = (f'● **{recent.rank}** ● **{pp}PP** ● **{accuracy}%**\n'
+                             f'● {recent.score} | {combo} | {hits}')
 
         embed.set_thumbnail(url=f'https://b.ppy.sh/thumb/{beatmap.beatmapset_id}l.jpg')
         embed.set_footer(text=str(recent.date))
