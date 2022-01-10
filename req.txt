@@ -5,4 +5,5 @@ sphinx-material
 sqlalchemy
 tabulate
 ossapi
-
+networkx
+matplotlib

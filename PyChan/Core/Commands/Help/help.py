@@ -28,13 +28,13 @@ class Help(commands.Cog):
                                           'Dostępne komendy:',
                               color=discord.Color.dark_purple())
         embed.add_field(name='Nauka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
+                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`, `prufer`, `graf`',
                         inline=False)
         embed.add_field(name='Obraz',
                         value='`ocr`, `apod`, `qr`',
                         inline=False)
         embed.add_field(name='Tekst',
-                        value='`ciekawostka`',
+                        value='`ciekawostka`,`covid`,`KanyeQuote`, `nudzesie`',
                         inline=False)
         embed.add_field(name='SKNIKOD',
                         value='`listaCzlonkow`',
@@ -148,4 +148,51 @@ class Help(commands.Cog):
         embed = discord.Embed(title='ciekawostka',
                               description='Wysyła losową ciekawostkę',
                               color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+    
+    @help.command(name='nudzesie')
+    async def bored_help(self, ctx):
+        embed = discord.Embed(title='nudzesie',
+                              description='Wysyła losowe zadanie poboczne',
+                              color=discord.Color.dark_purple())
+
+    @help.command(name='KanyeQuote')
+    async def fun_fact_help(self, ctx):
+        embed = discord.Embed(title='Kanye West Quote',
+                              description='Wysyła losowy cytat Kanye Westa',
+                              color=discord.Color.dark_purple())
+        await ctx.send(embed=embed)
+        
+    @help.command(name='covid') 
+    async def covid_help(self, ctx):
+        embed = discord.Embed(title = 'covid',
+                              description ='Zwraca ile było wczoraj zachorowań w Polsce',
+                              color = discord.Color.dark_purple())
+        await ctx.send(embed=embed)       
+    
+    @help.command(name='graf')
+    async def graf_help(self, ctx):
+        embed = discord.Embed(title='graf',
+                              description='Funkcja do rysowania grafów nieskierowanych.',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`graf rysuj [lista wierzchołków] [lista krawędzi]` - wyświetla informacje o permutacji.',
+                        inline=False)
+        embed.add_field(name='Aliasy komendy',
+                        value='`graf`, `g`',
+                        inline=False)
+        embed.add_field(name='Dodatkowe informacje',
+                        value='W liście wierzchołków nie trzeba uwzględniać tych, które są wymienione w liście krawędzi.\n'
+                              'Przykład użycia: `g rysuj [] [(1,2)(1,3)(2,3)]` - generuje graf pełny K3',
+                        inline=False)
+        await ctx.send(embed=embed)
+
+    @help.command(name='prufer')
+    async def prufer_help(self, ctx):
+        embed = discord.Embed(title='prufer',
+                              description='Funkcja do rysowania drzewa z kodu Prüfera.',
+                              color=discord.Color.dark_purple())
+        embed.add_field(name='Składnia',
+                        value='`prufer <kod>`',
+                        inline=False)
         await ctx.send(embed=embed)
