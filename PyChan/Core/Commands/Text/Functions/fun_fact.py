@@ -7,9 +7,8 @@ class FunFact(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='ciekawostka', category='Text')
+    @commands.command(pass_context=True, name="ciekawostka", category="Tekst")
     async def fun_fact(self, ctx):
-        r = requests.get(
-            'https://uselessfacts.jsph.pl/random.json?language=en')
+        r = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
         r = r.json()
-        await ctx.send(r['text'])
+        await ctx.send(r["text"])

@@ -6,12 +6,10 @@ from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Listeners(commands.Cog):
-    """Class contains Bot event methods
-    """
+    """Class contains Bot event methods"""
 
     def __init__(self, bot):
-        """Constructor method
-        """
+        """Constructor method"""
         self.bot = bot
 
     @commands.Cog.listener()
@@ -25,9 +23,11 @@ class Listeners(commands.Cog):
         if message.author.bot:
             return
 
-        if str(message.content).lower() == 'pychan!':
-            await message.channel.send('Wołałeś mnie Onii-chan?\n'
-                                       f'Napisz `{GetServerPrefix.get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy')
+        if str(message.content).lower() == "pychan!":
+            await message.channel.send(
+                "Wołałeś mnie?\n"
+                f"Napisz `{GetServerPrefix.get_server_prefix(self, message)}help`, aby dowiedzieć się jakie mam komendy"
+            )
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -43,4 +43,4 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, ctx, member):
-        Database.add_member(member.guild_id, guild.guild_id)
+        Database.add_member(member.guild_id, ctx.guild.guild_id)
