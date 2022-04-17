@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+from riotwatcher._apis.league_of_legends.ChampionApiV3 import ChampionApiV3
 from riotwatcher import LolWatcher, ApiError
 
 try:
@@ -8,7 +9,6 @@ try:
 except ImportError:
     raise ImportError('Riot token not found!')
 
-import requests
 
 
 class Champion(commands.Cog):
@@ -22,15 +22,15 @@ class Champion(commands.Cog):
     async def summoner_info(self, ctx, name):
 
 
-        my_region = 'eun1'
+        my_region = 'eune'
         lol_watcher = LolWatcher(token)
         me = lol_watcher.summoner.by_name(my_region, name)
 
 
-        versions = lol_watcher.data_dragon.versions_for_region(my_region)
+        versions = lol_watcher.data_dragon.versions_for_region(my_region, me['id'])
         champions_version = versions['n']['champion']
 
-        current_champ_list = lol_watcher.data_dragon.champions(champions_version, name)
+        current_champ_list = lol_watcher.data_dragon.champions(champions_version, me['id'])
 
         await ctx.send(current_champ_list)
 
