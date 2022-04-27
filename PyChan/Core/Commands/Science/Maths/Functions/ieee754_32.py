@@ -12,7 +12,7 @@ class Ieee754x32(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='ieee754_32')
+    @commands.command(pass_context=True, name='ieee754_32', category='Nauka')
     @Decorator.pychan_decorator
     async def ieee754_32(self, ctx, number: float):
         """

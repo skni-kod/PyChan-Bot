@@ -8,7 +8,7 @@ class GetMembersProjects(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='listaCzlonkow')
+    @commands.command(pass_context=True, name='listaCzlonkow', category='SKNIKOD')
     async def get_members_projects(self, ctx):
         """
         Gets actual list of members and send txt file with name and projects assigned to them

@@ -1,124 +1,98 @@
 import discord
 from discord.ext import commands
+from discord import Embed
+from discord.utils import get
+from typing import Optional
+
 from Core.Decorators.decorators import Decorator
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 
 
 class Help(commands.Cog):
-    """Class contains help methods
-    """
+    """Class contains help methods"""
 
     def __init__(self, bot):
-        """Constructor method
-        """
+        """Constructor method"""
         self.bot = bot
+        self.commands = {}
 
-    @commands.group(invoke_without_command=True)
+    async def cmd_help(self, ctx, command):
+        embed = Embed(
+            title=f"{command}",
+            description=f"{command.help}",
+            colour=discord.Color.dark_purple(),
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command(pass_context=True, name="help")
     @Decorator.pychan_decorator
-    async def help(self, ctx):
+    async def help(self, ctx, cmd: Optional[str]):
         """Sends message with built-in funtions
 
         :param ctx: the context in which a command is called
         :type ctx: discord.ext.commands.Context
         """
         prefix = GetServerPrefix.get_server_prefix(self, ctx)
-        embed = discord.Embed(title='Help',
-                              description=f'Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n'
-                                          '\n'
-                                          'Dostępne komendy:',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Matematyka',
-                        value='`zamiana`, `zamiana+`, `ieee754_32`, `ieee754_64`, `permutacje`, `booth`',
-                        inline=False)
-        embed.add_field(name='Obraz',
-                        value='`ocr`',
-                        inline=False)
-        embed.add_field(name='SKNIKOD',
-                        value='`listaCzlonkow`',
-                        inline=False)
+        if cmd is None:
+            if not self.commands:
+                for command in self.bot.commands:
+                    category = ""
+                    try:
+                        category = command.__original_kwargs__["category"]
+                    except Exception as e:
+                        print(
+                            f'Invoked "help" command. No "category" keyword in command {command.name}'
+                        )
+                    if category:
+                        try:
+                            if category in self.commands:
+                                self.commands[category].append(command.name)
+                            else:
+                                self.commands[category] = []
+                                self.commands[category].append(command.name)
+                        except Exception as e:
+                            print(e)
 
-        await ctx.send(embed=embed)
+                print(self.commands)
 
-    @help.command(name='zamiana')
-    async def zamiana_help(self, ctx):
-        embed = discord.Embed(title='Zamiana',
-                              description='Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`zamiana <system z którego zamienamy> <do którego zamieniamy> <liczba>`',
-                        inline=False)
-        await ctx.send(embed=embed)
+            embed = discord.Embed(
+                title="Help",
+                description=f"Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n"
+                "\n"
+                "Dostępne komendy:",
+                color=discord.Color.dark_purple(),
+            )
 
-    @help.command(name='zamiana+')
-    async def zamiana_z_rozpisaniem_help(self, ctx):
-        embed = discord.Embed(title='Zamiana+',
-                              description='Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>, lecz wraz z rozpisaniem pisemnym zamiany liczb',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`zamiana+ <system z którego zamienamy> <do którego zamieniamy> <liczba>`',
-                        inline=False)
-        await ctx.send(embed=embed)
+            for key in sorted(self.commands.keys()):
+                text = ""
+                for name in sorted(self.commands[key])[:-1]:
+                    text += f"`{name}`, "
+                text += f"`{sorted(self.commands[key])[-1]}`"
+                embed.add_field(name=key, value=text, inline=False)
 
-    @help.command(name='ieee754_32')
-    async def ieee754_32_help(self, ctx):
-        embed = discord.Embed(title='IEEE754 32bit',
-                              description='Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 32bit',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`ieee754_32 <liczba>`',
-                        inline=False)
-        await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
 
-    @help.command(name='ieee754_64')
-    async def ieee754_64_help(self, ctx):
-        embed = discord.Embed(title='IEEE754 64bit',
-                              description='Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 64bit',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`ieee754_64 <liczba>`',
-                        inline=False)
-        await ctx.send(embed=embed)
+        else:
+            if command := get(self.bot.commands, name=cmd):
+                try:
+                    help_dict = command.__original_kwargs__["help_"]
+                except Exception as e:
+                    await ctx.send("Help nie został dodany!")
+                    return
 
-    @help.command(name='permutacje')
-    async def permutacje_help(self, ctx):
-        embed = discord.Embed(title='permutacje',
-                              description='Szereg funkcji służących do obliczania permutacji',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`permutacje info <permutacja>` - wyświetla informacje o permutacji\n'
-                              '`permutacje losuj <Sn>` - losuje permutacje w podanym Sn\n'
-                              '`permutacje potega <wykładnik> <permutacja>` - Podnosi permutację do potęgi\n'
-                              '`permutacje generuj <numer permutacji> <Sn>` - Generuje permutację na podstawie numeru w porządku leksykograficznym\n',
-                        inline=False)
-        embed.add_field(name='Aliasy komendy',
-                        value='`permutacje`, `perm`, `p`',
-                        inline=False)
-        embed.add_field(name='Dodatkowe informacje',
-                        value='Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`',
-                        inline=False)
-        await ctx.send(embed=embed)
+                embed = discord.Embed(
+                    title=help_dict["title"],
+                    description=help_dict["description"],
+                    color=discord.Color.dark_purple(),
+                )
 
-    @help.command(name='booth')
-    async def booth_help(self, ctx):
-        embed = discord.Embed(title='Algorytm Booth\'a',
-                              description='Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.',
-                              color=discord.Color.dark_purple())
-        embed.add_field(name='Składnia',
-                        value='`booth <P> <Q>` - gdzie P i Q to liczby całkowite',
-                        inline=False)
-        await ctx.send(embed=embed)
+                if "fields" in help_dict:
+                    for field in help_dict["fields"]:
+                        embed.add_field(
+                            name=field["name"], value=field["value"], inline=False
+                        )
 
-    @help.command(name='ocr')
-    async def ocr_help(self, ctx):
-        embed = discord.Embed(title='OCR',
-                              description='Wyciąga tekst z obrazka i wysyła na czat \n'
-                                          'Należy pamiętać o dołączeniu obrazka .jpg lub .png do wiadomości',
-                              color=discord.Color.dark_purple())
-        await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
 
-    @help.command(name='listaCzlonkow')
-    async def ocr_help(self, ctx):
-        embed = discord.Embed(title='listaCzlonkow',
-                              description='Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami',
-                              color=discord.Color.dark_purple())
-        await ctx.send(embed=embed)
+            else:
+                raise discord.ext.commands.errors.CommandNotFound

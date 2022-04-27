@@ -13,7 +13,7 @@ class BoothAlgorithm(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='booth')
+    @commands.command(pass_context=True, name='booth', category='Nauka')
     async def booth(self, ctx, liczba1: int, liczba2: int):
         """
         Sends the reply message to the user with step by step solution of multiplication of two integers with the booth algorithm
