@@ -11,7 +11,7 @@ class ApodImage(commands.Cog):
     and gets an image (or video) along with a description
     """
 
-    @commands.command(pass_context=True, name='apod')
+    @commands.command(pass_context=True, name='apod', category='Obraz')
     async def apod(self, ctx):
         data = requests.get(f"https://api.nasa.gov/planetary/apod?api_key={apod_token}")
         imgurl = data.json()['hdurl']
@@ -31,4 +31,3 @@ class ApodImage(commands.Cog):
             embed.set_image(url = imgurl)
 
         await ctx.send(embed = embed)
-        
