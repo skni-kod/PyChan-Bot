@@ -8,6 +8,7 @@ from Core.Commands.Settings.settings import Settings
 from Core.Commands.SKNIKOD.skni_kod import SKNIKOD
 from Core.Commands.Text.text import Text
 from Core.Commands.Utilities.utilities import Utilities
+from Core.Commands.Games.games import Games
 
 
 class Commands(commands.Cog):
@@ -25,3 +26,4 @@ class Commands(commands.Cog):
         self.bot.add_cog(Settings(bot))
         self.bot.add_cog(Text(bot))
         self.bot.add_cog(Utilities(bot))
+        self.bot.add_cog(Games(bot))

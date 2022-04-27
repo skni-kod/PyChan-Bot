@@ -33,7 +33,6 @@ class Help(commands.Cog):
         :type ctx: discord.ext.commands.Context
         """
         prefix = GetServerPrefix.get_server_prefix(self, ctx)
-
         if cmd is None:
             if not self.commands:
                 for command in self.bot.commands:
