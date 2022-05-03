@@ -1,6 +1,7 @@
 from msilib.schema import Error
 import discord
 from discord.ext import commands
+from Core.Decorators.decorators import Decorator
 
 try:
     from Riot_token import token
@@ -13,11 +14,25 @@ import requests
 class SummonerInfo(commands.Cog):
 
     def __init__(self, bot):
-        """Constructor method
-        """
+
         self.bot = bot
 
-    @commands.command(pass_context=True, name='lolkonto')
+    @commands.command(
+        pass_context=True,
+        name="lolkonto",
+        category="League of Legends",
+        help_={
+            "title": "lolkonto",
+            "description": "Funkcja do pokazywania informacji o przywoływaczu.",
+            "fields": [
+                {
+                    "name": "sposób użycia",
+                    "value": "lolkonto `[nazwa Gracza]` ",
+                }
+            ],
+        },
+    )
+    @Decorator.pychan_decorator
     async def summoner_info(self, ctx, name):
         headers = {"X-Riot-Token": token}
 
@@ -64,4 +79,6 @@ class SummonerInfo(commands.Cog):
                         value=f'{championMastery}',
                         inline=False)
         await ctx.send(embed=embed)
+
+
 

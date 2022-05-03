@@ -1,6 +1,8 @@
 from msilib.schema import Error
 import discord
 from discord.ext import commands
+import datetime
+from Core.Decorators.decorators import Decorator
 
 
 try:
@@ -18,9 +20,29 @@ class LastMatch(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(pass_context=True, name='lolmecze')
+    @commands.group(
+        pass_context=True,
+        name="lolmecze",
+        category="League of Legends",
+        help_={
+            "title": "League of Leageds",
+            "description": "Funkcja do pokazywania podstawowych statystyk meczu danego użytkownika.",
+            "fields": [
+                {
+                    "name": "sposób użycia",
+                    "value": "lolmecze `[nazwa Gracza]`  `[ilosc meczy]` ",
+                }
+            ],
+        },
+    ) 
+
+    @Decorator.pychan_decorator
     async def lastMatch(self, ctx, name , numberMatch):
         headers = {"X-Riot-Token": token}
+
+        embed = discord.Embed(title=f'{"Trochę to zajmie"}',
+                                color=discord.Color.green())        
+        await ctx.send(embed=embed)
 
         url = 'https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/'
         data = requests.get(f'{url}{name}', headers=headers)
@@ -44,7 +66,7 @@ class LastMatch(commands.Cog):
             matchChampionInfo=""
             matchChampionStatsWhoWin=""
             matchChampionInfo += "Tryp Gry : " + str(dataStats["gameMode"])
-            matchChampionInfo += " Czas w unix : " + str(dataStats["gameStartTimestamp"])
+            matchChampionInfo += " Czas : " + str(datetime.datetime.fromtimestamp (int(dataStats["gameStartTimestamp"])/1000))
 
             dataStatsMatchAllPlayer=dataStats["participants"]
 
@@ -71,3 +93,4 @@ class LastMatch(commands.Cog):
                             value=f'{matchChampionStatsWhoWinList[x]}',
                             inline=False)
         await ctx.send(embed=embed)
+
