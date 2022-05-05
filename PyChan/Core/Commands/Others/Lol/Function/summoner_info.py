@@ -1,4 +1,3 @@
-from msilib.schema import Error
 import discord
 from discord.ext import commands
 from Core.Decorators.decorators import Decorator
