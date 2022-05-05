@@ -1,0 +1,11 @@
+# API Keys
+discord_token = 'ODE5MjE3ODE4NjQ0OTA2MDM0.YEjaDA.gtUOPSzXGy99cLBnGqUg7FhcI0k'
+ocr_token = '79382442e188957'
+Riot_token = 'RGAPI-51c3d593-4a13-4224-83e7-337b7a377626'
+apod_token = '4Z3lTbHEIlQEQSRxtgAyrkbyIvVPO5eAZFJS1BXM'
+osu_token = ''
+waifu2x_token = ''
+
+# Bot settings
+default_prefix = "^"
+
