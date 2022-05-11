@@ -31,7 +31,21 @@ class OCR(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(pass_context=True, name='ocr', category='Obraz')
+    @commands.command(
+        pass_context=True,
+        name='ocr',
+        category='Obraz',
+        help_={
+            "title": "OCR",
+            "description": "Przechwytywanie tekstu ze zdjęcia.",
+            "fields": [
+                {
+                    "name": "Użycie",
+                    "value": "Wywołaj pocelenie `ocr` i dodaj jako załącznik obraz w formacie .png lub .jpg",
+                },
+            ],
+        },
+    )
     async def ocr(self, ctx):
         """
         Gets image from attachment and extracts text from it

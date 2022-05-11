@@ -11,7 +11,35 @@ class Permutations(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(invoke_without_command=True, pass_context=True, name='permutacje', aliases=['p', 'perm'], category='Nauka')
+    @commands.group(
+        invoke_without_command=True,
+        pass_context=True,
+        name='permutacje',
+        aliases=['p', 'perm'],
+        category='Nauka',
+        help_={
+            "title": "Permutacje",
+            "description": "Szereg funkcji służących do obliczania permutacji.",
+            "fields": [
+                {
+                    "name": "Składnia",
+                    "value": "`permutacje info <permutacja>` - wyświetla informacje o permutacji"
+                             "\n`permutacje losuj <Sn>` - losuje permutacje w podanym Sn"
+                             "\n`permutacje potega <wykładnik> <permutacja>` - Podnosi permutację do potęgi"
+                             "\n`permutacje generuj <numer permutacji> <Sn>` - Generuje permutację na podstawie numeru w porządku leksykograficznym",
+                },
+                {
+                    "name": "Aliasy komendy",
+                    "value": "`permutacje`, `perm`, `p`",
+                },
+                {
+                    "name": "Dodatkowe informacje",
+                    "value": "Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`"
+                             "\nSymbol `#` oznacza mnożenie permutacji.",
+                },
+            ],
+        },
+    )
     async def permutacje(self, ctx):
         """
         Sends the reply message to the user with supported permutations functions
