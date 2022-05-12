@@ -11,7 +11,21 @@ class Graphs(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(pass_context=True, name="prufer", category="Nauka")
+    @commands.command(
+        pass_context=True,
+        name="prufer",
+        category="Nauka",
+        help_={
+            "title": "Prufer",
+            "description": "Funkcja do rysowania drzewa z kodu Prüfera.",
+            "fields": [
+                {
+                    "name": "Składnia",
+                    "value": "`prufer <kod>`",
+                },
+            ],
+        },
+    )
     async def prufer(self, ctx, *, code):
         """
         Sends the reply message to the user with graph image
