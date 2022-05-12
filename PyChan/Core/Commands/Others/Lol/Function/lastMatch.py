@@ -1,4 +1,4 @@
-from msilib.schema import Error
+#from msilib.schema import Error
 import discord
 from discord.ext import commands
 import datetime
