@@ -6,18 +6,16 @@ from Core.Decorators.decorators import Decorator
 
 
 try:
-    from Riot_token import token
+    from config import riot_token
 except ImportError:
-    raise ImportError('Riot token not found!')
+    raise ImportError("Riot token not found!")
 
 import requests
 
 
 class LastMatch(commands.Cog):
-
     def __init__(self, bot):
-        """Constructor method
-        """
+        """Constructor method"""
         self.bot = bot
 
     @commands.group(
@@ -34,41 +32,49 @@ class LastMatch(commands.Cog):
                 }
             ],
         },
-    ) 
-
+    )
     @Decorator.pychan_decorator
-    async def lastMatch(self, ctx, name , numberMatch):
-        headers = {"X-Riot-Token": token}
+    async def lastMatch(self, ctx, name, numberMatch):
+        headers = {"X-Riot-Token": riot_token}
 
-        embed = discord.Embed(title=f'{"Trochę to zajmie"}',
-                                color=discord.Color.green())        
+        embed = discord.Embed(
+            title=f'{"Trochę to zajmie"}', color=discord.Color.green()
+        )
         await ctx.send(embed=embed)
 
-        url = 'https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/'
-        data = requests.get(f'{url}{name}', headers=headers)
+        url = "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
+        data = requests.get(f"{url}{name}", headers=headers)
         data = data.json()
 
         urlMatch = "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/"
-        dataMatch = requests.get(f'{urlMatch}{data["puuid"]}{"/ids?start=0&count="}{str(numberMatch)}{"&"}',headers=headers)
-        dataMatch=dataMatch.json()
+        dataMatch = requests.get(
+            f'{urlMatch}{data["puuid"]}{"/ids?start=0&count="}{str(numberMatch)}{"&"}',
+            headers=headers,
+        )
+        dataMatch = dataMatch.json()
 
-
-        matchChampionInfoList=[]
-        matchChampionStatsWhoWinList=[]
+        matchChampionInfoList = []
+        matchChampionStatsWhoWinList = []
 
         urlStatsMatch = "https://europe.api.riotgames.com/lol/match/v5/matches/"
         for x in dataMatch:
-            dataHelp=str(x)
-            dataStatsMatchAll = requests.get(f'{urlStatsMatch}{dataHelp}',headers=headers)
-            dataStatsMatchAll=dataStatsMatchAll.json()
-            dataStats=dataStatsMatchAll["info"]
+            dataHelp = str(x)
+            dataStatsMatchAll = requests.get(
+                f"{urlStatsMatch}{dataHelp}", headers=headers
+            )
+            dataStatsMatchAll = dataStatsMatchAll.json()
+            dataStats = dataStatsMatchAll["info"]
 
-            matchChampionInfo=""
-            matchChampionStatsWhoWin=""
+            matchChampionInfo = ""
+            matchChampionStatsWhoWin = ""
             matchChampionInfo += "Tryp Gry : " + str(dataStats["gameMode"])
-            matchChampionInfo += " Czas : " + str(datetime.datetime.fromtimestamp (int(dataStats["gameStartTimestamp"])/1000))
+            matchChampionInfo += " Czas : " + str(
+                datetime.datetime.fromtimestamp(
+                    int(dataStats["gameStartTimestamp"]) / 1000
+                )
+            )
 
-            dataStatsMatchAllPlayer=dataStats["participants"]
+            dataStatsMatchAllPlayer = dataStats["participants"]
 
             for a in dataStatsMatchAllPlayer:
                 dataStatsMatch = a
@@ -79,18 +85,35 @@ class LastMatch(commands.Cog):
                         matchChampionInfo += "  Przegrana" + "\n"
 
                     matchChampionStatsWhoWin += str(dataStatsMatch["championName"])
-                    matchChampionStatsWhoWin += "\t" + str(dataStatsMatch["kills"]) + " / " + str(dataStatsMatch["deaths"]) + " / " + str(dataStatsMatch["assists"])
-                    matchChampionStatsWhoWin += "\t cs : " + str(dataStatsMatch["totalMinionsKilled"]+dataStatsMatch["neutralMinionsKilled"]) + "\t gold : " + str(dataStatsMatch["goldEarned"])
-               
+                    matchChampionStatsWhoWin += (
+                        "\t"
+                        + str(dataStatsMatch["kills"])
+                        + " / "
+                        + str(dataStatsMatch["deaths"])
+                        + " / "
+                        + str(dataStatsMatch["assists"])
+                    )
+                    matchChampionStatsWhoWin += (
+                        "\t cs : "
+                        + str(
+                            dataStatsMatch["totalMinionsKilled"]
+                            + dataStatsMatch["neutralMinionsKilled"]
+                        )
+                        + "\t gold : "
+                        + str(dataStatsMatch["goldEarned"])
+                    )
+
             matchChampionInfoList.append(matchChampionInfo)
             matchChampionStatsWhoWinList.append(matchChampionStatsWhoWin)
 
-
-        embed = discord.Embed(title=f'{"Mecze Gracza : " + data["name"]}',
-                              color=discord.Color.dark_orange())
-        for x in range(0,len(matchChampionInfoList)):         
-            embed.add_field(name=matchChampionInfoList[x],
-                            value=f'{matchChampionStatsWhoWinList[x]}',
-                            inline=False)
+        embed = discord.Embed(
+            title=f'{"Mecze Gracza : " + data["name"]}',
+            color=discord.Color.dark_orange(),
+        )
+        for x in range(0, len(matchChampionInfoList)):
+            embed.add_field(
+                name=matchChampionInfoList[x],
+                value=f"{matchChampionStatsWhoWinList[x]}",
+                inline=False,
+            )
         await ctx.send(embed=embed)
-
