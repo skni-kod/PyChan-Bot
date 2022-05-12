@@ -8,10 +8,25 @@ class ConvertNumbers(commands.Cog):
     """
     The class contains convert_numbers method
     """
+
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='zamiana', category='Nauka')
+    @commands.command(
+        pass_context=True,
+        name="zamiana",
+        category="Nauka",
+        help_={
+            "title": "Zamiana",
+            "description": "Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>",
+            "fields": [
+                {
+                    "name": "Składnia",
+                    "value": "`zamiana <system z którego zamienamy> <do którego zamieniamy> <liczba>`",
+                }
+            ],
+        },
+    )
     @Decorator.pychan_decorator
     async def convert_numbers(self, ctx, from_param: int, to_param: int, number):
         """
@@ -34,16 +49,18 @@ class ConvertNumbers(commands.Cog):
         if (from_param < 2 or from_param > 16) or (to_param < 2 or to_param > 16):
             raise commands.errors.BadArgument
 
-        converted_number = ''
+        converted_number = ""
 
         if from_param == 10:
-            converted_number = dec_float_to_another(
-                to_param, number)['converted']['number']
+            converted_number = dec_float_to_another(to_param, number)["converted"][
+                "number"
+            ]
         elif to_param == 10:
-            converted_number = another_float_to_dec(from_param, number)['dec']
+            converted_number = another_float_to_dec(from_param, number)["dec"]
         else:
-            converted_number = another_float_to_dec(from_param, number)['dec']
+            converted_number = another_float_to_dec(from_param, number)["dec"]
             converted_number = dec_float_to_another(to_param, converted_number)[
-                'converted']['number']
+                "converted"
+            ]["number"]
 
-        await ctx.send(f'{number} ({from_param}) = {converted_number} ({to_param})')
+        await ctx.send(f"{number} ({from_param}) = {converted_number} ({to_param})")
