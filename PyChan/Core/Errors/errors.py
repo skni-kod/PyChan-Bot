@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 
 class Errors(commands.Cog):
@@ -16,12 +16,12 @@ class Errors(commands.Cog):
         """Function is called when error is raised
 
         :param ctx: the context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         :param error: contains information about error
-        :type error: discord.ext.commands.CommandError
+        :type error: nextcord.ext.commands.CommandError
         """
         if isinstance(error, commands.errors.CommandNotFound):
-            embed = discord.Embed(color=discord.Color.dark_purple())
+            embed = nextcord.Embed(color=nextcord.Color.dark_purple())
             embed.add_field(name='Błąd',
                             value='Podana komenda nie istnieje',
                             inline=False)

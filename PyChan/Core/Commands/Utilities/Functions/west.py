@@ -1,6 +1,6 @@
 import requests
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 class KanyeWestQuete(commands.Cog):
     def __init__ (self, bot):
@@ -11,7 +11,7 @@ class KanyeWestQuete(commands.Cog):
         data = requests.get('https://api.kanye.rest/')
         quote = data.json()['quote']
 
-        embed = discord.Embed(title='Kanye West Quote',
+        embed = nextcord.Embed(title='Kanye West Quote',
                             description=quote,
-                            color=discord.Color.dark_purple())
+                            color=nextcord.Color.dark_purple())
         await ctx.send(embed = embed)

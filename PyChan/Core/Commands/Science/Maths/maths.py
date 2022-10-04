@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from Core.Commands.Science.Maths.Functions.booth import BoothAlgorithm
 from Core.Commands.Science.Maths.Functions.convert_numbers import ConvertNumbers

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 import requests
 import json
 from config import ocr_token
@@ -51,7 +51,7 @@ class OCR(commands.Cog):
         Gets image from attachment and extracts text from it
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
@@ -62,7 +62,7 @@ class OCR(commands.Cog):
                             with open('ocr.txt', 'w', encoding="UTF-8") as file:
                                 file.write(output['ParsedResults'][0]['ParsedText'])
 
-                            file = discord.File("ocr.txt")
+                            file = nextcord.File("ocr.txt")
                             await ctx.send(file=file)
                             os.remove("ocr.txt")
                         else:

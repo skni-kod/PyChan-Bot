@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from Core.Commands.Settings.Functions.change_prefix import ChangePrefix
 from Core.Commands.Settings.Functions.change_status import ChangeStatus

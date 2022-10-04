@@ -1,8 +1,8 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from Core.core import Core
-from config import discord_token
+from config import nextcord_token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 from Core.Commands.Settings.Functions.change_status import ChangeStatus
@@ -14,10 +14,14 @@ def main():
     Default command 'help' is removed and is added cog file 'Core'
     Function 'get_server_prefix' is assigned 'command_prefix' and gets the prefix depending on the server on which the function is called
     """
-    intents = discord.Intents(messages=True, guilds=True, members=True, reactions=True)
+    intents = nextcord.Intents.default()
+    intents.message_content = True
+
+
     bot = commands.Bot(
         command_prefix=GetServerPrefix.get_server_prefix, intents=intents
     )
+    
     bot.remove_command("help")
     bot.add_cog(Core(bot))
 
@@ -31,7 +35,7 @@ def main():
 
         print("Bot is ready")
 
-    bot.run(discord_token)
+    bot.run(nextcord_token)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import json
-import discord
-from discord.embeds import Embed
-from discord.ext import commands, tasks
+import nextcord
+from nextcord.embeds import Embed
+from nextcord.ext import commands, tasks
 from datetime import datetime
 import requests
 import datetime
@@ -71,8 +71,8 @@ def embed_data(extracted_data) -> list[Embed]:
     counter = 0
     counter_2 = 0
     embed_tab = []
-    embed_tab.append(discord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}\n",
-                                   color=discord.Color.dark_purple()))
+    embed_tab.append(nextcord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}\n",
+                                   color=nextcord.Color.dark_purple()))
     for i, l in enumerate(extracted_data):
         days = str(list(l[2].keys())).replace(
             '[', '').replace(']', '').replace("'", '')
@@ -85,8 +85,8 @@ def embed_data(extracted_data) -> list[Embed]:
                                                value=f"```<Punkty>: {l[3]}\n<Gwiazdki>: {l[1]}\n<Ukończone dni> {str(days_sorted).replace(']','').replace('[','')}```", inline=False)
                 counter += 1
             else:
-                embed_tab.append(discord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}",
-                                               color=discord.Color.dark_purple()))
+                embed_tab.append(nextcord.Embed(title=f"Advent of Code\nCzas do następnego zadania: {get_delta_time()}",
+                                               color=nextcord.Color.dark_purple()))
                 embed_tab[counter_2].add_field(name=l[0],
                                                value=f"```<Punkty>: {l[3]}\n<Gwiazdki>: {l[1]}\n<Ukończone dni> {days}```", inline=False)
                 counter = 0

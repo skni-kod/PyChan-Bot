@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 import requests
 import json
 from config import waifu2x_token
@@ -36,7 +36,7 @@ class Waifu2x(commands.Cog):
         Gets image from attachement and upscales it
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):

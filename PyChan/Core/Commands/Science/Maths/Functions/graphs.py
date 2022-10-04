@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.graphs_functions import *
 import os
 
@@ -31,7 +31,7 @@ class Graphs(commands.Cog):
         Sends the reply message to the user with graph image
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param code: Tree Prufer code
         :type code: string
@@ -44,7 +44,7 @@ class Graphs(commands.Cog):
             try:
                 code[i] = int(code[i])
             except ValueError:
-                raise discord.ext.commands.BadArgument
+                raise nextcord.ext.commands.BadArgument
         # generate graph and send it to user
         tree = tree_from_prufer(code.copy())
         if tree is not None:
@@ -59,11 +59,11 @@ class Graphs(commands.Cog):
             )
             plt.savefig("tree.png")
             plt.clf()
-            file = discord.File("tree.png")
-            embed = discord.Embed(
+            file = nextcord.File("tree.png")
+            embed = nextcord.Embed(
                 title="Drzewo z kodu Prüfera:",
                 description=f"```{code}```",
-                color=discord.Color.dark_purple(),
+                color=nextcord.Color.dark_purple(),
             )
             embed.set_image(url="attachment://tree.png")
             await ctx.send(file=file, embed=embed)
@@ -71,10 +71,10 @@ class Graphs(commands.Cog):
             os.remove("tree.png")
         else:
             await ctx.send(
-                embed=discord.Embed(
+                embed=nextcord.Embed(
                     title="Niepoprawny Kod Prüfera!",
                     description="Kod zawiera liczbę większą niż długość kodu + 2.",
-                    color=discord.Color.dark_purple(),
+                    color=nextcord.Color.dark_purple(),
                 )
             )
 
@@ -108,12 +108,12 @@ class Graphs(commands.Cog):
         Sends the reply message to the user with supported graphs functions
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         await ctx.send(
-            embed=discord.Embed(
+            embed=nextcord.Embed(
                 title="Wspierane polecenia to ```^g rysuj```. Więcej informacji pod ```^help graf```",
-                color=discord.Color.dark_purple(),
+                color=nextcord.Color.dark_purple(),
             )
         )
 
@@ -123,7 +123,7 @@ class Graphs(commands.Cog):
         Sends the reply message to the user with graph image
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param args: List of vertices and edges as string
         :type args: string
@@ -132,10 +132,10 @@ class Graphs(commands.Cog):
 
         if len(args) < 3:
             await ctx.send(
-                embed=discord.Embed(
+                embed=nextcord.Embed(
                     title="Musisz podać 2 parametry",
                     description="Aby uzyskać pomoc wpisz `^help graf`",
-                    color=discord.Color.dark_purple(),
+                    color=nextcord.Color.dark_purple(),
                 )
             )
             return
@@ -166,11 +166,11 @@ class Graphs(commands.Cog):
             )
             plt.savefig("graph.png")
             plt.clf()
-            file = discord.File("graph.png")
-            embed = discord.Embed(
+            file = nextcord.File("graph.png")
+            embed = nextcord.Embed(
                 title="Graf nieskierowany:",
                 description=f"",
-                color=discord.Color.dark_purple(),
+                color=nextcord.Color.dark_purple(),
             )
             embed.set_image(url="attachment://graph.png")
             await ctx.send(file=file, embed=embed)
@@ -178,9 +178,9 @@ class Graphs(commands.Cog):
             os.remove("graph.png")
         else:
             await ctx.send(
-                embed=discord.Embed(
+                embed=nextcord.Embed(
                     title="Błędny zapis listy wierzchołków lub/i krawędzi",
                     description="Aby uzyskać pomoc wpisz `^help graf`",
-                    color=discord.Color.dark_purple(),
+                    color=nextcord.Color.dark_purple(),
                 )
             )

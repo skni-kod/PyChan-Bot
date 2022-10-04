@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from Core.Commands.Images.Functions.ocr import OCR
 from Core.Commands.Images.Functions.apod import ApodImage

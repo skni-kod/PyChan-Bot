@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Text.Functions.bored.bored import BoredAPI
 
 from Core.Commands.Text.Functions.fun_fact import FunFact

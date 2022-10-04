@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.permutations_functions import *
 
 
@@ -45,11 +45,11 @@ class Permutations(commands.Cog):
         Sends the reply message to the user with supported permutations functions
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
-        await ctx.send(embed=discord.Embed(
+        await ctx.send(embed=nextcord.Embed(
             title="Wspierane polecenia to ```^p info/potega/generuj/losuj```. Więcej informacji pod ```^help permutacje```",
-            color=discord.Color.dark_purple()))
+            color=nextcord.Color.dark_purple()))
 
     @permutacje.command(name='info')
     async def info(self, ctx, *, permstring):
@@ -57,19 +57,19 @@ class Permutations(commands.Cog):
         Sends some basics info about permutation
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param permstring: Permutation as string
         :type permstring: string
         """
         perm = smart_input(permstring.rstrip())
         if perm == -1:
-            await ctx.send(embed=discord.Embed(title="Błędny zapis permutacji!", color=discord.Color.dark_purple()))
+            await ctx.send(embed=nextcord.Embed(title="Błędny zapis permutacji!", color=nextcord.Color.dark_purple()))
             return
 
-        embed = discord.Embed(title="Permutacja:",
+        embed = nextcord.Embed(title="Permutacja:",
                               description=f" ```{permstring}```",
-                              color=discord.Color.dark_purple())
+                              color=nextcord.Color.dark_purple())
         embed.add_field(name="Postać jednowierszowa:",
                         value=f"```{perm2string(perm)}```",
                         inline=True)
@@ -131,7 +131,7 @@ class Permutations(commands.Cog):
         Sends permutation raised to given power
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param power: Exponent of the power
         :type power: int
@@ -141,13 +141,13 @@ class Permutations(commands.Cog):
         """
         perm = smart_input(permstring.rstrip())
         if perm == -1:
-            await ctx.send(embed=discord.Embed(title="Błędny zapis permutacji!", color=discord.Color.dark_purple()))
+            await ctx.send(embed=nextcord.Embed(title="Błędny zapis permutacji!", color=nextcord.Color.dark_purple()))
             return
 
         order = perm_order(perm)
-        embed = discord.Embed(title="Zadana permutacja:",
+        embed = nextcord.Embed(title="Zadana permutacja:",
                               description=f"```({permstring}) ^ {power}```",
-                              color=discord.Color.dark_purple())
+                              color=nextcord.Color.dark_purple())
         embed.add_field(name="Poermutacja po uproszczeniu:",
                         value=f"Jednowierszowo:\n```({perm2string(perm)}) ^ {power}```",
                         inline=True)
@@ -180,21 +180,21 @@ class Permutations(commands.Cog):
         Sends random permutation
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param n: Max number in permutation
         :type n: int
         """
         if n < 1 or n > 20:
-            await ctx.send(embed=discord.Embed(title="Numer poza zakresem. Podaj liczbę od 1 do 20",
-                                               color=discord.Color.dark_purple()))
+            await ctx.send(embed=nextcord.Embed(title="Numer poza zakresem. Podaj liczbę od 1 do 20",
+                                               color=nextcord.Color.dark_purple()))
             return
 
         perm = random_perm(n)
-        embed = discord.Embed(title=f"Losowa permutacja w S{n}:",
+        embed = nextcord.Embed(title=f"Losowa permutacja w S{n}:",
                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
                                           f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
-                              color=discord.Color.dark_purple())
+                              color=nextcord.Color.dark_purple())
         await ctx.send(embed=embed)
 
     @permutacje.command(name='generuj')
@@ -203,7 +203,7 @@ class Permutations(commands.Cog):
         Sends permutation generated from given number
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param number: Number of permutation
         :type number: int
@@ -213,11 +213,11 @@ class Permutations(commands.Cog):
         """
         if number > factorial(n) - 1 or number < 0:
             await ctx.send(
-                embed=discord.Embed(title=f"Podany numer nie występuje w S{n}", color=discord.Color.dark_purple()))
+                embed=nextcord.Embed(title=f"Podany numer nie występuje w S{n}", color=nextcord.Color.dark_purple()))
             return
         perm = perm_from_number(number, n)
-        embed = discord.Embed(title=f"Permutacja o numerze `{number}` w `S{n}`:",
+        embed = nextcord.Embed(title=f"Permutacja o numerze `{number}` w `S{n}`:",
                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
                                           f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
-                              color=discord.Color.dark_purple())
+                              color=nextcord.Color.dark_purple())
         await ctx.send(embed=embed)

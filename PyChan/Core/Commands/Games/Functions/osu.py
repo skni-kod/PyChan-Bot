@@ -1,6 +1,6 @@
-import discord
+import nextcord
 import ossapi
-from discord.ext import commands
+from nextcord.ext import commands
 from ossapi import Ossapi, GameMode
 from config import osu_token
 
@@ -18,19 +18,19 @@ class Osu(commands.Cog):
         self.osu = Ossapi(osu_token)
 
     @commands.command(pass_context=True, name='osu')
-    async def osu(self, ctx: discord.ext.commands.Context, *username):
+    async def osu(self, ctx: nextcord.ext.commands.Context, *username):
         """
         Shows statistics for a given user
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         username = ' '.join(username)
         user = self.osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        embed = discord.Embed(color=discord.Color.dark_purple())
+        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
         embed.set_author(name=f"Profil {user.username}",
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
@@ -47,12 +47,12 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(pass_context=True, name='osutop')
-    async def osutop(self, ctx: discord.ext.commands.Context, *username):
+    async def osutop(self, ctx: nextcord.ext.commands.Context, *username):
         """
         Shows best plays for a given user
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         username = ' '.join(username)
 
@@ -64,7 +64,7 @@ class Osu(commands.Cog):
         if not plays or not len(plays):
             return await ctx.reply('Ten użytkownik nie posiada żadnych wyników')
 
-        embed = discord.Embed(color=discord.Color.dark_purple())
+        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
         embed.set_author(name=f"Top 5 gracza {user.username}",
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
@@ -97,12 +97,12 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(pass_context=True, name='recent')
-    async def recent(self, ctx: discord.ext.commands.Context, *username):
+    async def recent(self, ctx: nextcord.ext.commands.Context, *username):
         """
         Shows the most recent play for a given user
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         username = ' '.join(username)
 
@@ -121,7 +121,7 @@ class Osu(commands.Cog):
             return await ctx.reply('Mapa którą zagrał gracz nie istnieje!')
         beatmap = beatmap[0]
 
-        embed = discord.Embed(color=discord.Color.dark_purple())
+        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
         embed.set_author(
             name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] +{recent.mods.short_name()} {round(beatmap.star_rating, 2)}★',
             url=f'https://osu.ppy.sh/b/{beatmap.beatmap_id}',

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Decorators.decorators import Decorator
 
 try:
@@ -245,7 +245,7 @@ class SummonerInfo(commands.Cog):
                 + "\n\n"
             )
 
-        embed = discord.Embed(title=f'{data["name"]}', color=discord.Color.dark_blue())
+        embed = nextcord.Embed(title=f'{data["name"]}', color=nextcord.Color.dark_blue())
         embed.add_field(
             name="Poziom konta : ", value=f'{data["summonerLevel"]}', inline=False
         )

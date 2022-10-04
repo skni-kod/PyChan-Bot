@@ -5,8 +5,8 @@ from sqlalchemy.orm import validates
 
 import datetime
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 
 class Database:

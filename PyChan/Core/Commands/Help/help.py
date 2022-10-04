@@ -1,7 +1,7 @@
-import discord
-from discord.ext import commands
-from discord import Embed
-from discord.utils import get
+import nextcord
+from nextcord.ext import commands
+from nextcord import Embed
+from nextcord.utils import get
 from typing import Optional
 
 from Core.Decorators.decorators import Decorator
@@ -20,7 +20,7 @@ class Help(commands.Cog):
         embed = Embed(
             title=f"{command}",
             description=f"{command.help}",
-            colour=discord.Color.dark_purple(),
+            colour=nextcord.Color.dark_purple(),
         )
         await ctx.send(embed=embed)
 
@@ -30,7 +30,7 @@ class Help(commands.Cog):
         """Sends message with built-in funtions
 
         :param ctx: the context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         prefix = GetServerPrefix.get_server_prefix(self, ctx)
         if cmd is None:
@@ -55,12 +55,12 @@ class Help(commands.Cog):
 
                 print(self.commands)
 
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title="Help",
                 description=f"Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n"
                 "\n"
                 "Dostępne komendy:",
-                color=discord.Color.dark_purple(),
+                color=nextcord.Color.dark_purple(),
             )
 
             for key in sorted(self.commands.keys()):
@@ -80,10 +80,10 @@ class Help(commands.Cog):
                     await ctx.send("Help nie został dodany!")
                     return
 
-                embed = discord.Embed(
+                embed = nextcord.Embed(
                     title=help_dict["title"],
                     description=help_dict["description"],
-                    color=discord.Color.dark_purple(),
+                    color=nextcord.Color.dark_purple(),
                 )
 
                 if "fields" in help_dict:
@@ -95,4 +95,4 @@ class Help(commands.Cog):
                 await ctx.send(embed=embed)
 
             else:
-                raise discord.ext.commands.errors.CommandNotFound
+                raise nextcord.ext.commands.errors.CommandNotFound

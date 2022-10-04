@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 import os
 
 
@@ -27,7 +27,7 @@ class GetMembersProjects(commands.Cog):
         Gets actual list of members and send txt file with name and projects assigned to them
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
 
         myfile = "listaCzlonkow.txt"
@@ -64,6 +64,6 @@ class GetMembersProjects(commands.Cog):
 
         await message.delete()
         with open("listaCzlonkow.txt", "rb") as file:
-            await ctx.send(file=discord.File(file, "listaCzlonkow.txt"))
+            await ctx.send(file=nextcord.File(file, "listaCzlonkow.txt"))
 
         os.remove("listaCzlonkow.txt")

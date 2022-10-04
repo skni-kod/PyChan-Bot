@@ -1,6 +1,5 @@
-#from msilib.schema import Error
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 import datetime
 from Core.Decorators.decorators import Decorator
 
@@ -37,8 +36,8 @@ class LastMatch(commands.Cog):
     async def lastMatch(self, ctx, name, numberMatch):
         headers = {"X-Riot-Token": riot_token}
 
-        embed = discord.Embed(
-            title=f'{"Trochę to zajmie"}', color=discord.Color.green()
+        embed = nextcord.Embed(
+            title=f'{"Trochę to zajmie"}', color=nextcord.Color.green()
         )
         await ctx.send(embed=embed)
 
@@ -106,9 +105,9 @@ class LastMatch(commands.Cog):
             matchChampionInfoList.append(matchChampionInfo)
             matchChampionStatsWhoWinList.append(matchChampionStatsWhoWin)
 
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title=f'{"Mecze Gracza : " + data["name"]}',
-            color=discord.Color.dark_orange(),
+            color=nextcord.Color.dark_orange(),
         )
         for x in range(0, len(matchChampionInfoList)):
             embed.add_field(

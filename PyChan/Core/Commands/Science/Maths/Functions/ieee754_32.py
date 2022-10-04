@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
@@ -33,14 +33,14 @@ class Ieee754x32(commands.Cog):
         Sends the reply message to the user
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param number: Number to change
         :type number: float
         """
         data = ieee754_32(str(number))
-        embed = discord.Embed(
-            title="IEEE 754/32BIT", description="", color=discord.Color.dark_purple()
+        embed = nextcord.Embed(
+            title="IEEE 754/32BIT", description="", color=nextcord.Color.dark_purple()
         )
         embed.add_field(name="Sign", value=data[0], inline=False)
         embed.add_field(name="Exponent", value=data[1], inline=False)

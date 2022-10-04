@@ -1,6 +1,6 @@
 import requests
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from config import apod_token
 
 class ApodImage(commands.Cog):
@@ -16,9 +16,9 @@ class ApodImage(commands.Cog):
         data = requests.get(f"https://api.nasa.gov/planetary/apod?api_key={apod_token}")
         imgurl = data.json()['hdurl']
 
-        embed = discord.Embed(title='Astronomy picture of the day',
+        embed = nextcord.Embed(title='Astronomy picture of the day',
                             description= data.json()['explanation'],
-                            color=discord.Color.dark_purple())
+                            color=nextcord.Color.dark_purple())
 
         """
         If it gets an image, it is embedded with the description

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 
 class QR(commands.Cog):
@@ -11,6 +11,6 @@ class QR(commands.Cog):
 
     @commands.command(pass_context=True, name="qr", category="Obraz")
     async def qr(self, ctx, arg):
-        embed = discord.Embed()
+        embed = nextcord.Embed()
         embed.set_image(url="https://www.qrtag.net/api/qr_6.png?url=" + str(arg))
         await ctx.send(embed=embed)

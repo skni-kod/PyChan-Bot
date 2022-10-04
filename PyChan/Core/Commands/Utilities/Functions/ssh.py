@@ -1,4 +1,4 @@
-from discord.ext import commands
+from nextcord.ext import commands
 import os
 import time
 
@@ -20,7 +20,7 @@ class SSH(commands.Cog):
             """Checks if message's author is a leader
 
             :param ctx: the context in which a command is called
-            :type ctx: discord.ext.commands.Context
+            :type ctx: nextcord.ext.commands.Context
             :return: returns True if author is a leader
             :rtype: bool
             """
@@ -32,7 +32,7 @@ class SSH(commands.Cog):
         """Updates repository on RaspberryPi
 
         :param ctx: the context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         """
         os.system('bash /home/pi/SkniBot/bot_update.sh')
         mess = await ctx.send(f"Update zacznie się za {30} sekund")

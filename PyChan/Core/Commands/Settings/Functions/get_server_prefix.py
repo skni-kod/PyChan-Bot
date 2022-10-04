@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from config import default_prefix
 from Database.database import Database
 
@@ -12,9 +12,9 @@ class GetServerPrefix:
         """Gets server id from sent message
 
         :param bot: instance of Bot
-        :type bot: discord.ext.commands.bot.Bot
+        :type bot: nextcord.ext.commands.bot.Bot
         :param message: contains information about message
-        :type message: discord.Message
+        :type message: nextcord.Message
         :return: server's prefix
         :rtype: str
         """

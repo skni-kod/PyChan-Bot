@@ -1,4 +1,4 @@
-discord.py
+nextcord
 Sphinx
 sphinx-autoapi
 sphinx-material
@@ -7,3 +7,4 @@ tabulate
 ossapi
 networkx
 matplotlib
+datetime

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Decorators.decorators import Decorator
 
 from Database.database import Database
@@ -38,7 +38,7 @@ class ChangePrefix(commands.Cog):
         """Changes server's command prefix
 
         :param ctx: the context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
         :param prefix: new prefix which invokes commands
         :type prefix: str
         """

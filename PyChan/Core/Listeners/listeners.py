@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from Database.database import Database
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
@@ -17,7 +17,7 @@ class Listeners(commands.Cog):
         """Function is called when messege is sent
 
         :param message: contains information about message
-        :type message: discord.Message
+        :type message: nextcord.Message
         """
 
         if message.author.bot:
@@ -34,7 +34,7 @@ class Listeners(commands.Cog):
         """Function is called when Bot joins to server
 
         :param guild: contains information about server
-        :type guild: discord.Guild
+        :type guild: nextcord.Guild
         """
 
         Database.add_guild(guild.id)

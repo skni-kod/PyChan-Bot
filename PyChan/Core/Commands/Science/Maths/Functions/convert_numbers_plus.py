@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 
@@ -34,7 +34,7 @@ class ConvertNumbersPlus(commands.Cog):
         Sends the reply message with result and solution step by step.
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param from_param: Base number system
         :type from_param: int

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.maths_functions import *
 from Core.Decorators.decorators import Decorator
 from tabulate import tabulate
@@ -33,7 +33,7 @@ class BoothAlgorithm(commands.Cog):
         Sends the reply message to the user with step by step solution of multiplication of two integers with the booth algorithm
 
         :param ctx: The context in which a command is called
-        :type ctx: discord.ext.commands.Context
+        :type ctx: nextcord.ext.commands.Context
 
         :param liczba1: First number
         :type liczba1: int
