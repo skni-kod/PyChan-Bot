@@ -66,7 +66,7 @@ class LastMatch(commands.Cog):
 
             matchChampionInfo = ""
             matchChampionStatsWhoWin = ""
-            matchChampionInfo += "Tryp Gry : " + str(dataStats["gameMode"])
+            matchChampionInfo += "Tryb Gry : " + str(dataStats["gameMode"])
             matchChampionInfo += " Czas : " + str(
                 datetime.datetime.fromtimestamp(
                     int(dataStats["gameStartTimestamp"]) / 1000
