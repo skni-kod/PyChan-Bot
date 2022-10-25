@@ -1,12 +1,16 @@
 # PyChan-Bot
 
-Installing requirements:  
-```pip install -r req.txt```
+## Installing requirements:  
+```python -m pip install -r req.txt```
 
-Configuration:  
+## Configuration:  
+### Linux
 ```cp config.py.sample config.py```  
-```copy config.py.sample config.py```
-```your_editor_of_choice config.py```
+```nano config.py```
 
-Run:  
+### Windows
+copy `config.py.sample` and rename it to `config.py`  
+edit `config.py` and fill it out
+
+## Running the bot:  
 ```python main.py```
