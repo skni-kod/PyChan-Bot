@@ -2,7 +2,7 @@ import nextcord
 from nextcord.ext import commands
 
 from Core.core import Core
-from config import nextcord_token
+from config import discord_token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 from Core.Commands.Settings.Functions.change_status import ChangeStatus
@@ -35,7 +35,7 @@ def main():
 
         print("Bot is ready")
 
-    bot.run(nextcord_token)
+    bot.run(discord_token)
 
 
 if __name__ == "__main__":
