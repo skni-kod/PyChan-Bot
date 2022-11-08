@@ -2,7 +2,7 @@ from nextcord.ext import commands
 
 from Core.Commands.Games.Functions.osu import Osu
 from Core.Commands.Games.Functions.summoner_info import SummonerInfo
-from Core.Commands.Games.Functions.lastMatch import LastMatch
+from Core.Commands.Games.Functions.last_match import LastMatch
 
 class Games(commands.Cog):
     """Class contains gaming methods
