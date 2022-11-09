@@ -48,7 +48,11 @@ class Osrs(commands.Cog):
         Gets HiScore data of a user or a price of an item, depending on
         whether the "user:" or "price:" argument was used.
         """
-        skills = ['attack',  'hitpoints', 'mining', 
+        
+        
+        if ' '.join((args)).split(":")[0] == "user":
+            
+            skills = ['attack',  'hitpoints', 'mining', 
                   'strength', 'agility', 'smithing', 
                   'defence', 'herblore', 'fishing', 
                   'ranged', 'thieving', 'cooking', 
@@ -56,18 +60,17 @@ class Osrs(commands.Cog):
                   'magic', 'fletching', 'woodcutting', 
                   'runecrafting', 'slayer', 'farming',
                   'construction', 'hunter', 'total'
-        ]
-        skillsNames = ['⚔',  '♥', '⛏', 
-                  '✊', '🏃', '🔨', 
-                  '🛡', '🌿', '🐟', 
-                  '🏹', '💰', '🍲', 
-                  '✨', '🛠', '🔥', 
-                  '🧙', '🔪', '🌳', 
-                  '🍪', '💀', '🌽',
-                  '🏡', '🐾', "🏆"
-        ]
-        
-        if ' '.join((args)).split(":")[0] == "user":
+            ]
+            skillsNames = ['⚔️',  '❤️', '⛏️', 
+                           '✊', '🏃', '🔨', 
+                           '🛡️', '🌿', '🐟', 
+                           '🏹', '💰', '🍲', 
+                           '✨', '🛠', '🔥', 
+                           '🧙', '🔪', '🌳', 
+                           '🍪', '💀', '🌽',
+                           '🏡', '🐾', "🏆"
+            ]
+            
             accountName = ' '.join(args).split(":")[1]
             accountData = Hiscores(accountName)
             accountStats = accountData.skills
