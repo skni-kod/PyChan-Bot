@@ -72,28 +72,38 @@ class Osrs(commands.Cog):
             ]
             
             accountName = ' '.join(args).split(":")[1]
-            accountData = Hiscores(accountName)
-            accountStats = accountData.skills
-            embed = nextcord.Embed(
-                title = f"Statystyki gracza {accountName}",
-                color = nextcord.Color.yellow(),
-            )
-            skillsTotal = 0
-            counter = 0
-            reset = 0
-            result = ""
-            for skill in skills:
-                if skill != 'total':
-                    skillsTotal += accountStats[f'{skill}'].level
-                if skill != 'total' and counter == 2:
-                    result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level}\n\n"
-                    counter = 0
-                    reset = 1
-                if skill != 'total' and counter != 2 and not reset == 1:
-                    result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level} | "
-                    counter += 1
-                if skill == 'total':
-                    result += f"{skillsNames[skills.index(skill)]} {skillsTotal}"
+            accountExists = True
+            try:
+                accountData = Hiscores(accountName)
+            except Exception:
+                accountExists = False
+                embed = nextcord.Embed(
+                    title = f"Nie znaleziono informacji o koncie {accountName}",
+                    color = nextcord.Color.yellow(),
+                    description = "Może to oznaczać, że nie jest w top 2,000,000 graczy lub takie konto nie istnieje"
+                )
+            if accountExists:
+                accountStats = accountData.skills
+                embed = nextcord.Embed(
+                    title = f"Statystyki gracza {accountName}",
+                    color = nextcord.Color.yellow(),
+                )
+                skillsTotal = 0
+                counter = 0
                 reset = 0
-            embed.description = result
+                result = ""
+                for skill in skills:
+                    if skill != 'total':
+                        skillsTotal += accountStats[f'{skill}'].level
+                    if skill != 'total' and counter == 2:
+                        result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level}\n\n"
+                        counter = 0
+                        reset = 1
+                    if skill != 'total' and counter != 2 and not reset == 1:
+                        result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level} | "
+                        counter += 1
+                    if skill == 'total':
+                        result += f"{skillsNames[skills.index(skill)]} {skillsTotal}"
+                    reset = 0
+                embed.description = result
         await ctx.send(embed=embed)
