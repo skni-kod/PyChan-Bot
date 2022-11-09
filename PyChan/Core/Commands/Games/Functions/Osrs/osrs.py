@@ -128,9 +128,9 @@ class Osrs(commands.Cog):
                             trendEmoji = '📊'
                         embed.add_field(
                             name = f"{item.name}",
-                            value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"
-                                     
+                            value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"   
                         )
+                    embed.set_thumbnail(url = f"https://oldschool.runescape.wiki/images/{Item.id_to_name(itemId[0]).replace(' ', '_')}_detail.png")
                 else:
                     item = GrandExchange.item(itemId)
                     itemTrend = item.price_info.trend_30
@@ -144,5 +144,5 @@ class Osrs(commands.Cog):
                         name = f"{item.name}",
                         value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"
                     )
-                    result += f"{item.name} - {item.price()} gp"
+                    embed.set_thumbnail(url = f"https://oldschool.runescape.wiki/images/{Item.id_to_name(itemId).replace(' ', '_')}_detail.png")
         await ctx.send(embed=embed)
