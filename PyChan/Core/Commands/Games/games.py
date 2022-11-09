@@ -1,6 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from Core.Commands.Games.Functions.osu import Osu
+from Core.Commands.Games.Functions.Osrs.osrs import Osrs
 
 
 class Games(commands.Cog):
@@ -12,3 +13,4 @@ class Games(commands.Cog):
         """
         self.bot = bot
         self.bot.add_cog(Osu(bot))
+        self.bot.add_cog(Osrs(bot))
