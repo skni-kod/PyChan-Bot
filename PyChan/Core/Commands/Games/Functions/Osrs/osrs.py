@@ -1,5 +1,7 @@
 import nextcord
 from osrs_api import Hiscores
+from osrs_api import GrandExchange
+from osrs_api import Item
 from nextcord.ext import commands
 
 class Osrs(commands.Cog):
@@ -52,24 +54,15 @@ class Osrs(commands.Cog):
         
         if ' '.join((args)).split(":")[0] == "user":
             
-            skills = ['attack',  'hitpoints', 'mining', 
-                  'strength', 'agility', 'smithing', 
-                  'defence', 'herblore', 'fishing', 
-                  'ranged', 'thieving', 'cooking', 
-                  'prayer', 'crafting', 'firemaking', 
-                  'magic', 'fletching', 'woodcutting', 
-                  'runecrafting', 'slayer', 'farming',
-                  'construction', 'hunter', 'total'
-            ]
-            skillsNames = ['⚔️',  '❤️', '⛏️', 
-                           '✊', '🏃', '🔨', 
-                           '🛡️', '🌿', '🐟', 
-                           '🏹', '💰', '🍲', 
-                           '✨', '🛠', '🔥', 
-                           '🧙', '🔪', '🌳', 
-                           '🍪', '💀', '🌽',
-                           '🏡', '🐾', "🏆"
-            ]
+            skills = {'attack': '⚔️',  'hitpoints': '❤️', 'mining': '⛏️', 
+                  'strength': '✊', 'agility': '🏃', 'smithing': '🔨', 
+                  'defence': '🛡️', 'herblore': '🌿', 'fishing': '🐟', 
+                  'ranged': '🏹', 'thieving': '🏃', 'cooking': '🍲', 
+                  'prayer': '✨', 'crafting': '🛠️', 'firemaking': '🔥', 
+                  'magic': '🧙', 'fletching': '🔪', 'woodcutting': '🌳', 
+                  'runecrafting': '🍪', 'slayer': '💀', 'farming': '🌽',
+                  'construction': '🏡', 'hunter': '🐾', 'total': '🏆'
+            }
             
             accountName = ' '.join(args).split(":")[1]
             accountExists = True
@@ -96,14 +89,60 @@ class Osrs(commands.Cog):
                     if skill != 'total':
                         skillsTotal += accountStats[f'{skill}'].level
                     if skill != 'total' and counter == 2:
-                        result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level}\n\n"
+                        result += f"{skills[skill]} {accountStats[skill].level}\n\n"
                         counter = 0
                         reset = 1
                     if skill != 'total' and counter != 2 and not reset == 1:
-                        result += f"{skillsNames[skills.index(skill)]} {accountStats[skill].level} | "
+                        result += f"{skills[skill]} {accountStats[skill].level} | "
                         counter += 1
                     if skill == 'total':
-                        result += f"{skillsNames[skills.index(skill)]} {skillsTotal}"
+                        result += f"{skills[skill]} {skillsTotal}"
                     reset = 0
                 embed.description = result
+        
+        if ' '.join((args)).split(":")[0] == "price":
+            itemName = ' '.join(args).split(":")[1].lower()
+            itemId = Item.get_ids(itemName)
+            if not itemId:
+                embed = nextcord.Embed(
+                    title = f"Nie znaleziono przedmiotu \"{itemName}\"",
+                    color = nextcord.Color.yellow(),
+                )
+            else:
+                if(type(itemId) == list):
+                    [Item.id_to_name(id) for id in itemId]
+                embed = nextcord.Embed(
+                    title = f"Przedmioty pasujące do \"{itemName}\"",
+                    color = nextcord.Color.yellow(),
+                )
+                result = ""
+                if type(itemId) == list:
+                    for id in itemId:
+                        item = GrandExchange.item(id)
+                        itemTrend = item.price_info.trend_30
+                        if(itemTrend.trend == 'negative'):
+                            trendEmoji = '📉'
+                        elif(itemTrend.trend == 'positive'):
+                            trendEmoji = '📈'
+                        else:
+                            trendEmoji = '📊'
+                        embed.add_field(
+                            name = f"{item.name}",
+                            value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"
+                                     
+                        )
+                else:
+                    item = GrandExchange.item(itemId)
+                    itemTrend = item.price_info.trend_30
+                    if(itemTrend.trend == 'negative'):
+                        trendEmoji = '📉'
+                    elif(itemTrend.trend == 'positive'):
+                        trendEmoji = '📈'
+                    else:
+                        trendEmoji = '📊'
+                    embed.add_field(
+                        name = f"{item.name}",
+                        value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"
+                    )
+                    result += f"{item.name} - {item.price()} gp"
         await ctx.send(embed=embed)
