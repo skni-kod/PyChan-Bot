@@ -2,14 +2,15 @@ from nextcord import Color, Embed
 from nextcord.ext.commands import Group, HelpCommand, Cog, Command
 from typing import Mapping, Optional, List
 
-class HelpField():
-    def __init__(self, ) -> None:
-        pass
+from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
+
 
 class PyChanHelp(HelpCommand):
     async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[Command]]):
+        prefix = GetServerPrefix.get_server_prefix(None, self.context)
         embed = Embed(title="Pomoc", color=Color.dark_purple())
-        embed.description = "Dostępne komendy:"
+        embed.description = f"Wpisz `{prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n"
+        embed.description += "Dostępne komendy:"
         
         fields: dict[str, List[Command]] = {}
         for cog_commands in mapping.values():
@@ -31,16 +32,25 @@ class PyChanHelp(HelpCommand):
         return await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, command: Command):
+        prefix = GetServerPrefix.get_server_prefix(None, self.context)
+
         embed = Embed(title=command.name, color=Color.dark_purple())
         embed.description = command.help or "Brak opisu"
         if command.signature:
-            embed.add_field(name="Sposób użycia", value=f'`{command.name} {command.signature}`')
+            if command.parent:
+                embed.add_field(name="Sposób użycia", value=f'`{prefix}{command.parent.name} {command.name} {command.signature}`')
+            else:
+                embed.add_field(name="Sposób użycia", value=f'`{prefix}{command.name} {command.signature}`')
+
+        if len(command.aliases) > 0:
+            embed.add_field(name="Aliasy komendy", value=', '.join(list(map(lambda a: f'`{a}`', command.aliases))))
 
         return await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group: Group):
+        prefix = GetServerPrefix.get_server_prefix(None, self.context)
         embed = Embed(title=group.name, color=Color.dark_purple())
-        embed.description = f'Wpisz `^help {group.name} <komenda>` aby dowiedzieć się więcej o danej podkomendzie'
+        embed.description = f'Wpisz `{prefix}help {group.name} <komenda>` aby dowiedzieć się więcej o danej podkomendzie'
         embed.add_field(name="Dostępne podkomendy", value=', '.join(list(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
 
         return await self.get_destination().send(embed=embed)
