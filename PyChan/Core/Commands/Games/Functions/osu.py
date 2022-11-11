@@ -11,6 +11,7 @@ class Osu(commands.Cog):
 
     @commands.group(name="osu")
     async def osu(self, _: commands.Context):
+        '''Komendy związane z grą osu!'''
         pass
 
     @osu.command(name="profil", pass_context=True)
