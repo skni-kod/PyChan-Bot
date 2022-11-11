@@ -9,13 +9,14 @@ class Osu(commands.Cog):
         self.bot = bot
         self._osu = Ossapi(osu_token)
 
-    @commands.group(name="osu")
+    @commands.group(name="osu", category="Gry")
     async def osu(self, _: commands.Context):
         '''Komendy związane z grą osu!'''
         pass
 
     @osu.command(name="profil", pass_context=True)
     async def profil(self, ctx: commands.Context, *, username: str):
+        '''Wyświetla informacje na temat gracza'''
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -37,7 +38,8 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @osu.command(name="top", pass_context=True)
-    async def osutop(self, ctx: commands.Context, *, username: str):
+    async def top(self, ctx: commands.Context, *, username: str):
+        '''Wyświetla najlepsze wyniki gracza'''
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -80,6 +82,7 @@ class Osu(commands.Cog):
 
     @osu.command(name="ostatni", pass_context=True)
     async def ostatni(self, ctx: commands.Context, *, username):
+        '''Wyświetla ostatnie zagranie gracza'''
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
