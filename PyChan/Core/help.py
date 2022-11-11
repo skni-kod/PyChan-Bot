@@ -34,13 +34,14 @@ class PyChanHelp(HelpCommand):
     async def send_command_help(self, command: Command):
         prefix = GetServerPrefix.get_server_prefix(None, self.context)
 
-        embed = Embed(title=command.name, color=Color.dark_purple())
+        command_str = command.name
+        if command.parent:
+            command_str = command.parent.name + ' ' + command.name
+
+        embed = Embed(title=command_str, color=Color.dark_purple())
         embed.description = command.help or "Brak opisu"
         if command.signature:
-            if command.parent:
-                embed.add_field(name="Sposób użycia", value=f'`{prefix}{command.parent.name} {command.name} {command.signature}`')
-            else:
-                embed.add_field(name="Sposób użycia", value=f'`{prefix}{command.name} {command.signature}`')
+            embed.add_field(name="Sposób użycia", value=f'`{prefix}{command_str} {command.signature}`')
 
         if len(command.aliases) > 0:
             embed.add_field(name="Aliasy komendy", value=', '.join(list(map(lambda a: f'`{a}`', command.aliases))))
