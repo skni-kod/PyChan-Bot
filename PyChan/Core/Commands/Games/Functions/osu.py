@@ -6,20 +6,15 @@ from config import osu_token
 
 class Osu(commands.Cog):
     def __init__(self, bot):
-        """
-        Constructor method
-        """
         self.bot = bot
         self._osu = Ossapi(osu_token)
 
-
     @commands.group(name="osu")
-    async def osu(self, ctx: commands.Context):
+    async def osu(self, _: commands.Context):
         pass
 
     @osu.command(name="profil", pass_context=True)
-    async def profil(self, ctx: commands.Context, *username):
-        username = ' '.join(username)
+    async def profil(self, ctx: commands.Context, *, username: str):
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -41,15 +36,7 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @osu.command(name="top", pass_context=True)
-    async def osutop(self, ctx: commands.Context, *username):
-        """
-        Shows best plays for a given user
-
-        :param ctx: The context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        """
-        username = ' '.join(username)
-
+    async def osutop(self, ctx: commands.Context, *, username: str):
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -91,15 +78,7 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @osu.command(name="ostatni", pass_context=True)
-    async def ostatni(self, ctx: commands.Context, *username):
-        """
-        Shows the most recent play for a given user
-
-        :param ctx: The context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        """
-        username = ' '.join(username)
-
+    async def ostatni(self, ctx: commands.Context, *, username):
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
