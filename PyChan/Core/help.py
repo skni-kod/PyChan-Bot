@@ -1,5 +1,5 @@
 from nextcord import Color, Embed
-from nextcord.ext.commands import HelpCommand, Cog, Command
+from nextcord.ext.commands import Group, HelpCommand, Cog, Command
 from typing import Mapping, Optional, List
 
 class HelpField():
@@ -35,5 +35,12 @@ class PyChanHelp(HelpCommand):
         embed.description = command.help or "Brak opisu"
         if command.signature:
             embed.add_field(name="Sposób użycia", value=f'`{command.name} {command.signature}`')
+
+        return await self.get_destination().send(embed=embed)
+
+    async def send_group_help(self, group: Group):
+        embed = Embed(title=group.name, color=Color.dark_purple())
+        embed.description = f'Wpisz `^help {group.name} <komenda>` aby dowiedzieć się więcej o danej podkomendzie'
+        embed.add_field(name="Dostępne podkomendy", value=', '.join(list(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
 
         return await self.get_destination().send(embed=embed)
