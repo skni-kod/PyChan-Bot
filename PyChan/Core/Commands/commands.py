@@ -1,6 +1,5 @@
 from nextcord.ext import commands
 
-from Core.Commands.Help.help import Help
 from Core.Commands.Images.images import Images
 from Core.Commands.Science.science import Science
 from Core.Commands.Settings.settings import Settings
@@ -18,7 +17,6 @@ class Commands(commands.Cog):
         """Constructor method
         """
         self.bot = bot
-        self.bot.add_cog(Help(bot))
         self.bot.add_cog(Images(bot))
         self.bot.add_cog(Science(bot))
         self.bot.add_cog(SKNIKOD(bot))
