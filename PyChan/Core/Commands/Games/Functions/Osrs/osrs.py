@@ -108,17 +108,16 @@ class Osrs(commands.Cog):
                 title = f"Przedmioty pasujące do \"{itemName}\"",
                 color = nextcord.Color.yellow(),
             )
-            result = ""
             if type(itemId) == list:
                 for id in itemId:
                     item = GrandExchange.item(id)
                     itemTrend = item.price_info.trend_30
                     if(itemTrend.trend == 'negative'):
                         trendEmoji = '📉'
-                    elif(itemTrend.trend == 'positive'):
-                        trendEmoji = '📈'
-                    else:
+                    elif(itemTrend.change == 0):
                         trendEmoji = '📊'
+                    else:
+                        trendEmoji = '📈'
                     embed.add_field(
                         name = f"{item.name}",
                         value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"   
