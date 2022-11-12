@@ -1,12 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from Core.Decorators.decorators import Decorator
-
-try:
-    from config import riot_token
-except ImportError:
-    raise ImportError("Riot token not found!")
-
+from config import riot_token
 import requests
 
 
@@ -18,7 +13,7 @@ class SummonerInfo(commands.Cog):
     @commands.command(
         pass_context=True,
         name="lolkonto",
-        category="League of Legends",
+        category="Gry",
         help_={
             "title": "lolkonto",
             "description": "Funkcja do pokazywania informacji o przywoływaczu.",
