@@ -90,7 +90,7 @@ class Osrs(commands.Cog):
         
                   Jesli przedmiot przedmiot ma więcej niż jeden wynik, \
                   lub została wprowadzona niepełna nazwa, zostaną wyświetlone wszystkie przedmioty z pasującą nazwą.
-                  Wszystkie wyniki zostaną wyświetlone z trendem z ostatnich 7 dni.
+                  Wszystkie wyniki zostaną wyświetlone z trendem z ostatnich 30 dni.
                """
     )
     async def price(self, ctx, *, itemName: str):
@@ -120,7 +120,7 @@ class Osrs(commands.Cog):
                         trendEmoji = '📈'
                     embed.add_field(
                         name = f"{item.name}",
-                        value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"   
+                        value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 30 dni)"   
                     )
                 embed.set_thumbnail(url = f"https://oldschool.runescape.wiki/images/{Item.id_to_name(itemId[0]).replace(' ', '_')}_detail.png")
             else:
@@ -134,7 +134,7 @@ class Osrs(commands.Cog):
                     trendEmoji = '📈'
                 embed.add_field(
                     name = f"{item.name}",
-                    value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 7 dni)"
+                    value = f"Cena: {item.price()} gp \n Trend: {trendEmoji} | {round(itemTrend.change, 0)}% (ostatnie 30 dni)"
                 )
                 embed.set_thumbnail(url = f"https://oldschool.runescape.wiki/images/{Item.id_to_name(itemId).replace(' ', '_')}_detail.png")
         await ctx.send(embed=embed)
