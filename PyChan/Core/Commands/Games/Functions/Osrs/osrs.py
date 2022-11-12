@@ -33,7 +33,6 @@ class Osrs(commands.Cog):
                     🍪 `- Runecraft    `| 💀 `- Slayer    `| 🌽 `- Farming`
                     🏡 `- Construction `| 🐾 `- Hunter    `| 🏆 `- Total`
                """
-#If it's not indented this way, the code block keeps the space before the actual content
     )
     async def user(self, ctx, *, accountName: str):
         '''Wyświetla statystyki danego gracza'''
