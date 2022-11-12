@@ -21,18 +21,18 @@ class Osrs(commands.Cog):
         pass_context = True,
         name = 'user',
         usage = '<nick>',
-        help = """Oznaczenia:
-```
-⚔️ - Attack       | ❤️ - Hitpoints | ⛏️ - Mining
-✊ - Strength      | 🏃 - Agility   | 🔨 - Smithing
-🛡️ - Defence       | 🌿 - Herblore  | 🐟 - Fishing
-🏹 - Ranged       | 💰 - Thieving  | 🍲 - Cooking
-✨ - Prayer       | 🛠️ - Crafting  | 🔥 - Firemaking
-🧙 - Magic        | 🔪 - Fletching | 🌳 - Woodcutting
-🍪 - Runecraft    | 💀 - Slayer    | 🌽 - Farming
-🏡 - Construction | 🐾 - Hunter    | 🏆 - Total
-```
-"""
+        help = """Wyświetla statystyki danego gracza
+        
+                  **Oznaczenia**
+                    ⚔️ `- Attack       `| ❤️ `- Hitpoints `| ⛏️ `- Mining`
+                    ✊ `- Strength     `| 🏃 `- Agility   `| 🔨 `- Smithing`
+                    🛡️ `- Defence      `| 🌿 `- Herblore  `| 🐟 `- Fishing`
+                    🏹 `- Ranged       `| 💰 `- Thieving  `| 🍲 `- Cooking`
+                    ✨ `- Prayer       `| 🛠️ `- Crafting  `| 🔥 `- Firemaking`
+                    🧙 `- Magic        `| 🔪 `- Fletching `| 🌳 `- Woodcutting`
+                    🍪 `- Runecraft    `| 💀 `- Slayer    `| 🌽 `- Farming`
+                    🏡 `- Construction `| 🐾 `- Hunter    `| 🏆 `- Total`
+               """
 #If it's not indented this way, the code block keeps the space before the actual content
     )
     async def user(self, ctx, *, accountName: str):
@@ -86,9 +86,12 @@ class Osrs(commands.Cog):
         pass_context = True,
         name = 'price',
         usage = '<przedmiot>',
-        help = """Wyświetla cenę danego przedmiotu. Jesli przedmiot przedmiot ma więcej niż jeden wynik, \
-               lub została wprowadzona niepełna nazwa, zostaną wyświetlone wszystkie przedmioty z pasującą nazwą.
-               Wszystkie wyniki zostaną wyświetlone z trendem z ostatnich 7 dni."""
+        help = """Wyświetla cenę danego przedmiotu.
+        
+                  Jesli przedmiot przedmiot ma więcej niż jeden wynik, \
+                  lub została wprowadzona niepełna nazwa, zostaną wyświetlone wszystkie przedmioty z pasującą nazwą.
+                  Wszystkie wyniki zostaną wyświetlone z trendem z ostatnich 7 dni.
+               """
     )
     async def price(self, ctx, *, itemName: str):
         '''Wyświetla cenę danego przedmiotu'''
