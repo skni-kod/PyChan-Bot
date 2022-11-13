@@ -1,15 +1,60 @@
 import nextcord
-from nextcord import Emoji
 from osrs_api import Hiscores
 from osrs_api import GrandExchange
 from osrs_api import Item
 from nextcord.ext import commands
+
+helpPerms = """Wyświetla statystyki danego gracza
+    
+                   **Oznaczenia**
+                   <:osrs_attack:1041097852648161360> `- Attack       `| <:osrs_hitpoints:1041122749294329876> `- Hitpoints `| <:osrs_mining:1041123033177399306> `- Mining     `
+                   <:osrs_strength:1041123003720810557> `- Strength     `| <:osrs_agility:1041123509629362297> `- Agility   `| <:osrs_smithing:1041123398731972638> `- Smithing   `
+                   <:osrs_defence:1041123882180022282> `- Defence      `| <:osrs_herblore:1041123956733779968> `- Herblore  `| <:osrs_fishing:1041124029899219076> `- Fishing    `
+                   <:osrs_ranged:1041124096114688091> `- Ranged       `| <:osrs_thieving:1041124182924202055> `- Thieving  `| <:osrs_cooking:1041124263182213232> `- Cooking    `
+                   <:osrs_prayer:1041124321285914694> `- Prayer       `| <:osrs_crafting:1041124418220478464> `- Crafting  `| <:osrs_firemaking:1041124535778426960> `- Firemaking `
+                   <:osrs_magic:1041127032978944130> `- Magic        `| <:osrs_fletching:1041127143687594034> `- Fletching `| <:osrs_woodcutting:1041127210733535302> `- Woodcutting`
+                   <:osrs_runecraft:1041124609841434644> `- Runecraft    `| <:osrs_slayer:1041124679601094676> `- Slayer    `| <:osrs_farming:1041124747225878609> `- Farming    `
+                   <:osrs_construction:1041124815764996146> `- Construction `| <:osrs_hunter:1041124880982229022> `- Hunter    `| 🏆 `- Total      `                
+                """
+helpNoPerms = """Wyświetla statystyki danego gracza
+    
+                **Oznaczenia**
+                ⚔️ `- Attack       `| ❤️ `- Hitpoints `| ⛏️ `- Mining`
+                ✊ `- Strength     `| 🏃 `- Agility   `| 🔨 `- Smithing`
+                🛡️ `- Defence      `| 🌿 `- Herblore  `| 🐟 `- Fishing`
+                🏹 `- Ranged       `| 💰 `- Thieving  `| 🍲 `- Cooking`
+                ✨ `- Prayer       `| 🛠️ `- Crafting  `| 🔥 `- Firemaking`
+                🧙 `- Magic        `| 🔪 `- Fletching `| 🌳 `- Woodcutting`
+                🍪 `- Runecraft    `| 💀 `- Slayer    `| 🌽 `- Farming`
+                🏡 `- Construction `| 🐾 `- Hunter    `| 🏆 `- Total`
+            """
+skillsPerms = {'attack': '<:osrs_attack:1041097852648161360>',  'hitpoints': '<:osrs_hitpoints:1041122749294329876>', 'mining': '<:osrs_mining:1041123033177399306>', 
+            'strength': '<:osrs_strength:1041123003720810557>', 'agility': '<:osrs_agility:1041123509629362297>', 'smithing': '<:osrs_smithing:1041123398731972638>', 
+            'defence': '<:osrs_defence:1041123882180022282>', 'herblore': '<:osrs_herblore:1041123956733779968>', 'fishing': '<:osrs_fishing:1041124029899219076>', 
+            'ranged': '<:osrs_ranged:1041124096114688091>', 'thieving': '<:osrs_thieving:1041124182924202055>', 'cooking': '<:osrs_cooking:1041124263182213232>', 
+            'prayer': '<:osrs_prayer:1041124321285914694>', 'crafting': '<:osrs_crafting:1041124418220478464>', 'firemaking': '<:osrs_firemaking:1041124535778426960>', 
+            'magic': '<:osrs_magic:1041127032978944130>', 'fletching': '<:osrs_fletching:1041127143687594034>', 'woodcutting': '<:osrs_woodcutting:1041127210733535302>', 
+            'runecrafting': '<:osrs_runecraft:1041124609841434644>', 'slayer': '<:osrs_slayer:1041124679601094676>', 'farming': '<:osrs_farming:1041124747225878609>',
+            'construction': '<:osrs_construction:1041124815764996146>', 'hunter': '<:osrs_hunter:1041124880982229022>', 'total': '🏆'
+}
+
+skillsNoPerms = {'attack': '⚔️',  'hitpoints': '❤️', 'mining': '⛏️', 
+            'strength': '✊', 'agility': '🏃', 'smithing': '🔨', 
+            'defence': '🛡️', 'herblore': '🌿', 'fishing': '🐟', 
+            'ranged': '🏹', 'thieving': '🏃', 'cooking': '🍲', 
+            'prayer': '✨', 'crafting': '🛠️', 'firemaking': '🔥', 
+            'magic': '🧙', 'fletching': '🔪', 'woodcutting': '🌳', 
+            'runecrafting': '🍪', 'slayer': '💀', 'farming': '🌽',
+            'construction': '🏡', 'hunter': '🐾', 'total': '🏆'
+}
+
 
 class Osrs(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
         
+    
     @commands.group(
         name = "osrs",
         category = "Gry"
@@ -17,35 +62,21 @@ class Osrs(commands.Cog):
     async def osrs(self, _: commands.Context):
         '''Komendy związane z grą Old School Runescape'''
         pass
-    
     @osrs.command(
         pass_context = True,
         name = 'user',
-        usage = '<nick>',
-        help = """Wyświetla statystyki danego gracza
-        
-                  **Oznaczenia**
-                    <:osrs_attack:1041097852648161360> `- Attack       `| <:osrs_hitpoints:1041122749294329876> `- Hitpoints `| <:osrs_mining:1041123033177399306> `- Mining     `
-                    <:osrs_strength:1041123003720810557> `- Strength     `| <:osrs_agility:1041123509629362297> `- Agility   `| <:osrs_smithing:1041123398731972638> `- Smithing   `
-                    <:osrs_defence:1041123882180022282> `- Defence      `| <:osrs_herblore:1041123956733779968> `- Herblore  `| <:osrs_fishing:1041124029899219076> `- Fishing    `
-                    <:osrs_ranged:1041124096114688091> `- Ranged       `| <:osrs_thieving:1041124182924202055> `- Thieving  `| <:osrs_cooking:1041124263182213232> `- Cooking    `
-                    <:osrs_prayer:1041124321285914694> `- Prayer       `| <:osrs_crafting:1041124418220478464> `- Crafting  `| <:osrs_firemaking:1041124535778426960> `- Firemaking `
-                    <:osrs_magic:1041127032978944130> `- Magic        `| <:osrs_fletching:1041127143687594034> `- Fletching `| <:osrs_woodcutting:1041127210733535302> `- Woodcutting`
-                    <:osrs_runecraft:1041124609841434644> `- Runecraft    `| <:osrs_slayer:1041124679601094676> `- Slayer    `| <:osrs_farming:1041124747225878609> `- Farming    `
-                    <:osrs_construction:1041124815764996146> `- Construction `| <:osrs_hunter:1041124880982229022> `- Hunter    `| 🏆 `- Total      `
-               """
+        usage = '<nick>'
     )
+    
     async def user(self, ctx, *, accountName: str):
         '''Wyświetla statystyki danego gracza'''
-        skills = {'attack': '<:osrs_attack:1041097852648161360>',  'hitpoints': '<:osrs_hitpoints:1041122749294329876>', 'mining': '<:osrs_mining:1041123033177399306>', 
-                'strength': '<:osrs_strength:1041123003720810557>', 'agility': '<:osrs_agility:1041123509629362297>', 'smithing': '<:osrs_smithing:1041123398731972638>', 
-                'defence': '<:osrs_defence:1041123882180022282>', 'herblore': '<:osrs_herblore:1041123956733779968>', 'fishing': '<:osrs_fishing:1041124029899219076>', 
-                'ranged': '<:osrs_ranged:1041124096114688091>', 'thieving': '<:osrs_thieving:1041124182924202055>', 'cooking': '<:osrs_cooking:1041124263182213232>', 
-                'prayer': '<:osrs_prayer:1041124321285914694>', 'crafting': '<:osrs_crafting:1041124418220478464>', 'firemaking': '<:osrs_firemaking:1041124535778426960>', 
-                'magic': '<:osrs_magic:1041127032978944130>', 'fletching': '<:osrs_fletching:1041127143687594034>', 'woodcutting': '<:osrs_woodcutting:1041127210733535302>', 
-                'runecrafting': '<:osrs_runecraft:1041124609841434644>', 'slayer': '<:osrs_slayer:1041124679601094676>', 'farming': '<:osrs_farming:1041124747225878609>',
-                'construction': '<:osrs_construction:1041124815764996146>', 'hunter': '<:osrs_hunter:1041124880982229022>', 'total': '🏆'
-        }
+        perms = nextcord.abc.GuildChannel.permissions_for(ctx.channel, ctx.me).external_emojis
+        if perms:
+            self.user.help = helpPerms
+            skills = skillsPerms
+        else:
+            self.user.help = helpNoPerms
+            skills = skillsNoPerms
         accountExists = True
         try:
             accountData = Hiscores(accountName)
@@ -66,19 +97,25 @@ class Osrs(commands.Cog):
             counter = 0
             reset = 0
             result = ""
+            xpTotal = 0
             for skill in skills:
                 if skill != 'total':
                     skillsTotal += accountStats[f'{skill}'].level
+                    xpTotal += accountStats[f'{skill}'].xp
                 if skill != 'total' and counter == 2:
                     result += f"{skills[skill]} {accountStats[skill].level}\n\n"
+                    xpTotal += accountStats[f'{skill}'].xp
                     counter = 0
                     reset = 1
                 if skill != 'total' and counter != 2 and not reset == 1:
                     result += f"{skills[skill]} {accountStats[skill].level} | "
+                    xpTotal += accountStats[f'{skill}'].xp
                     counter += 1
                 if skill == 'total':
                     result += f"{skills[skill]} {skillsTotal}"
                 reset = 0
+            result += f"\n\n**{accountData.rank} miejsce na globalnej liście**"
+            result += f"\n\n**{xpTotal} XP**"
             embed.description = result
             await ctx.send(embed=embed)
     
