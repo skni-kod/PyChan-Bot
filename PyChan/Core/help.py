@@ -55,3 +55,10 @@ class PyChanHelp(HelpCommand):
         embed.add_field(name="Dostępne podkomendy", value=', '.join(list(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
 
         return await self.get_destination().send(embed=embed)
+
+    async def subcommand_not_found(self, command: Command, string: str):
+        return f'Komenda `{command.qualified_name}` nieposiada podkomendy `{string}`'
+
+    async def command_not_found(self, string: str):
+        return f'Komenda `{string}` nie istnieje'
+
