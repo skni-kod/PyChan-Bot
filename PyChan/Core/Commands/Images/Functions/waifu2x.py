@@ -22,7 +22,7 @@ def send_waifu2x_request(url):
 
 class Waifu2x(commands.Cog):
     """
-    Class containing Waifu2x methode
+    Class containing Waifu2x method
     """
     def __init__(self, bot):
         """
@@ -30,7 +30,15 @@ class Waifu2x(commands.Cog):
         """
         self.bot = bot
     
-    @commands.command(pass_context = True,name = 'waifu2x')
+    @commands.command(
+        pass_context = True,
+        name = 'waifu2x',
+        usage = "<link do obrazu w formacie .png lub .jpg>",
+        help = """
+               Przeskalowuje podany obraz w formacie .png lub .jpg
+               używając funkcji waifu2x aplikacji deepai.org
+               """
+    )
     async def waifu2x(self,ctx):
         """
         Gets image from attachement and upscales it
