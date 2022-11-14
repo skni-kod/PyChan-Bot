@@ -36,7 +36,7 @@ class PyChanHelp(HelpCommand):
 
         command_str = command.name
         if command.parent:
-            command_str = command.parent.name + ' ' + command.name
+            command_str = command.full_parent_name + ' ' + command.name
 
         embed = Embed(title=command_str, color=Color.dark_purple())
         embed.description = command.help or "Brak opisu"
