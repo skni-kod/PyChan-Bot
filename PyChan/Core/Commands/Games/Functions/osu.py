@@ -1,43 +1,34 @@
-import nextcord
-import ossapi
 from nextcord.ext import commands
-from ossapi import Ossapi, GameMode
+from nextcord import Color, Embed
+from ossapi import Ossapi, GameMode, UserLookupKey
 from config import osu_token
 
 
 class Osu(commands.Cog):
-    """
-    Class contains osu methods
-    """
-
     def __init__(self, bot):
-        """
-        Constructor method
-        """
         self.bot = bot
-        self.osu = Ossapi(osu_token)
+        self._osu = Ossapi(osu_token)
 
-    @commands.command(pass_context=True, name='osu')
-    async def osu(self, ctx: nextcord.ext.commands.Context, *username):
-        """
-        Shows statistics for a given user
+    @commands.group(name="osu", category="Gry")
+    async def osu(self, _: commands.Context):
+        '''Komendy związane z grą osu!'''
+        pass
 
-        :param ctx: The context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        """
-        username = ' '.join(username)
-        user = self.osu.get_user(username, GameMode.STD)
+    @osu.command(name="profil", pass_context=True)
+    async def profil(self, ctx: commands.Context, *, username: str):
+        '''Wyświetla informacje na temat gracza'''
+        user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
+        embed = Embed(color=Color.dark_purple())
         embed.set_author(name=f"Profil {user.username}",
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
 
         embed.description = (f'**Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})\n' 
                              f'**PP:** {user.pp_raw}\n'
-                             f'**Celność:** {round(user.accuracy, 2)}%\n'
+                             f'**Celność:** {round(user.accuracy or 0, 2)}%\n'
                              f'**Liczba zagrań:** {user.playcount}\n'
                              f'**Poziom:** {user.level}')
 
@@ -46,38 +37,31 @@ class Osu(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True, name='osutop')
-    async def osutop(self, ctx: nextcord.ext.commands.Context, *username):
-        """
-        Shows best plays for a given user
-
-        :param ctx: The context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        """
-        username = ' '.join(username)
-
-        user = self.osu.get_user(username, GameMode.STD)
+    @osu.command(name="top", pass_context=True)
+    async def top(self, ctx: commands.Context, *, username: str):
+        '''Wyświetla najlepsze wyniki gracza'''
+        user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        plays = self.osu.get_user_best(user.user_id, limit=5, user_type=ossapi.UserLookupKey.ID)
+        plays = self._osu.get_user_best(user.user_id, limit=5, user_type=UserLookupKey.ID)
         if not plays or not len(plays):
             return await ctx.reply('Ten użytkownik nie posiada żadnych wyników')
 
-        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
+        embed = Embed(color=Color.dark_purple())
         embed.set_author(name=f"Top 5 gracza {user.username}",
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
 
         embed.set_thumbnail(url=f'https://a.ppy.sh/{user.user_id}?.jpeg')
         embed.description = ''
+
         for play in plays:
+            beatmaps = self._osu.get_beatmaps(beatmap_id=play.beatmap_id)
+            if not len(beatmaps):
+                return await ctx.reply('Nie odnaleziono mapy')
 
-            beatmap = self.osu.get_beatmaps(beatmap_id=play.beatmap_id)
-            if not beatmap or not len(beatmap):
-                return await ctx.reply('Coś poszło nie tak')
-            beatmap = beatmap[0]
-
+            beatmap = beatmaps.pop()
             accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50)
             accuracy /= (play.count_300 + play.count_100 + play.count_50 + play.count_miss) * 300
             accuracy = round(accuracy * 100, 2)
@@ -96,32 +80,25 @@ class Osu(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True, name='recent')
-    async def recent(self, ctx: nextcord.ext.commands.Context, *username):
-        """
-        Shows the most recent play for a given user
-
-        :param ctx: The context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        """
-        username = ' '.join(username)
-
-        user = self.osu.get_user(username, GameMode.STD)
+    @osu.command(name="ostatni", pass_context=True)
+    async def ostatni(self, ctx: commands.Context, *, username):
+        '''Wyświetla ostatnie zagranie gracza'''
+        user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        recent = self.osu.get_user_recent(user.user_id, mode=ossapi.GameMode.STD, limit=1,
-                                          user_type=ossapi.UserLookupKey.ID)
-        if not recent or not len(recent):
-            return await ctx.reply('Coś poszło nie tak')
-        recent = recent[0]
+        recent_plays = self._osu.get_user_recent(user.user_id, mode=GameMode.STD, limit=1,
+                                          user_type=UserLookupKey.ID)
+        if not len(recent_plays):
+            return await ctx.reply('Nie odnaleziono żadnych wyników')
+        recent = recent_plays.pop()
 
-        beatmap = self.osu.get_beatmaps(beatmap_id=recent.beatmap_id)
+        beatmap = self._osu.get_beatmaps(beatmap_id=recent.beatmap_id)
         if not beatmap or not len(beatmap):
             return await ctx.reply('Mapa którą zagrał gracz nie istnieje!')
         beatmap = beatmap[0]
 
-        embed = nextcord.Embed(color=nextcord.Color.dark_purple())
+        embed = Embed(color=Color.dark_purple())
         embed.set_author(
             name=f'{beatmap.artist} - {beatmap.title} [{beatmap.version}] +{recent.mods.short_name()} {round(beatmap.star_rating, 2)}★',
             url=f'https://osu.ppy.sh/b/{beatmap.beatmap_id}',

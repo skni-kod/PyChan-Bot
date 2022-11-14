@@ -8,7 +8,7 @@ class GetServerPrefix:
     """Class contains command used to get Bot's prefix
     """
     @staticmethod
-    def get_server_prefix(bot, message):
+    def get_server_prefix(bot, message) -> str:
         """Gets server id from sent message
 
         :param bot: instance of Bot
