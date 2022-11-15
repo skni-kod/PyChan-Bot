@@ -12,46 +12,34 @@ class Permutations(commands.Cog):
         self.bot = bot
 
     @commands.group(
-        invoke_without_command=True,
-        pass_context=True,
-        name='permutacje',
-        aliases=['p', 'perm'],
-        category='Nauka',
-        help_={
-            "title": "Permutacje",
-            "description": "Szereg funkcji służących do obliczania permutacji.",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`permutacje info <permutacja>` - wyświetla informacje o permutacji"
-                             "\n`permutacje losuj <Sn>` - losuje permutacje w podanym Sn"
-                             "\n`permutacje potega <wykładnik> <permutacja>` - Podnosi permutację do potęgi"
-                             "\n`permutacje generuj <numer permutacji> <Sn>` - Generuje permutację na podstawie numeru w porządku leksykograficznym",
-                },
-                {
-                    "name": "Aliasy komendy",
-                    "value": "`permutacje`, `perm`, `p`",
-                },
-                {
-                    "name": "Dodatkowe informacje",
-                    "value": "Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`"
-                             "\nSymbol `#` oznacza mnożenie permutacji.",
-                },
-            ],
-        },
+        invoke_without_command = True,
+        pass_context = True,
+        name = 'permutacje',
+        aliases = ['p', 'perm'],
+        category = 'Nauka',
+        help = """
+               Szereg funkcji służących do obliczania permutacji.
+                
+               Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`
+               Symbol `#` oznacza mnożenie permutacji.
+               """
     )
     async def permutacje(self, ctx):
         """
-        Sends the reply message to the user with supported permutations functions
+        Aggregates all the subcommands for the permutations command
 
         :param ctx: The context in which a command is called
         :type ctx: nextcord.ext.commands.Context
         """
-        await ctx.send(embed=nextcord.Embed(
-            title="Wspierane polecenia to ```^p info/potega/generuj/losuj```. Więcej informacji pod ```^help permutacje```",
-            color=nextcord.Color.dark_purple()))
+        pass
 
-    @permutacje.command(name='info')
+    @permutacje.command(
+        name='info',
+        usage = '<permutacja>',
+        help = """
+               Wyświetla informacje o permutacji
+               """
+    )
     async def info(self, ctx, *, permstring):
         """
         Sends some basics info about permutation
@@ -125,7 +113,14 @@ class Permutations(commands.Cog):
                         inline=True)
         await ctx.send(embed=embed)
 
-    @permutacje.command(name='potega', aliases=["potęga"])
+    @permutacje.command(
+        name='potega', 
+        aliases=["potęga"],
+        usage = '<wykładnik> <permutacja>',
+        help = """
+               Podnosi permutację do danej potęgi
+               """
+    )
     async def potega(self, ctx, power: int, *, permstring):
         """
         Sends permutation raised to given power
@@ -174,7 +169,13 @@ class Permutations(commands.Cog):
                             inline=True)
         await ctx.send(embed=embed)
 
-    @permutacje.command(name='losuj')
+    @permutacje.command(
+        name='losuj',
+        usage = '<Sn>',
+        help = """
+               Losuje permutację w podanym Sn
+               """
+    )
     async def losuj(self, ctx, n: int):
         """
         Sends random permutation
@@ -197,7 +198,13 @@ class Permutations(commands.Cog):
                               color=nextcord.Color.dark_purple())
         await ctx.send(embed=embed)
 
-    @permutacje.command(name='generuj')
+    @permutacje.command(
+        name='generuj',
+        usage = '<numer permutacji> <Sn>',
+        help = """
+               Generuje permutację na podstawie numeru w porządku leksykograficznym
+               """
+    )
     async def generuj(self, ctx, number: int, n: int):
         """
         Sends permutation generated from given number
