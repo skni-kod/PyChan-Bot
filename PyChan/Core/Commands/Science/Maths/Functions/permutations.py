@@ -18,11 +18,11 @@ class Permutations(commands.Cog):
         aliases = ['p', 'perm'],
         category = 'Nauka',
         help = """
-                Szereg funkcji służących do obliczania permutacji.
+               Szereg funkcji służących do obliczania permutacji.
                 
-                Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`
-                Symbol `#` oznacza mnożenie permutacji.
-                """
+               Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`
+               Symbol `#` oznacza mnożenie permutacji.
+               """
     )
     async def permutacje(self, ctx):
         """

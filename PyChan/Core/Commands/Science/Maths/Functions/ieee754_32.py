@@ -17,10 +17,9 @@ class Ieee754x32(commands.Cog):
         name = "ieee754_32",
         category = "Nauka",
         usage = "<liczba>",
-        help = {"""
+        help = """
                 Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 32bit
                 """
-        }
     )
     @Decorator.pychan_decorator
     async def ieee754_32(self, ctx, number: float):

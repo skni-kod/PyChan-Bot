@@ -17,10 +17,9 @@ class BoothAlgorithm(commands.Cog):
         name='booth',
         category='Nauka',
         usage = "<P> <Q>` - gdzie P i Q to liczby całkowite",
-        help={ """
+        help = """
                 Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.
                 """
-        }
     )
     async def booth(self, ctx, liczba1: int, liczba2: int):
         """
