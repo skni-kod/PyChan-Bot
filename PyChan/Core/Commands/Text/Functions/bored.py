@@ -16,6 +16,7 @@ class BoredAPI(commands.Cog):
         name = "nudzesie",
         aliases = ['ciekawostka'],
         category = "Tekst",
+        usage = " ",
         help = """
                Wysyła losową ciekawostkę
                """
