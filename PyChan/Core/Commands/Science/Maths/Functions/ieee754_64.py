@@ -13,19 +13,14 @@ class Ieee754x64(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context=True,
-        name="ieee754_64",
-        category="Nauka",
-        help_={
-            "title": "IEEE754 64bit",
-            "description": "Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 64bit",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`ieee754_64 <liczba>`",
-                }
-            ],
-        },
+        pass_context = True,
+        name = "ieee754_64",
+        category = "Nauka",
+        usage = "<liczba>",
+        help = {"""
+                Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 64bit
+                """
+        }
     )
     @Decorator.pychan_decorator
     async def ieee754_64(self, ctx, number: float):
