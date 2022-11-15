@@ -9,6 +9,7 @@ class KanyeWestQuote(commands.Cog):
     @commands.command(
         pass_context=True, 
         name='kanyequote',
+        category = "Tekst",
         aliases=['kanye', 'west'],
         usage = " ",
         help = """

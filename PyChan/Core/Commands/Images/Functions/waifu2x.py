@@ -33,6 +33,7 @@ class Waifu2x(commands.Cog):
     @commands.command(
         pass_context = True,
         name = 'waifu2x',
+        category='Obraz',
         usage = "<link do obrazu w formacie .png lub .jpg>",
         help = """
                Przeskalowuje podany obraz w formacie .png lub .jpg
