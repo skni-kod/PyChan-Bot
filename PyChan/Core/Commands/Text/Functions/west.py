@@ -6,7 +6,15 @@ class KanyeWestQuote(commands.Cog):
     def __init__ (self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='KanyeQuote')
+    @commands.command(
+        pass_context=True, 
+        name='kanyequote',
+        aliases=['kanye', 'kanyequote', 'west'],
+        usage = " ",
+        help = """
+               Wysyła losowy cytat Kanye Westa
+               """
+    )
     async def kanyeQuote(self, ctx):
         data = requests.get('https://api.kanye.rest/')
         quote = data.json()['quote']
