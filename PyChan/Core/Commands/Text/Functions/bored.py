@@ -12,13 +12,13 @@ class BoredAPI(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context=True,
-        name="nudzesie",
-        category="Tekst",
-        help_={
-            "title": "nudzesie",
-            "description": "Wysyła losowe zadanie poboczne",
-        },
+        pass_context = True,
+        name = "nudzesie",
+        aliases = ['ciekawostka'],
+        category = "Tekst",
+        help = """
+               Wysyła losową ciekawostkę
+               """
     )
     @Decorator.pychan_decorator
     async def bored(self, ctx):
