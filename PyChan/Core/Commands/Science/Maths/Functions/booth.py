@@ -1,7 +1,6 @@
 import nextcord
 from nextcord.ext import commands
 from Core.Commands.Science.Maths.Functions.maths_functions import *
-from Core.Decorators.decorators import Decorator
 from tabulate import tabulate
 
 
@@ -17,15 +16,10 @@ class BoothAlgorithm(commands.Cog):
         pass_context=True,
         name='booth',
         category='Nauka',
-        help_={
-            "title": "Algorytm Booth\'a",
-            "description": "Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`booth <P> <Q>` - gdzie P i Q to liczby całkowite.",
-                },
-            ],
+        usage = "<P> <Q>` - gdzie P i Q to liczby całkowite",
+        help={ """
+                Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.
+                """
         }
     )
     async def booth(self, ctx, liczba1: int, liczba2: int):
