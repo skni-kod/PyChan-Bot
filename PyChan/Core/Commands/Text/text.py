@@ -4,6 +4,7 @@ from Core.Commands.Text.Functions.bored import BoredAPI
 
 from Core.Commands.Text.Functions.fun_fact import FunFact
 from Core.Commands.Text.Functions.covid import Covid
+from Core.Commands.Text.Functions.west import KanyeWestQuote
 
 
 class Text(commands.Cog):
@@ -14,6 +15,7 @@ class Text(commands.Cog):
         """Constructor method
         """
         self.bot = bot
+        self.bot.add_cog(KanyeWestQuote(bot))
         self.bot.add_cog(FunFact(bot))
         self.bot.add_cog(BoredAPI(bot))
         self.bot.add_cog(Covid(bot))
