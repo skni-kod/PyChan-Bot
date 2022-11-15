@@ -13,19 +13,14 @@ class ConvertNumbers(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context=True,
-        name="zamiana",
-        category="Nauka",
-        help_={
-            "title": "Zamiana",
-            "description": "Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`zamiana <system z którego zamienamy> <do którego zamieniamy> <liczba>`",
-                }
-            ],
-        },
+        pass_context= True,
+        name = "zamiana",
+        category = "Nauka",
+        usage = "zamiana <system z którego zamienamy> <system do którego zamieniamy> <liczba>",
+        help = {"""
+               Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>
+               """
+        }
     )
     @Decorator.pychan_decorator
     async def convert_numbers(self, ctx, from_param: int, to_param: int, number):
