@@ -16,16 +16,12 @@ class ConvertNumbersPlus(commands.Cog):
         pass_context=True,
         name="zamiana+",
         category="Nauka",
-        help_={
-            "title": "Zamiana+",
-            "description": "Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>, lecz wraz z rozpisaniem pisemnym zamiany liczb",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`zamiana+ <system z którego zamienamy> <do którego zamieniamy> <liczba>`",
-                }
-            ],
-        },
+        usage = "<system z którego zamienamy> <system do którego zamieniamy> <liczba>",
+        help={"""
+              Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>
+              wraz z rozpisaniem pisemnym zamiany liczb
+              """
+        }
     )
     @Decorator.pychan_decorator
     async def convert_numbers_plus(self, ctx, from_param: int, to_param: int, number):
