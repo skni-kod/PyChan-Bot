@@ -2,11 +2,20 @@ import requests
 import nextcord
 from nextcord.ext import commands
 
-class KanyeWestQuete(commands.Cog):
+class KanyeWestQuote(commands.Cog):
     def __init__ (self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name='KanyeQuote')
+    @commands.command(
+        pass_context=True, 
+        name='kanyequote',
+        category = "Tekst",
+        aliases=['kanye', 'west'],
+        usage = " ",
+        help = """
+               Wysyła losowy cytat Kanye Westa
+               """
+    )
     async def kanyeQuote(self, ctx):
         data = requests.get('https://api.kanye.rest/')
         quote = data.json()['quote']

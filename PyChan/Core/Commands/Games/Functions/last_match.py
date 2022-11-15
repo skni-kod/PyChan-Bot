@@ -17,10 +17,10 @@ class LastMatch(commands.Cog):
         """Constructor method"""
         self.bot = bot
 
-    @commands.group(
+    @commands.command(
         pass_context=True,
         name="lolmecze",
-        category="League of Legends",
+        category="Gry",
         help_={
             "title": "League of Leageds",
             "description": "Funkcja do pokazywania podstawowych statystyk meczu danego użytkownika.",

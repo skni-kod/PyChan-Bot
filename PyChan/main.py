@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 
 from Core.core import Core
+from Core.help import PyChanHelp
 from config import discord_token
 
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
@@ -11,7 +12,6 @@ from Database.database import Database
 
 def main():
     """Main function where the bot instance is created
-    Default command 'help' is removed and is added cog file 'Core'
     Function 'get_server_prefix' is assigned 'command_prefix' and gets the prefix depending on the server on which the function is called
     """
     intents = nextcord.Intents.default()
@@ -19,10 +19,10 @@ def main():
 
 
     bot = commands.Bot(
-        command_prefix=GetServerPrefix.get_server_prefix, intents=intents
+        command_prefix=GetServerPrefix.get_server_prefix, intents=intents,
+        help_command=PyChanHelp()
     )
     
-    bot.remove_command("help")
     bot.add_cog(Core(bot))
 
     @bot.event

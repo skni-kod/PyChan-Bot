@@ -8,19 +8,13 @@ class GetMembersProjects(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context=True,
-        name="listaCzlonkow",
-        category="SKNIKOD",
-        help_={
-            "title": "Lista członków",
-            "description": "Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`listaCzlonkow`",
-                }
-            ],
-        },
+        pass_context = True,
+        name = "listaCzlonkow",
+        category = "SKNIKOD",
+        usage = " ",
+        help = """
+               Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami
+               """
     )
     async def get_members_projects(self, ctx):
         """
@@ -30,7 +24,6 @@ class GetMembersProjects(commands.Cog):
         :type ctx: nextcord.ext.commands.Context
         """
 
-        myfile = "listaCzlonkow.txt"
         message = await ctx.send(
             f"Trwa pobieranie czlonkow {1}/{len(ctx.guild.members)}"
         )
@@ -38,7 +31,7 @@ class GetMembersProjects(commands.Cog):
         with open("listaCzlonkow.txt", "w", encoding="utf-8") as f:
             for i, member in enumerate(ctx.guild.members):
                 await message.edit(
-                    content=f"Trwa pobieranie czlonkow {i}/{len(ctx.guild.members)}"
+                    content=f"Trwa pobieranie członkow {i}/{len(ctx.guild.members)}"
                 )
 
                 if member.bot:

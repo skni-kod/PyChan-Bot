@@ -10,14 +10,13 @@ class Covid(commands.Cog):
         self.bot = bot
         
     @commands.command(
-        pass_context=True,
-        name="covid",
-        category="Tekst",
-        help_={
-            "title": "covid",
-            "description": "Liczba zachorowań na covid w Polsce z wczoraj ",
-           
-        },
+        pass_context = True,
+        name = "covid",
+        category = "Tekst",
+        usage = " ",
+        help = """
+               Liczba zachorowań na COVID-19 w Polsce z wczorajszego dnia.
+               """
     )
     @Decorator.pychan_decorator
     async def covid_zakazenia(self,ctx):

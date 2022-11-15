@@ -35,16 +35,11 @@ class OCR(commands.Cog):
         pass_context=True,
         name='ocr',
         category='Obraz',
-        help_={
-            "title": "OCR",
-            "description": "Przechwytywanie tekstu ze zdjęcia.",
-            "fields": [
-                {
-                    "name": "Użycie",
-                    "value": "Wywołaj pocelenie `ocr` i dodaj jako załącznik obraz w formacie .png lub .jpg",
-                },
-            ],
-        },
+        usage = '<zdjęcie w formacie .png lub .jpg jako załącznik>',
+        help= """
+              Rozpoznaje tekst ze zdjęcia w formacie 
+              .png lub .jpg dodanego jako załącznik
+              """
     )
     async def ocr(self, ctx):
         """
@@ -75,4 +70,4 @@ class OCR(commands.Cog):
             else:
                 await ctx.send("Wymagany format pliku to: .png lub .jpg")
         else:
-            await ctx.send("Brak załacznika w wiadomości.")
+            await ctx.send("Brak załącznika w wiadomości.")
