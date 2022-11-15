@@ -9,7 +9,7 @@ class KanyeWestQuote(commands.Cog):
     @commands.command(
         pass_context=True, 
         name='kanyequote',
-        aliases=['kanye', 'kanyequote', 'west'],
+        aliases=['kanye', 'west'],
         usage = " ",
         help = """
                Wysyła losowy cytat Kanye Westa
