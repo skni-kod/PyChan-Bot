@@ -14,11 +14,11 @@ class BoredAPI(commands.Cog):
     @commands.command(
         pass_context = True,
         name = "nudzesie",
-        aliases = ['ciekawostka'],
+        aliases = ['bored'],
         category = "Tekst",
         usage = " ",
         help = """
-               Wysyła losową ciekawostkę
+               Wysyła losowe zadanie poboczne
                """
     )
     @Decorator.pychan_decorator
