@@ -10,12 +10,11 @@ class Osu(commands.Cog):
         self._osu = Ossapi(osu_token)
 
     @commands.group(name="osu", category="Gry")
-    async def osu(self, ctx: commands.Context):
+    async def osu(self, _: commands.Context):
         '''Komendy związane z grą osu!'''
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help("osu")
+        pass
 
-    @osu.command(name="profil", pass_context=True, aliases=["konto"])
+    @osu.command(name="profil", pass_context=True)
     async def profil(self, ctx: commands.Context, *, username: str):
         '''Wyświetla informacje na temat gracza'''
         user = self._osu.get_user(username, GameMode.STD)

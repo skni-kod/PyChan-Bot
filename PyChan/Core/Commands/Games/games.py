@@ -2,8 +2,8 @@ from nextcord.ext import commands
 
 from Core.Commands.Games.Functions.osrs import Osrs
 from Core.Commands.Games.Functions.osu import Osu
-from Core.Commands.Games.Functions.summoner_info import SummonerInfo
-from Core.Commands.Games.Functions.last_match import LastMatch
+from Core.Commands.Games.Functions.LoL import LoL
+
 import config
 
 class Games(commands.Cog):
@@ -21,8 +21,7 @@ class Games(commands.Cog):
             print("Osu! API token not found. Related commands will not be loaded")
 
         if len(config.riot_token):
-            self.bot.add_cog(SummonerInfo(bot))
-            self.bot.add_cog(LastMatch(bot))
+            self.bot.add_cog(LoL(bot))
         else:
             print("Riot API token not found. Related commands will not be loaded")
 
