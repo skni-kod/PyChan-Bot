@@ -29,7 +29,7 @@ def main():
     async def on_ready():
         """is called when Bot is ready"""
         Database.create_database()
-        Database.update_database(bot)
+        #Database.update_database(bot)
         change_status = ChangeStatus(bot)
         change_status.change_status.start()
 
