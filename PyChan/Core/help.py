@@ -54,6 +54,9 @@ class PyChanHelp(HelpCommand):
         embed.description = f'Wpisz `{prefix}help {group.name} <komenda>` aby dowiedzieć się więcej o danej podkomendzie'
         embed.add_field(name="Dostępne podkomendy", value=', '.join(list(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
 
+        if len(group.aliases) > 0:
+            embed.add_field(name="Aliasy komendy", value=', '.join(list(map(lambda a: f'`{a}`', group.aliases))))
+
         return await self.get_destination().send(embed=embed)
 
     async def subcommand_not_found(self, command: Command, string: str):
