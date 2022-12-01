@@ -1,7 +1,9 @@
 from typing import Dict, List
 from typing_extensions import Self
+from nextcord.colour import Color
+from nextcord.embeds import Embed
 from nextcord.ext import commands, tasks
-from datetime import datetime 
+from datetime import date, datetime, time, timedelta 
 from nextcord.ext.commands.bot import Bot
 from nextcord.ext.commands.context import Context
 from nextcord.message import Message
@@ -37,8 +39,6 @@ class TrackedChannel:
 
 # TODO:
 # - split tracker into multiple messages to prevent going over the character limit
-# - extra info and timers
-# - list active trackers
 # - cache requests for potential duplicate trackers across different channels
 # - formatting is stinky
 
@@ -77,16 +77,30 @@ class AoC(commands.Cog):
         else:
             await ctx.reply("Śledzenie nawet nie jest włączone!")
 
+    @aoc.command(name='lista')
+    async def list(self, ctx: Context):
+        '''Wyświetla listę kanałów z śledzeniem rankingów'''
+        embed = Embed(color=Color.dark_purple())
+        embed.title = 'Kanały z aktywnym śledzeniem rankingów AoC'
+        for channel_id, tracker in self.tracked_channels.items():
+            msg = tracker.messages[0]
+            embed.description = f'<#{channel_id}> → (Link) [https://discord.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}/]\n'
+        await ctx.reply(embed=embed)
+
     @tasks.loop(minutes=15)
     async def loop(self):
+        tomorrow = datetime.combine(date.today(), time(6, 0)) # timezone issue :clown:
+        tomorrow += timedelta(days=1)
         for _, tracked_channel in self.tracked_channels.items():
             data = self.fetch_data(tracked_channel.leaderboard_id)
             extracted_data = self.parse_data(data)
             rows = self.get_rows(extracted_data)
 
             for msg in tracked_channel.messages:
-                await msg.edit(content='```\n' + ''.join(rows) + '\n```')
-    
+                await msg.edit(content='```\n' + ''.join(rows) + '\n```' +
+                               f'**Ostatnia aktualizacja** <t:{int(datetime.today().timestamp())}:R>\n' +
+                               f'**Kolejne wyzwanie** <t:{int(tomorrow.timestamp())}:R>')
+
     def fetch_data(self, leaderboard_id):
         leaderboard_id = int(leaderboard_id)
         api_url = f"https://adventofcode.com/{datetime.today().year}/leaderboard/private/view/{leaderboard_id}.json"
