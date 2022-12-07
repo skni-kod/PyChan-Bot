@@ -1,6 +1,7 @@
 from nextcord.ext import commands
 
 from Core.Commands.Images.images import Images
+from Core.Commands.Music.music import Music
 from Core.Commands.Science.science import Science
 from Core.Commands.Settings.settings import Settings
 from Core.Commands.SKNIKOD.skni_kod import SKNIKOD
@@ -18,6 +19,7 @@ class Commands(commands.Cog):
         """
         self.bot = bot
         self.bot.add_cog(Images(bot))
+        self.bot.add_cog(Music(bot))
         self.bot.add_cog(Science(bot))
         self.bot.add_cog(SKNIKOD(bot))
         self.bot.add_cog(Settings(bot))
