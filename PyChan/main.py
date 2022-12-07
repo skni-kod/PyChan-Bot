@@ -1,10 +1,10 @@
+#!/usr/bin/env python3
+
 import nextcord
 from nextcord.ext import commands
-
 from Core.core import Core
 from Core.help import PyChanHelp
 from config import discord_token
-
 from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
 from Core.Commands.Settings.Functions.change_status import ChangeStatus
 from Database.database import Database
