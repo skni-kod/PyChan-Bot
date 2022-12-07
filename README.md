@@ -27,7 +27,7 @@ Po zaproszeniu bota na serwer można użyć komendy `help` aby wyświetlić list
     │   ├── Commands      # Katalog zawierający komendy.
     │   │   ├── Games     # Każda komenda ma przydzieloną kategorię
     │   │   ├── Images    # Struktura katalogów kategorii: 
-            ├── Music     #   Kategoria
+    |   |   ├── Music     #   Kategoria
     │   │   ├── Science   #   ├── Functions
     │   │   ├── Settings  #   │   ├── komenda1.py
     │   │   ├── SKNIKOD   #   │   └── komenda2.py
