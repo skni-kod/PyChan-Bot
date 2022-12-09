@@ -2,8 +2,6 @@ from nextcord import Color, Embed
 from nextcord.ext.commands import Group, HelpCommand, Cog, Command
 from typing import Mapping, Optional, List
 
-from Core.Commands.Settings.Functions.get_server_prefix import GetServerPrefix
-
 
 class PyChanHelp(HelpCommand):
     async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[Command]]):
