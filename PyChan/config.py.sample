@@ -10,4 +10,4 @@ aoc_session_id = ''
 
 # Settings
 default_prefix = '^'
-sqlalchemy_db_url = 'sqlite:///PyChan.db'
+sqlalchemy_db_url = 'sqlite:///PyChan.db?charset=utf8mb4'
