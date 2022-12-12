@@ -73,7 +73,7 @@ class PlayingMusic(commands.Cog):
                 thumbnail = info['thumbnail']
                 duration = timedelta(seconds=info['duration'])
                 URL = info['formats'][0]['url']
-            embed = nextcord.Embed(title=title, description=f"Czas trwania: {duration}")
+            embed = nextcord.Embed(title=title, description=f"Czas trwania: {duration}", color=nextcord.colour.Color.brand_green())
             embed.set_thumbnail(url=thumbnail)
 
             await ctx.send(embed=embed)
