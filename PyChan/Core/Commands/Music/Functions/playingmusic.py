@@ -2,9 +2,8 @@ from Core.Decorators.decorators import Decorator
 
 import nextcord
 from nextcord.ext import commands
-from nextcord import FFmpegOpusAudio
+from nextcord import FFmpegOpusAudio, Color
 from nextcord.utils import get
-from nextcord import Color
 
 from youtube_dl import YoutubeDL
 import validators
@@ -76,7 +75,7 @@ class PlayingMusic(commands.Cog):
         if not ctx.guild.voice_client in self.bot.voice_clients:
             channel = ctx.author.voice.channel
             await channel.connect()
-            
+
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         if voice.is_playing():
             await ctx.send(embed=nextcord.Embed(title="**Juz cos gram! 🎵**", color=Color.blue()))
