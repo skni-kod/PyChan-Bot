@@ -14,3 +14,4 @@ PyNaCl
 youtube_dl
 Unidecode
 validators
+colorthief
