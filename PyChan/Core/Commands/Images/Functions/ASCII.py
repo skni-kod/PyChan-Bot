@@ -21,6 +21,7 @@ def downsize(image, quality):
     # Downscale image to the desired size
     width, height = image.size
 
+
     if width > max_width.get(quality):
         factor = width/max_width.get(quality)
         width = int(width/factor)
@@ -70,16 +71,16 @@ class ASCII(commands.Cog):
         self.bot = bot
     
     @commands.command(
-        pass_context=True, 
-        name='ASCII', 
+        pass_context=True,
+        name='ascii',
         category='Obraz',
-        usage = '<grafika w formacie .jpg i .png w załączniku> <jakość>',
+        usage='<grafika w formacie .jpg i .png w załączniku> <jakość>',
         help = """
                Konwertuje podany obraz na styl ASCII Art. Przyjmowane są tylko pliki .jpg i .png
                Jakości to:
-               orig - Oryginaly rozmiar grafiki (może zostać zmniejszony do 8 mb)
-               medium - szerokość 256 znaków
-               small - szerokość 128 znaków
+               **orig**   - oryginaly rozmiar grafiki
+               **medium** - szerokość 256 znaków
+               **small**  - szerokość 128 znaków
                """
     )
     
@@ -92,9 +93,11 @@ class ASCII(commands.Cog):
                 if quality not in max_width:
                     await ctx.send("Błedny argument jakości, wykorzystanie domyślnej wartości small")
                     quality = 'small'
+                
                 image_url = ctx.message.attachments[0].url
                 name_len = len(ctx.message.attachments[0].filename)
                 name = ctx.message.attachments[0].filename[:name_len - 4] + "_ascii.txt"
+
                 response = requests.get(image_url)
                 image = Image.open(BytesIO(response.content))
                 image = downsize(image,quality)
