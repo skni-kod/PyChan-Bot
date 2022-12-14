@@ -22,7 +22,7 @@ class PlayingMusic(commands.Cog):
         self.FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 
     def get_colour(self, id):
-        """Funkcja zwraca jeden z glownych kolorow na miniaturce piosenki"""
+        """Function returns main colour of song thumbnail"""
         url = f'https://img.youtube.com/vi/{id}/default.jpg'
         fd = urlopen(url)
         f = BytesIO(fd.read())
@@ -38,13 +38,13 @@ class PlayingMusic(commands.Cog):
     )
     
     async def playing_music(self, ctx: commands.Context):
-        '''Komendy związane z dołączaniem do kanału'''
+        '''Komendy związane z graniem muzyki'''
         pass
 
     @playing_music.command(
         name = 'join',
         usage = '',
-        help = """Bot dołącza do kanału głosowego"""
+        help = """Bot dołącza do kanału głosowego gdzie jest użytkownik"""
     )
 
     @Decorator.pychan_decorator
@@ -66,8 +66,8 @@ class PlayingMusic(commands.Cog):
 
     @playing_music.command(
         name = 'play',
-        usage = '',
-        help = """Bot gra muzykę"""
+        usage = '<link YT do piosenki> lub <słowa kluczowe>',
+        help = """Bot dołącza do kanału głosowego gdzie jest użytkownik i gra muzykę"""
     )
 
     @Decorator.pychan_decorator
@@ -115,7 +115,10 @@ class PlayingMusic(commands.Cog):
     async def skip(self, ctx):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         try:
-            voice.stop()
-            await ctx.send(embed=nextcord.Embed(title="**Piosenka pominięta!**", color=Color.dark_gold()))
+            if voice.is_playing() and ctx.guild.voice_client in self.bot.voice_clients:
+                voice.stop()
+                await ctx.send(embed=nextcord.Embed(title="**Piosenka pominięta! 😢**", color=Color.dark_gold()))
+            else:
+                await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
         except:
-            await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_gold()))
+            await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
