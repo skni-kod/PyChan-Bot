@@ -13,8 +13,9 @@ class ChangePrefix(commands.Cog):
             raise commands.errors.BadArgument
         return arg
 
-    @commands.command()
-    async def prefix(self, ctx: commands.Context, prefix: Optional[str]):
+    @commands.command(category='Ustawienia')
+    async def prefix(self, ctx: commands.Context, *, prefix: Optional[str]):
+        '''Ustawia prefix dla tego serwera'''
         if not ctx.guild:
             await ctx.send('Tutaj nie możesz zmienić prefixu')
             return 

@@ -2,7 +2,7 @@ from nextcord import Guild
 from nextcord.ext.commands.bot import Bot
 from nextcord.message import Message
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, Integer, String, select
+from sqlalchemy import create_engine, Column, Integer, String, insert, select, update
 from sqlalchemy.orm import sessionmaker
 import config
 
@@ -44,6 +44,20 @@ class Database:
 
     @classmethod
     def set_guild_prefix(cls, guild: Guild, prefix: str):
-        cls.session.add(cls.GuildSettings(guild_id=guild.id, prefix=prefix))
+        tag = cls.session.scalar( \
+                select(cls.GuildSettings.prefix) \
+                .where(cls.GuildSettings.guild_id == guild.id))
+
+        stmt = None
+        if not tag:
+            stmt = insert(cls.GuildSettings) \
+                .values(guild_id=guild.id, prefix=prefix)
+        else:
+            stmt = update(cls.GuildSettings) \
+                .values(prefix=prefix) \
+                .where(cls.GuildSettings.guild_id == guild.id)
+
+        cls.session.execute(stmt)
         cls.session.commit()
+
 
