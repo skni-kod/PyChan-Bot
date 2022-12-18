@@ -1,7 +1,6 @@
 from typing import Optional
 from nextcord.ext import commands
-from Database.database import Database
-
+import Database
 
 class ChangePrefix(commands.Cog):
     def __init__(self, bot):

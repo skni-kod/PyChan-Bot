@@ -6,8 +6,7 @@ from Core.core import Core
 from Core.help import PyChanHelp
 from config import discord_token
 from Core.Commands.Settings.Functions.change_status import ChangeStatus
-from Database.database import Database
-
+import Database
 
 def main():
     """Main function where the bot instance is created

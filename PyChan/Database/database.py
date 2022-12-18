@@ -2,62 +2,98 @@ from nextcord import Guild
 from nextcord.ext.commands.bot import Bot
 from nextcord.message import Message
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, Integer, String, insert, select, update
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Boolean, ForeignKey, create_engine, Column, Integer, String, insert, select, update
+from sqlalchemy.orm import relationship, sessionmaker
 import config
 
-class Database:
-    Base = declarative_base()
-    engine = create_engine(config.sqlalchemy_db_url, echo=True)
-    session = sessionmaker(bind=engine)()
+Base = declarative_base()
+engine = create_engine(config.sqlalchemy_db_url, echo=True)
+session = sessionmaker(bind=engine)()
 
-    # Stats and settings for guild members
-    class GuildMember(Base):
-        __tablename__ = 'guild_members'
-        member_id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer)
-        coins = Column(Integer, default=0)
+# Stats and settings for guild members
+class GuildMember(Base):
+    __tablename__ = 'guild_members'
+    member_id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer)
+    coins = Column(Integer, default=0)
 
-    # Stats and settings for users across all guilds
-    class Member(Base):
-        __tablename__ = 'members'
-        member_id = Column(Integer, primary_key=True)
-        osu_username  = Column(String)
-        osrs_username = Column(String)
-        lol_username  = Column(String)
+# Stats and settings for users across all guilds
+class Member(Base):
+    __tablename__ = 'members'
+    member_id = Column(Integer, primary_key=True)
+    osu_username  = Column(String)
+    osrs_username = Column(String)
+    lol_username  = Column(String)
 
-    class GuildSettings(Base):
-        __tablename__ = 'guild_settings'
-        guild_id = Column(Integer, primary_key=True)
-        prefix = Column(String, default=config.default_prefix)
+class GuildSettings(Base):
+    __tablename__ = 'guild_settings'
+    guild_id = Column(Integer, primary_key=True)
+    prefix = Column(String, default=config.default_prefix)
 
 
-    @classmethod
-    def create_database(cls):
-        Database.Base.metadata.create_all(Database.engine)
+class QuizAnswer(Base):
+    __tablename__ = 'quiz_answers'
+    id = Column(Integer, primary_key=True)
+    question_id = Column(Integer, ForeignKey('quiz_questions.id'))
+    answer = Column(String)
+    correct = Column(Boolean)
 
-    @classmethod
-    def get_guild_prefix(cls, _: Bot, message: Message) -> str:
-        if not message.guild:
-            return ''
-        return cls.session.scalar(select(cls.GuildSettings.prefix).where(cls.GuildSettings.guild_id == message.guild.id)) or config.default_prefix
+class QuizQuestion(Base):
+    __tablename__ = 'quiz_questions'
+    id = Column(Integer, primary_key=True)
+    answers: list[QuizAnswer] = relationship("QuizAnswer")
+    guild_id = Column(Integer)
+    question = Column(String)
+    category = Column(String)
 
-    @classmethod
-    def set_guild_prefix(cls, guild: Guild, prefix: str):
-        tag = cls.session.scalar( \
-                select(cls.GuildSettings.prefix) \
-                .where(cls.GuildSettings.guild_id == guild.id))
+def create_database():
+    Base.metadata.create_all(engine)
 
-        stmt = None
-        if not tag:
-            stmt = insert(cls.GuildSettings) \
-                .values(guild_id=guild.id, prefix=prefix)
-        else:
-            stmt = update(cls.GuildSettings) \
-                .values(prefix=prefix) \
-                .where(cls.GuildSettings.guild_id == guild.id)
+def get_guild_prefix(_: Bot, message: Message) -> str:
+    if not message.guild:
+        return ''
+    return session.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == message.guild.id)) or config.default_prefix
 
-        cls.session.execute(stmt)
-        cls.session.commit()
+def set_guild_prefix(guild: Guild, prefix: str):
+    tag = session.scalar( \
+            select(GuildSettings.prefix) \
+            .where(GuildSettings.guild_id == guild.id))
 
+    stmt = None
+    if not tag:
+        stmt = insert(GuildSettings) \
+            .values(guild_id=guild.id, prefix=prefix)
+    else:
+        stmt = update(GuildSettings) \
+            .values(prefix=prefix) \
+            .where(GuildSettings.guild_id == guild.id)
+
+    session.execute(stmt)
+    session.commit()
+
+# def add_question(guild: Guild, question: Question):
+#     stmt = insert(QuizQuestions).values(guild_id=guild.id, question=question.question, category=question.category)
+#     question_id = session.execute(stmt).one()['question_id']
+#     print(question_id)
+#     for answer in question.answers:
+#         stmt = insert(QuizAnswers).values(question_id=question_id, answer=answer.answer, correct=answer.correct)
+#         session.execute(stmt)
+#     session.commit()
+#
+# def get_questions(guild: Guild) -> list[Question]:
+#     questions: list[Question] = []
+#
+#     stmt = select(QuizQuestions) \
+#         .where(QuizQuestions.guild_id == guild.id)
+#
+#     question_rows = session.execute(stmt).all()
+#     
+#     for row in question_rows:
+#         answers: list[Answer] = []
+#         stmt = select(QuizAnswers) \
+#             .where(QuizAnswers.question_id == row['question_id'])
+#         answer_rows = session.execute(stmt).all()
+#
+#     return questions
+#
 

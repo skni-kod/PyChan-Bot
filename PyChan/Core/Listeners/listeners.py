@@ -1,8 +1,7 @@
 from nextcord.ext import commands
 from nextcord.message import Message
 
-from Database.database import Database
-
+import Database
 
 class Listeners(commands.Cog):
     """Class contains Bot event methods"""
