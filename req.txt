@@ -8,7 +8,6 @@ tabulate
 ossapi
 networkx
 matplotlib
-datetime
 python-osrsapi
 Pillow
 PyNaCl
