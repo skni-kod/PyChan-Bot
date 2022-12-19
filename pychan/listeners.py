@@ -1,13 +1,11 @@
 from nextcord.ext import commands
 from nextcord.message import Message
 
-import Database
+from pychan import database
+
 
 class Listeners(commands.Cog):
-    """Class contains Bot event methods"""
-
     def __init__(self, bot):
-        """Constructor method"""
         self.bot = bot
 
     @commands.Cog.listener()
@@ -18,6 +16,6 @@ class Listeners(commands.Cog):
         if message.content.lower() == "pychan!":
             await message.channel.send(
                 "Wołałeś mnie?\n"
-                f"Napisz `{Database.get_guild_prefix(self.bot, message)}help`, aby dowiedzieć się jakie mam komendy"
+                f"Napisz `{database.get_guild_prefix(self.bot, message)}help`, aby dowiedzieć się jakie mam komendy"
             )
 

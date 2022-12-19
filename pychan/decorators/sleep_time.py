@@ -1,17 +1,9 @@
 import nextcord
-from nextcord.ext import commands
-import random
 
 class SleepTime:
-    """Class contains sleep_time method
-    """
-
     @classmethod
     async def sleep_time(cls, ctx):
-        """Bot complains that it is tired
-
-        :param ctx: the context in which a command is called
-        """
+        """Bot complains that it is tired """
         embed = nextcord.Embed(title='',
                               description='',
                               color=nextcord.Color.dark_purple())

@@ -1,8 +1,8 @@
 from nextcord.ext import commands
 
-from osrs import Osrs
-from osu import Osu
-from lol import LoL
+from .osrs import Osrs
+from .osu import Osu
+from .lol import LoL
 
 import config
 

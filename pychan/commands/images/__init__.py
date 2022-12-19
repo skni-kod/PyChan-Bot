@@ -1,10 +1,10 @@
 from nextcord.ext import commands
 
-from ocr import OCR
-from qr_generator import QR
-from apod import ApodImage
-from waifu2x import Waifu2x
-from ascii import ASCII
+from .ocr import OCR
+from .qr_generator import QR
+from .apod import ApodImage
+from .waifu2x import Waifu2x
+from .ascii import ASCII
 
 
 class Images(commands.Cog):

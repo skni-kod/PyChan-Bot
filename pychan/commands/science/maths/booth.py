@@ -1,14 +1,9 @@
-import nextcord
 from nextcord.ext import commands
-from Core.Commands.Science.Maths.Functions.maths_functions import *
 from tabulate import tabulate
+from .maths_functions import *
 
 
 class BoothAlgorithm(commands.Cog):
-    """
-    The class contains Booth Algorithm method
-    """
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -21,7 +16,7 @@ class BoothAlgorithm(commands.Cog):
                 Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.
                 """
     )
-    async def booth(self, ctx, liczba1: int, liczba2: int):
+    async def booth(self, ctx: commands.Context, liczba1: int, liczba2: int):
         """
         Sends the reply message to the user with step by step solution of multiplication of two integers with the booth algorithm
 

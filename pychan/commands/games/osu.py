@@ -1,10 +1,9 @@
 from typing import Optional
 from nextcord.ext import commands
 from nextcord import Color, Embed
-from nextcord.ext.commands.bot import Context
 from ossapi import Ossapi, GameMode, UserLookupKey
-import Database
 from config import osu_token
+from pychan import database
 
 
 class Osu(commands.Cog):
@@ -19,9 +18,9 @@ class Osu(commands.Cog):
             await ctx.send_help("osu")
 
     @osu.command(name='ustaw')
-    async def set_profile(self, ctx: Context, *, username: str):
+    async def set_profile(self, ctx: commands.Context, *, username: str):
         '''Ustawia nazwę profilu użytkownika'''
-        Database.set_game_username(ctx.author, username, 'osu')
+        database.set_game_username(ctx.author, username, 'osu')
         await ctx.reply(f'Twoja nazwa użytkownika w osu! to teraz `{username}`')
 
     
@@ -29,7 +28,7 @@ class Osu(commands.Cog):
     async def profil(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla informacje na temat gracza'''
         if not username:
-            username = Database.get_game_username(ctx.author, 'osu')
+            username = database.get_game_username(ctx.author, 'osu')
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return
@@ -57,7 +56,7 @@ class Osu(commands.Cog):
     async def top(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla najlepsze wyniki gracza'''
         if not username:
-            username = Database.get_game_username(ctx.author, 'osu')
+            username = database.get_game_username(ctx.author, 'osu')
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return
@@ -105,7 +104,7 @@ class Osu(commands.Cog):
     async def ostatni(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla ostatnie zagranie gracza'''
         if not username:
-            username = Database.get_game_username(ctx.author, 'osu')
+            username = database.get_game_username(ctx.author, 'osu')
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return

@@ -1,7 +1,5 @@
-import nextcord
 from nextcord.ext import commands
-from Core.Commands.Science.Maths.Functions.maths_functions import *
-from Core.Decorators.decorators import Decorator
+from .maths_functions import *
 
 
 class ConvertNumbersPlus(commands.Cog):
@@ -22,7 +20,6 @@ class ConvertNumbersPlus(commands.Cog):
                wraz z rozpisaniem pisemnym zamiany liczb
                """
     )
-    @Decorator.pychan_decorator
     async def convert_numbers_plus(self, ctx, from_param: int, to_param: int, number):
         """
         Improved version of convert_numbers.

@@ -1,5 +1,3 @@
-from Core.Decorators.decorators import Decorator
-
 import nextcord
 from nextcord.ext import commands
 from nextcord import FFmpegOpusAudio, Color
@@ -47,7 +45,6 @@ class PlayingMusic(commands.Cog):
         help = """Bot dołącza do kanału głosowego gdzie jest użytkownik"""
     )
 
-    @Decorator.pychan_decorator
     async def join(self, ctx):
         if not ctx.guild.voice_client in self.bot.voice_clients:
             channel = ctx.author.voice.channel
@@ -59,7 +56,6 @@ class PlayingMusic(commands.Cog):
         help = """Bot opuszcza kanał głosowy"""
     )
 
-    @Decorator.pychan_decorator
     async def disconnect(self, ctx):
         if ctx.guild.voice_client in self.bot.voice_clients:
             await ctx.voice_client.disconnect()
@@ -70,7 +66,6 @@ class PlayingMusic(commands.Cog):
         help = """Bot dołącza do kanału głosowego gdzie jest użytkownik i gra muzykę"""
     )
 
-    @Decorator.pychan_decorator
     async def play(self, ctx, *, args):
         if not ctx.guild.voice_client in self.bot.voice_clients:
             channel = ctx.author.voice.channel
@@ -111,7 +106,6 @@ class PlayingMusic(commands.Cog):
         help = """Bot pomija piosenkę"""
     )
 
-    @Decorator.pychan_decorator
     async def skip(self, ctx):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         try:

@@ -1,13 +1,13 @@
 from nextcord.ext import commands
 
-from images import Images
-from music import Music
-from science import Science
-from settings import Settings
-from sknikod import SKNIKOD
-from text import Text
-from utilities import Utilities
-from games import Games
+from .images import Images
+from .music import Music
+from .science import Science
+from .settings import Settings
+from .sknikod import SKNIKOD
+from .text import Text
+from .utilities import Utilities
+from .games import Games
 
 
 class Commands(commands.Cog):

@@ -1,6 +1,4 @@
-import nextcord
 from nextcord.ext import commands
-from Core.Decorators.decorators import Decorator
 
 from requests import get
 
@@ -21,7 +19,6 @@ class BoredAPI(commands.Cog):
                Wysyła losowe zadanie poboczne
                """
     )
-    @Decorator.pychan_decorator
     async def bored(self, ctx):
 
         url = "https://www.boredapi.com/api/activity/"  # from api to json

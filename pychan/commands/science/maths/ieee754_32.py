@@ -1,7 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from Core.Commands.Science.Maths.Functions.maths_functions import *
-from Core.Decorators.decorators import Decorator
+from .maths_functions import *
 
 
 class Ieee754x32(commands.Cog):
@@ -21,7 +20,6 @@ class Ieee754x32(commands.Cog):
                 Zamienia dowolną liczbę w systemie dziesiętnym w liczbę binarną przy użyciu zapisu liczby zmiennoprzecinkowej w standarcie IEEE754 32bit
                 """
     )
-    @Decorator.pychan_decorator
     async def ieee754_32(self, ctx, number: float):
         """
         Sends the reply message to the user

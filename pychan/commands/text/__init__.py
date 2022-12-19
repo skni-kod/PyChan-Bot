@@ -1,8 +1,8 @@
 from nextcord.ext import commands
-from bored import BoredAPI
-from fun_fact import FunFact
-from covid import Covid
-from west import KanyeWestQuote
+from .bored import BoredAPI
+from .fun_fact import FunFact
+from .covid import Covid
+from .west import KanyeWestQuote
 
 
 class Text(commands.Cog):

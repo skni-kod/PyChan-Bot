@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from Core.Commands.Science.Maths.Functions.graphs_functions import *
+from .graphs_functions import *
 import os
 
 

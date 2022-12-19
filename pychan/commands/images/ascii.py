@@ -7,7 +7,7 @@ from PIL import Image
 
 
 # String containing ASCII characters, ordered by their area
-ascii_characters_list = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. "
+ascii_characters_list = r"$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. "
 
 max_width = {
     "orig": 8000000,
@@ -60,14 +60,7 @@ def img_to_ascii(image):
 
 
 class ASCII(commands.Cog):
-    """
-    Class contains ASCII methods
-    """
-
     def __init__(self, bot):
-        """
-        Constructor method
-        """
         self.bot = bot
     
     @commands.command(

@@ -1,7 +1,5 @@
-import nextcord
 from nextcord.ext import commands
 import requests
-from Core.Decorators.decorators import Decorator
 
 
 
@@ -18,7 +16,6 @@ class Covid(commands.Cog):
                Liczba zachorowań na COVID-19 w Polsce z wczorajszego dnia.
                """
     )
-    @Decorator.pychan_decorator
     async def covid_zakazenia(self,ctx):
 
         url = "https://api.covid19api.com/live/country/poland/status/confirmed"

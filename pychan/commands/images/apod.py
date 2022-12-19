@@ -15,13 +15,12 @@ class ApodImage(commands.Cog):
         pass_context=True, 
         name='apod', 
         category='Obraz',
-        usage = "",
         help = """
                Wyświetla zdjęcie (lub film) dnia od NASA
                wraz z krótkim opisem
                """
     )
-    async def apod(self, ctx):
+    async def apod(self, ctx: commands.Context):
         data = requests.get(f"https://api.nasa.gov/planetary/apod?api_key={apod_token}")
         imgurl = data.json()['hdurl']
 

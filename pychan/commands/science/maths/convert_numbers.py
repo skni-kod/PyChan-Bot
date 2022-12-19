@@ -1,7 +1,5 @@
-import nextcord
 from nextcord.ext import commands
-from Core.Commands.Science.Maths.Functions.maths_functions import *
-from Core.Decorators.decorators import Decorator
+from .maths_functions import *
 
 
 class ConvertNumbers(commands.Cog):
@@ -21,7 +19,6 @@ class ConvertNumbers(commands.Cog):
                Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>
                """
     )
-    @Decorator.pychan_decorator
     async def convert_numbers(self, ctx, from_param: int, to_param: int, number):
         """
         Sends the reply message to the user

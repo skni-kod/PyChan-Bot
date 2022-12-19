@@ -1,34 +1,22 @@
-import nextcord
-from nextcord.ext import commands
+from nextcord import Color, Embed
+from nextcord.ext.commands import BadArgument, Cog, CommandError, CommandNotFound, Context, MissingRequiredArgument
 
 
-class Errors(commands.Cog):
-    """Class handles errors raised by other methods
-    """
-
+class Errors(Cog):
     def __init__(self, bot):
-        """Constructor method
-        """
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        """Function is called when error is raised
-
-        :param ctx: the context in which a command is called
-        :type ctx: nextcord.ext.commands.Context
-        :param error: contains information about error
-        :type error: nextcord.ext.commands.CommandError
-        """
-        if isinstance(error, commands.errors.CommandNotFound):
-            embed = nextcord.Embed(color=nextcord.Color.dark_purple())
+    @Cog.listener()
+    async def on_command_error(self, ctx: Context, error: CommandError):
+        if isinstance(error, CommandNotFound):
+            embed = Embed(color=Color.dark_purple())
             embed.add_field(name='Błąd',
                             value='Podana komenda nie istnieje',
                             inline=False)
             await ctx.send(embed=embed)
-        elif isinstance(error, commands.errors.BadArgument):
+        elif isinstance(error, BadArgument):
             await ctx.send('Niepoprawny parametr')
-        elif isinstance(error, commands.errors.MissingRequiredArgument):
+        elif isinstance(error, MissingRequiredArgument):
             await ctx.send('Brakuje wymaganego parametru')
         elif isinstance(error, Exception):
             await ctx.send('Coś poszło nie tak')

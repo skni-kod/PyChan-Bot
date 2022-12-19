@@ -1,5 +1,5 @@
 from nextcord.ext import commands
-from get_members_projects import GetMembersProjects
+from .get_members_projects import GetMembersProjects
 
 
 class SKNIKOD(commands.Cog):

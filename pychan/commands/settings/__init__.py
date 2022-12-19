@@ -1,5 +1,5 @@
 from nextcord.ext import commands
-from change_prefix import ChangePrefix
+from .change_prefix import ChangePrefix
 
 
 class Settings(commands.Cog):

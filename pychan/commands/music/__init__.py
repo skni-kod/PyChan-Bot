@@ -1,6 +1,5 @@
 from nextcord.ext import commands
-
-from playingmusic import PlayingMusic
+from .playingmusic import PlayingMusic
 
 
 class Music(commands.Cog):

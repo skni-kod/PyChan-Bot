@@ -3,10 +3,7 @@ from nextcord.ext import commands
 
 
 class QR(commands.Cog):
-    """Class contains QR generator method"""
-
     def __init__(self, bot):
-        """Constructor method"""
         self.bot = bot
 
     @commands.command(

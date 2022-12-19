@@ -1,6 +1,7 @@
 from typing import Optional
 from nextcord.ext import commands
-import Database
+
+from pychan import database
 
 class ChangePrefix(commands.Cog):
     def __init__(self, bot):
@@ -22,5 +23,5 @@ class ChangePrefix(commands.Cog):
         if not prefix:
             await ctx.send(f'Aktualny prefix to `{ctx.prefix}`')
         else:
-            Database.set_guild_prefix(ctx.guild, prefix)
+            database.set_guild_prefix(ctx.guild, prefix)
             await ctx.send(f'Pomyślnie zmienio prefix z `{ctx.prefix}` na `{prefix}`')

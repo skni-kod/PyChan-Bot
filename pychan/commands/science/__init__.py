@@ -1,5 +1,5 @@
 from nextcord.ext import commands
-from maths import Maths
+from .maths import Maths
 
 
 class Science(commands.Cog):
