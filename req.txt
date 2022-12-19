@@ -7,5 +7,4 @@ tabulate
 ossapi
 networkx
 matplotlib
-datetime
 python-osrsapi
