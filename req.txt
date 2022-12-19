@@ -1,4 +1,5 @@
 nextcord
+nextcord[voice]
 Sphinx
 sphinx-autoapi
 sphinx-material
@@ -7,4 +8,10 @@ tabulate
 ossapi
 networkx
 matplotlib
+datetime
 python-osrsapi
+PyNaCl
+youtube_dl
+Unidecode
+validators
+colorthief
