@@ -8,15 +8,16 @@ class FunFact(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context = True, 
-        name = "ciekawostka", 
-        category = "Tekst",
-        usage = " ",
-        help = """
+        pass_context=True,
+        name="ciekawostka",
+        category="Tekst",
+        usage=" ",
+        help="""
                Wysyła losową ciekawostkę w języku angielskim.
                """
     )
     async def fun_fact(self, ctx):
-        r = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
+        r = requests.get(
+            "https://uselessfacts.jsph.pl/random.json?language=en")
         r = r.json()
         await ctx.send(r["text"])

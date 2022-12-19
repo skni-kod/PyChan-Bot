@@ -11,11 +11,11 @@ class ConvertNumbers(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context= True,
-        name = "zamiana",
-        category = "Nauka",
-        usage = "zamiana <system z którego zamienamy> <system do którego zamieniamy> <liczba>",
-        help = """
+        pass_context=True,
+        name="zamiana",
+        category="Nauka",
+        usage="zamiana <system z którego zamienamy> <system do którego zamieniamy> <liczba>",
+        help="""
                Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>
                """
     )

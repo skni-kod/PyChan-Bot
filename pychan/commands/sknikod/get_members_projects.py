@@ -9,10 +9,10 @@ class GetMembersProjects(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context = True,
-        name = "listaCzlonkow",
-        category = "SKNIKOD",
-        help = "Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami"
+        pass_context=True,
+        name="listaCzlonkow",
+        category="SKNIKOD",
+        help="Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami"
     )
     async def get_members_projects(self, ctx):
         with BytesIO() as file:
@@ -23,13 +23,16 @@ class GetMembersProjects(commands.Cog):
 
                     for role in member.roles:
                         if role.name == "Członek":
-                            name = member.display_name.replace('"', " ").split()
+                            name = member.display_name.replace(
+                                '"', " ").split()
                             if len(name) > 2:
-                                file.write(f"{name[0]};{name[2]};{name[1]};".encode())
+                                file.write(
+                                    f"{name[0]};{name[2]};{name[1]};".encode())
                             elif len(name) == 2:
                                 file.write(f"{name[0]};{name[1]};;".encode())
                             else:
-                                file.write(f"{member.display_name} error".encode())
+                                file.write(
+                                    f"{member.display_name} error".encode())
                             for role2 in member.roles[1:]:
                                 if "Projekt" in role2.name:
                                     str = role2.name.replace("Projekt - ", "")

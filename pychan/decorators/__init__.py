@@ -4,6 +4,7 @@ import random
 from .rate_me import RateMe
 from .sleep_time import SleepTime
 
+
 def pychan_decorator(func):
     @functools.wraps(func)
     async def wrapper(bot, ctx, *args, **kwargs):

@@ -2,17 +2,18 @@ import requests
 import nextcord
 from nextcord.ext import commands
 
+
 class KanyeWestQuote(commands.Cog):
-    def __init__ (self, bot):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.command(
-        pass_context=True, 
+        pass_context=True,
         name='kanyequote',
-        category = "Tekst",
+        category="Tekst",
         aliases=['kanye', 'west'],
-        usage = " ",
-        help = """
+        usage=" ",
+        help="""
                Wysyła losowy cytat Kanye Westa
                """
     )
@@ -21,6 +22,6 @@ class KanyeWestQuote(commands.Cog):
         quote = data.json()['quote']
 
         embed = nextcord.Embed(title='Kanye West Quote',
-                            description=quote,
-                            color=nextcord.Color.dark_purple())
-        await ctx.send(embed = embed)
+                               description=quote,
+                               color=nextcord.Color.dark_purple())
+        await ctx.send(embed=embed)

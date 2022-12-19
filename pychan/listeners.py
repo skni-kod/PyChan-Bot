@@ -18,4 +18,3 @@ class Listeners(commands.Cog):
                 "Wołałeś mnie?\n"
                 f"Napisz `{database.get_guild_prefix(self.bot, message)}help`, aby dowiedzieć się jakie mam komendy"
             )
-

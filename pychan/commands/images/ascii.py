@@ -21,7 +21,6 @@ def downsize(image, quality):
     # Downscale image to the desired size
     width, height = image.size
 
-
     if width > max_width.get(quality):
         factor = width/max_width.get(quality)
         width = int(width/factor)
@@ -47,7 +46,7 @@ def pixel_to_char(pixel):
 
 
 def img_to_ascii(image):
-    # Create string containing image in ASCII Art style 
+    # Create string containing image in ASCII Art style
     width, height = image.size
     ascii_img = ""
     for i in range(0, height - 1):
@@ -62,13 +61,13 @@ def img_to_ascii(image):
 class ASCII(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(
         pass_context=True,
         name='ascii',
         category='Obraz',
         usage='<grafika w formacie .jpg i .png w załączniku> <jakość>',
-        help = """
+        help="""
                Konwertuje podany obraz na styl ASCII Art. Przyjmowane są tylko pliki .jpg i .png
                Jakości to:
                **orig**   - oryginaly rozmiar grafiki
@@ -76,28 +75,27 @@ class ASCII(commands.Cog):
                **small**  - szerokość 128 znaków
                """
     )
-    
-
     async def ASCII(self, ctx, quality="small"):
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
                 await ctx.send("Proszę czekać, konwertowanie na ASCII")
-                
+
                 if quality not in max_width:
                     await ctx.send("Błedny argument jakości, wykorzystanie domyślnej wartości small")
                     quality = 'small'
-                
+
                 image_url = ctx.message.attachments[0].url
                 name_len = len(ctx.message.attachments[0].filename)
-                name = ctx.message.attachments[0].filename[:name_len - 4] + "_ascii.txt"
+                name = ctx.message.attachments[0].filename[:name_len -
+                                                           4] + "_ascii.txt"
 
                 response = requests.get(image_url)
                 image = Image.open(BytesIO(response.content))
-                image = downsize(image,quality)
-                
+                image = downsize(image, quality)
+
                 ascii_image = img_to_ascii(image)
 
-                # Saving ASCII art to .txt file. Number of characters is technically unlimited, 
+                # Saving ASCII art to .txt file. Number of characters is technically unlimited,
                 # practical limit of 1025 characters per line for Windows Notepad
 
                 buffer = StringIO(ascii_image)

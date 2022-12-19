@@ -11,8 +11,8 @@ class BoothAlgorithm(commands.Cog):
         pass_context=True,
         name='booth',
         category='Nauka',
-        usage = "<P> <Q>` - gdzie P i Q to liczby całkowite",
-        help = """
+        usage="<P> <Q>` - gdzie P i Q to liczby całkowite",
+        help="""
                 Mnoży dwie liczby całkowite z użyciem algorytmu Booth\'a i wyświetla kroki.
                 """
     )

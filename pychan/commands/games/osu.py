@@ -23,7 +23,6 @@ class Osu(commands.Cog):
         database.set_game_username(ctx.author, username, 'osu')
         await ctx.reply(f'Twoja nazwa użytkownika w osu! to teraz `{username}`')
 
-    
     @osu.command(name="profil", pass_context=True, aliases=["konto"])
     async def profil(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla informacje na temat gracza'''
@@ -41,7 +40,7 @@ class Osu(commands.Cog):
                          url=f'https://osu.ppy.sh/u/{user.user_id}',
                          icon_url=f'https://osu.ppy.sh/images/flags/{user.country}.png')
 
-        embed.description = (f'**Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})\n' 
+        embed.description = (f'**Ranga globanla:** #{user.rank} (#{user.country_rank} {user.country})\n'
                              f'**PP:** {user.pp_raw}\n'
                              f'**Celność:** {round(user.accuracy or 0, 2)}%\n'
                              f'**Liczba zagrań:** {user.playcount}\n'
@@ -64,7 +63,8 @@ class Osu(commands.Cog):
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        plays = self._osu.get_user_best(user.user_id, limit=5, user_type=UserLookupKey.ID)
+        plays = self._osu.get_user_best(
+            user.user_id, limit=5, user_type=UserLookupKey.ID)
         if not plays or not len(plays):
             return await ctx.reply('Ten użytkownik nie posiada żadnych wyników')
 
@@ -82,8 +82,10 @@ class Osu(commands.Cog):
                 return await ctx.reply('Nie odnaleziono mapy')
 
             beatmap = beatmaps.pop()
-            accuracy = (play.count_300 * 300 + play.count_100 * 100 + play.count_50 * 50)
-            accuracy /= (play.count_300 + play.count_100 + play.count_50 + play.count_miss) * 300
+            accuracy = (play.count_300 * 300 + play.count_100 *
+                        100 + play.count_50 * 50)
+            accuracy /= (play.count_300 + play.count_100 +
+                         play.count_50 + play.count_miss) * 300
             accuracy = round(accuracy * 100, 2)
 
             combo = 'FC' if play.perfect else f'x{play.max_combo}/{beatmap.max_combo}'
@@ -113,7 +115,7 @@ class Osu(commands.Cog):
             return await ctx.reply('Taki gracz nie istnieje!')
 
         recent_plays = self._osu.get_user_recent(user.user_id, mode=GameMode.STD, limit=1,
-                                          user_type=UserLookupKey.ID)
+                                                 user_type=UserLookupKey.ID)
         if not len(recent_plays):
             return await ctx.reply('Nie odnaleziono żadnych wyników')
         recent = recent_plays.pop()
@@ -132,14 +134,17 @@ class Osu(commands.Cog):
         combo = 'FC' if recent.perfect else f'x{recent.max_combo}/{beatmap.max_combo}'
         hits = f'[{recent.count_300}/{recent.count_100}/{recent.count_50}/{recent.count_miss}]'
         pp = round(recent.pp, 2) if recent.pp else 0
-        accuracy = (recent.count_300 * 300 + recent.count_100 * 100 + recent.count_50 * 50)
-        accuracy /= (recent.count_300 + recent.count_100 + recent.count_50 + recent.count_miss) * 300
+        accuracy = (recent.count_300 * 300 + recent.count_100 *
+                    100 + recent.count_50 * 50)
+        accuracy /= (recent.count_300 + recent.count_100 +
+                     recent.count_50 + recent.count_miss) * 300
         accuracy = round(accuracy * 100, 2)
 
         embed.description = (f'● **{recent.rank}** ● **{pp}PP** ● **{accuracy}%**\n'
                              f'● {recent.score} | {combo} | {hits}')
 
-        embed.set_thumbnail(url=f'https://b.ppy.sh/thumb/{beatmap.beatmapset_id}l.jpg')
+        embed.set_thumbnail(
+            url=f'https://b.ppy.sh/thumb/{beatmap.beatmapset_id}l.jpg')
         embed.set_footer(text=str(recent.date))
 
         await ctx.send(embed=embed)

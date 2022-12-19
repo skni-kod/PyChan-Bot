@@ -7,6 +7,7 @@ from pychan import database, status
 from pychan.core import Core
 from pychan.help import PyChanHelp
 
+
 def main():
     database.create_database()
 
@@ -18,7 +19,7 @@ def main():
         command_prefix=database.get_guild_prefix, intents=intents,
         help_command=PyChanHelp()
     )
-    
+
     bot.add_cog(Core(bot))
 
     @bot.event

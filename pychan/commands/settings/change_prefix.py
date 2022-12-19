@@ -3,6 +3,7 @@ from nextcord.ext import commands
 
 from pychan import database
 
+
 class ChangePrefix(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -18,7 +19,7 @@ class ChangePrefix(commands.Cog):
         '''Ustawia prefix dla tego serwera'''
         if not ctx.guild:
             await ctx.send('Tutaj nie możesz zmienić prefixu')
-            return 
+            return
 
         if not prefix:
             await ctx.send(f'Aktualny prefix to `{ctx.prefix}`')

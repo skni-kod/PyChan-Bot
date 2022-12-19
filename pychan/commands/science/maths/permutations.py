@@ -12,12 +12,12 @@ class Permutations(commands.Cog):
         self.bot = bot
 
     @commands.group(
-        invoke_without_command = True,
-        pass_context = True,
-        name = 'permutacje',
-        aliases = ['p', 'perm'],
-        category = 'Nauka',
-        help = """
+        invoke_without_command=True,
+        pass_context=True,
+        name='permutacje',
+        aliases=['p', 'perm'],
+        category='Nauka',
+        help="""
                Szereg funkcji służących do obliczania permutacji.
                 
                Przykłady zapisu permutacji: `<5 2 3 1 4>` lub `(1 5 4)(2)(3)` lub `<5 1 3 2 4>#(4 2 3)#(1 2 5)`
@@ -35,8 +35,8 @@ class Permutations(commands.Cog):
 
     @permutacje.command(
         name='info',
-        usage = '<permutacja>',
-        help = """
+        usage='<permutacja>',
+        help="""
                Wyświetla informacje o permutacji
                """
     )
@@ -56,8 +56,8 @@ class Permutations(commands.Cog):
             return
 
         embed = nextcord.Embed(title="Permutacja:",
-                              description=f" ```{permstring}```",
-                              color=nextcord.Color.dark_purple())
+                               description=f" ```{permstring}```",
+                               color=nextcord.Color.dark_purple())
         embed.add_field(name="Postać jednowierszowa:",
                         value=f"```{perm2string(perm)}```",
                         inline=True)
@@ -114,10 +114,10 @@ class Permutations(commands.Cog):
         await ctx.send(embed=embed)
 
     @permutacje.command(
-        name='potega', 
+        name='potega',
         aliases=["potęga"],
-        usage = '<wykładnik> <permutacja>',
-        help = """
+        usage='<wykładnik> <permutacja>',
+        help="""
                Podnosi permutację do danej potęgi
                """
     )
@@ -141,8 +141,8 @@ class Permutations(commands.Cog):
 
         order = perm_order(perm)
         embed = nextcord.Embed(title="Zadana permutacja:",
-                              description=f"```({permstring}) ^ {power}```",
-                              color=nextcord.Color.dark_purple())
+                               description=f"```({permstring}) ^ {power}```",
+                               color=nextcord.Color.dark_purple())
         embed.add_field(name="Poermutacja po uproszczeniu:",
                         value=f"Jednowierszowo:\n```({perm2string(perm)}) ^ {power}```",
                         inline=True)
@@ -171,8 +171,8 @@ class Permutations(commands.Cog):
 
     @permutacje.command(
         name='losuj',
-        usage = '<Sn>',
-        help = """
+        usage='<Sn>',
+        help="""
                Losuje permutację w podanym Sn
                """
     )
@@ -188,20 +188,20 @@ class Permutations(commands.Cog):
         """
         if n < 1 or n > 20:
             await ctx.send(embed=nextcord.Embed(title="Numer poza zakresem. Podaj liczbę od 1 do 20",
-                                               color=nextcord.Color.dark_purple()))
+                                                color=nextcord.Color.dark_purple()))
             return
 
         perm = random_perm(n)
         embed = nextcord.Embed(title=f"Losowa permutacja w S{n}:",
-                              description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
-                                          f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
-                              color=nextcord.Color.dark_purple())
+                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
+                               f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
+                               color=nextcord.Color.dark_purple())
         await ctx.send(embed=embed)
 
     @permutacje.command(
         name='generuj',
-        usage = '<numer permutacji> <Sn>',
-        help = """
+        usage='<numer permutacji> <Sn>',
+        help="""
                Generuje permutację na podstawie numeru w porządku leksykograficznym
                """
     )
@@ -224,7 +224,7 @@ class Permutations(commands.Cog):
             return
         perm = perm_from_number(number, n)
         embed = nextcord.Embed(title=f"Permutacja o numerze `{number}` w `S{n}`:",
-                              description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
-                                          f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
-                              color=nextcord.Color.dark_purple())
+                               description=f"Jednowierszowo:\n```{perm2string(perm)}```\n"
+                               f"Cyklowo:\n```{cycles2string(perm2cycles(perm))}```",
+                               color=nextcord.Color.dark_purple())
         await ctx.send(embed=embed)

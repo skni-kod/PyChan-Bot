@@ -190,7 +190,8 @@ def twos_complement(dec):
     """
     if dec >= 0:
         binint = "{0:b}".format(dec)
-        if binint[0] == "1": binint = "0" + binint
+        if binint[0] == "1":
+            binint = "0" + binint
     else:
         dec2 = abs(dec + 1)
         binint_r = "{0:b}".format(dec2)

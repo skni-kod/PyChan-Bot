@@ -63,7 +63,8 @@ def perm2string(perm):
     string = "<"
     for x in range(len(perm)):
         string += str(perm[x])
-        if x != len(perm) - 1: string += " "
+        if x != len(perm) - 1:
+            string += " "
     string += ">"
 
     return string
@@ -83,7 +84,8 @@ def string2cycles(string):
 
     items = []
     for i in range(0, len(groups)):
-        groups[i] = groups[i].replace('(', '').replace(')', '').lstrip().rstrip().split(' ')
+        groups[i] = groups[i].replace('(', '').replace(
+            ')', '').lstrip().rstrip().split(' ')
         temp = []
         for j in groups[i]:
             temp.append(int(j))
@@ -107,7 +109,8 @@ def cycles2string(cycles):
         string += "("
         for i in range(len(cycle)):
             string += str(cycle[i])
-            if i != len(cycle) - 1: string += " "
+            if i != len(cycle) - 1:
+                string += " "
         string += ")"
 
     return string
@@ -127,7 +130,8 @@ def perm2cycles(items):
     used = []
 
     for x in range(1, max(items) + 1):
-        if x in used: continue
+        if x in used:
+            continue
 
         temp = []
         temp.append(x)
@@ -137,7 +141,8 @@ def perm2cycles(items):
 
         while True:
             i = items[i - 1]
-            if i == x: break
+            if i == x:
+                break
             temp.append(i)
             used.append(i)
 
@@ -188,7 +193,8 @@ def perm2cycles_without_fixed(perm):
     used = []
 
     for x in range(1, max(perm) + 1):
-        if x in used: continue
+        if x in used:
+            continue
 
         temp = []
         temp.append(x)
@@ -198,11 +204,13 @@ def perm2cycles_without_fixed(perm):
 
         while True:
             i = perm[i - 1]
-            if i == x: break
+            if i == x:
+                break
             temp.append(i)
             used.append(i)
 
-        if len(temp) > 1: cycles.append(temp)
+        if len(temp) > 1:
+            cycles.append(temp)
 
     return cycles
 
@@ -226,7 +234,8 @@ def smart_input(string):
             return -1
         if match('^<(\s)*(([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?(\s)*>$', string):
             perm = string2perm(string)
-            if perm == -1: return -1
+            if perm == -1:
+                return -1
             cycle = perm2cycles(perm)
             cycles += cycle
         elif match('^(\((\s)*(([1-9]|1[0-5])?\s)*([1-9]|1[0-5])?(\s)*\)(\s)*)+$', string):
@@ -361,7 +370,8 @@ def perm_type(perm):
     for i in range(1, len(perm) + 1):
         counter = 0
         for j in cycles:
-            if len(j) == i: counter += 1
+            if len(j) == i:
+                counter += 1
         if counter != 0:
             perm_type.append([f"{i}^{counter}"])
 
@@ -482,13 +492,15 @@ def next_in_lex(perm):
     sorted = perm.copy()
     sorted.sort()
     sorted.reverse()
-    if sorted == perm: return -1
+    if sorted == perm:
+        return -1
 
     # szukanie pary rosnącej od prawej
     perm_r = perm.copy()
     perm_r.reverse()
     for x in range(len(perm) - 1):
-        if perm_r[x] > perm_r[x + 1]: break
+        if perm_r[x] > perm_r[x + 1]:
+            break
     # jesli znaleziony na koncu to zmiana dwoch elementow
     if x == 0:
         result = perm[0:-2]
@@ -503,7 +515,8 @@ def next_in_lex(perm):
     temp.sort()
 
     for i in temp:
-        if i[0] > perm_r[x + 1]: break
+        if i[0] > perm_r[x + 1]:
+            break
     perm_r[i[1]] = perm_r[x + 1]
     perm_r[x + 1] = i[0]
 
@@ -528,7 +541,8 @@ def perm_list(n, filename):
     """
     perm = [x for x in range(1, n + 1)]
     with open(filename, "wt", encoding="UTF-8") as file:
-        file.write(f"Wszystkie permutacje w porządku leksykograficznym należące do S{n}\n")
+        file.write(
+            f"Wszystkie permutacje w porządku leksykograficznym należące do S{n}\n")
         for i in range(factorial(n)):
             file.write(f"[{i}]\t\t{perm2string(perm)}\n")
             perm = next_in_lex(perm)

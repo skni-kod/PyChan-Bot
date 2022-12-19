@@ -2,6 +2,7 @@ from nextcord.ext import commands
 
 from requests import get
 
+
 class BoredAPI(commands.Cog):
 
     def __init__(self, bot):
@@ -10,12 +11,12 @@ class BoredAPI(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        pass_context = True,
-        name = "nudzesie",
-        aliases = ['bored'],
-        category = "Tekst",
-        usage = " ",
-        help = """
+        pass_context=True,
+        name="nudzesie",
+        aliases=['bored'],
+        category="Tekst",
+        usage=" ",
+        help="""
                Wysyła losowe zadanie poboczne
                """
     )

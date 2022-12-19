@@ -6,10 +6,11 @@ from .lol import LoL
 
 import config
 
+
 class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
         if len(config.osu_token):
             self.bot.add_cog(Osu(bot))
         else:

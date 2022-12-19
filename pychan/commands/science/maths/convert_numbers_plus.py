@@ -14,8 +14,8 @@ class ConvertNumbersPlus(commands.Cog):
         pass_context=True,
         name="zamiana+",
         category="Nauka",
-        usage = "<system z którego zamienamy> <system do którego zamieniamy> <liczba>",
-        help = """
+        usage="<system z którego zamienamy> <system do którego zamieniamy> <liczba>",
+        help="""
                Zamienia liczbę z dowolnego systemu liczbowego na inny z przedziału <2,16>
                wraz z rozpisaniem pisemnym zamiany liczb
                """
@@ -53,7 +53,8 @@ class ConvertNumbersPlus(commands.Cog):
                 for dict in numbers_dict["integer"]:
                     for x, y in dict.items():
                         message = message + f"{x} r {y}\n"
-                message = message + str(numbers_dict["converted"]["integer"]) + "\n\n"
+                message = message + \
+                    str(numbers_dict["converted"]["integer"]) + "\n\n"
             if float(number_param) - int(number_param) != 0:
                 message = (
                     message
@@ -62,7 +63,8 @@ class ConvertNumbersPlus(commands.Cog):
                 for dict in numbers_dict["fraction"]:
                     for x, y in dict.items():
                         message = message + f"{x} | {y}\n"
-                message = message + str(numbers_dict["converted"]["fraction"]) + "\n\n"
+                message = message + \
+                    str(numbers_dict["converted"]["fraction"]) + "\n\n"
 
             message = (
                 message

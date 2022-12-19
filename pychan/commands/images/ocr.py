@@ -15,8 +15,10 @@ def send_ocr_request(url):
     :return: Returns JSON response
     :rtype: string
     """
-    data = {'url': url, 'isOverlayRequired': False, 'apikey': ocr_token, 'language': 'pol'}
-    r = requests.post('https://api.ocr.space/parse/image', data=data, timeout=10)
+    data = {'url': url, 'isOverlayRequired': False,
+            'apikey': ocr_token, 'language': 'pol'}
+    r = requests.post('https://api.ocr.space/parse/image',
+                      data=data, timeout=10)
     return r.content.decode()
 
 
@@ -35,8 +37,8 @@ class OCR(commands.Cog):
         pass_context=True,
         name='ocr',
         category='Obraz',
-        usage = '<zdjęcie w formacie .png lub .jpg jako załącznik>',
-        help= """
+        usage='<zdjęcie w formacie .png lub .jpg jako załącznik>',
+        help="""
               Rozpoznaje tekst ze zdjęcia w formacie 
               .png lub .jpg dodanego jako załącznik
               """
@@ -51,11 +53,13 @@ class OCR(commands.Cog):
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
                 try:
-                    output = json.loads(send_ocr_request(ctx.message.attachments[0].url))
+                    output = json.loads(send_ocr_request(
+                        ctx.message.attachments[0].url))
                     if output["OCRExitCode"] == 1 and output["IsErroredOnProcessing"] is False:
-                        if len(output['ParsedResults'][0]['ParsedText'])>2000:
+                        if len(output['ParsedResults'][0]['ParsedText']) > 2000:
                             with open('ocr.txt', 'w', encoding="UTF-8") as file:
-                                file.write(output['ParsedResults'][0]['ParsedText'])
+                                file.write(
+                                    output['ParsedResults'][0]['ParsedText'])
 
                             file = nextcord.File("ocr.txt")
                             await ctx.send(file=file)
