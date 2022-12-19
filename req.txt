@@ -1,8 +1,5 @@
 nextcord
 nextcord[voice]
-Sphinx
-sphinx-autoapi
-sphinx-material
 sqlalchemy
 tabulate
 ossapi
