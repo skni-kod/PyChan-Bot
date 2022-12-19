@@ -10,9 +10,8 @@ class ChangeStatus(commands.Cog):
     self.status = cycle([nextcord.Activity(type=nextcord.ActivityType.watching, name=f'{config.default_prefix}help'),
                         nextcord.Game('Snake in Snake')])
 
-  # @tasks.loop(minutes=30)
-  # async def change_status(self):
-  #     game = nextcord.Game("with the API")
-  #     await self.bot.change_presence(activity=next(self.status))
+  @tasks.loop(minutes=30)
+  async def change_status(self):
+      await self.bot.change_presence(activity=next(self.status))
 
 
