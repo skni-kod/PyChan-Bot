@@ -10,6 +10,7 @@ networkx
 matplotlib
 datetime
 python-osrsapi
+Pillow
 PyNaCl
 youtube_dl
 Unidecode
