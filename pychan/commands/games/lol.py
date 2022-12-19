@@ -3,7 +3,7 @@ import datetime
 import requests
 from nextcord.ext import commands
 
-from Core.Decorators.decorators import Decorator
+from pychan.decorators import pychan_decorator
 
 try:
     from config import riot_token
@@ -38,7 +38,7 @@ class LoL(commands.Cog):
     )
 
 
-    @Decorator.pychan_decorator
+    @pychan_decorator
     async def lolkonto(self, ctx, name):
         headers = {"X-Riot-Token": riot_token}
         url = "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
@@ -109,7 +109,7 @@ class LoL(commands.Cog):
                 """
         )
 
-    @Decorator.pychan_decorator
+    @pychan_decorator
     async def lolmecze(self, ctx, name, numberMatch):
         headers = {"X-Riot-Token": riot_token}
         
