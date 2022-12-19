@@ -1,204 +1,93 @@
+from typing import Literal, Optional, Union
+from nextcord import Guild, Member, User
+from nextcord.ext.commands.bot import Bot
+from nextcord.message import Message
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, ForeignKey, Column, Integer, String
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import validates
+from sqlalchemy import Boolean, ForeignKey, create_engine, Column, Integer, String, insert, select, update
+from sqlalchemy.orm import relationship, sessionmaker
+import config
 
-import datetime
+Base = declarative_base()
+engine = create_engine(config.sqlalchemy_db_url, echo=config.database_echo)
+session = sessionmaker(bind=engine)()
 
-import nextcord
-from nextcord.ext import commands
+# Stats and settings for guild members
+class GuildMember(Base):
+    __tablename__ = 'guild_members'
+    member_id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer)
+    coins = Column(Integer, default=0)
 
+# Stats and settings for users across all guilds
+class DiscordUser(Base):
+    __tablename__ = 'members'
+    member_id = Column(Integer, primary_key=True)
+    osu_username  = Column(String)
+    osrs_username = Column(String)
+    lol_username  = Column(String)
 
-class Database:
-    engine = create_engine('sqlite:///Database/PyChan.db')
-    Base = declarative_base()
-    session = sessionmaker(bind=engine)()
+class GuildSettings(Base):
+    __tablename__ = 'guild_settings'
+    guild_id = Column(Integer, primary_key=True)
+    prefix = Column(String, default=config.default_prefix)
 
-    class Guild(Base):
-        __tablename__ = 'guilds'
+class QuizAnswer(Base):
+    __tablename__ = 'quiz_answers'
+    id = Column(Integer, primary_key=True)
+    question_id = Column(Integer, ForeignKey('quiz_questions.id'))
+    answer = Column(String)
+    correct = Column(Boolean)
 
-        guild_id = Column(Integer, primary_key=True)
-        name = Column(String)
-        join_date = Column(String, default=datetime.datetime.now())
-        members_count = Column(Integer)
+class QuizQuestion(Base):
+    __tablename__ = 'quiz_questions'
+    id = Column(Integer, primary_key=True)
+    answers: list[QuizAnswer] = relationship("QuizAnswer")
+    guild_id = Column(Integer)
+    question = Column(String)
+    category = Column(String)
 
-        @validates('guild_id')
-        def validate_id(self, key, id):
-            if not (type(id) == int and len(str(id)) == 18):
-                raise NameError('[Validates] Guild - id')
-            return id
+def create_database():
+    Base.metadata.create_all(engine)
 
-        @validates('name')
-        def validate_name(self, key, name):
-            if not type(name) == str:
-                raise NameError('[Validates] Guild - name')
-            return name
+def get_guild_prefix(_: Bot, message: Message) -> str:
+    if not message.guild:
+        return ''
+    return session.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == message.guild.id)) or config.default_prefix
 
-        # @validates('members_count')
-        # def validate_members_count(self, key, members_count):
-        #     if not type(members_count) == int:
-        #         raise NameError('[Validates] Guild - members_count')
-        #     return id
+def set_guild_prefix(guild: Guild, prefix: str):
+    tag = session.scalar( \
+            select(GuildSettings.prefix) \
+            .where(GuildSettings.guild_id == guild.id))
 
-    class Member(Base):
-        __tablename__ = 'members'
+    stmt = None
+    if not tag:
+        stmt = insert(GuildSettings) \
+            .values(guild_id=guild.id, prefix=prefix)
+    else:
+        stmt = update(GuildSettings) \
+            .values(prefix=prefix) \
+            .where(GuildSettings.guild_id == guild.id)
 
-        id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
-        member_id = Column(Integer)
+    session.execute(stmt)
+    session.commit()
 
-        @validates('id')
-        def validate_address_id(self, key, id):
-            if not type(id) == int:
-                raise NameError('[Validates] User - id')
-            return id
+def set_game_username(member: Union[User, Member], username: str, game: Literal['osu', 'lol', 'osrs']):
+    tag = session.query(DiscordUser) \
+            .filter(DiscordUser.member_id == member.id).one_or_none()
 
-        @validates('member_id')
-        def validate_user_id(self, key, user_id):
-            if not type(user_id) == int:
-                raise NameError('[Validates] User - user_id')
-            return user_id
+    if not tag:
+        member = DiscordUser(member_id=member.id)
+        setattr(member, game + '_username', username)
+        session.add(member)
+    else:
+        tag.osu_username = username
 
-        @validates('guild_id')
-        def validate_server_id(self, key, guild_id):
-            if not type(guild_id) == int:
-                raise NameError('[Validates] User - guild_id')
-            return guild_id
+    session.commit()
 
-    class Settings(Base):
-        __tablename__ = 'settings'
-
-        id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
-        prefix = Column(String, default='^')
-
-        @validates('id')
-        def validate_id(self, key, id):
-            if not type(id) == int:
-                raise NameError('[Validates] Settings - id')
-            return id
-
-        @validates('guild_id')
-        def validate_server_id(self, key, guild_id):
-            if not type(guild_id) == int:
-                raise NameError('[Validates] Settings - guild_id')
-            return guild_id
-
-        @validates('prefix')
-        def validate_prefix(self, key, prefix):
-            if not type(prefix) == str:
-                raise NameError('[Validates] Settings - prefix')
-            return prefix
-
-    class ServerShiet(Base):
-        __tablename__ = 'servers_shiets'
-
-        id = Column(Integer, primary_key=True)
-        guild_id = Column(Integer, ForeignKey('guilds.guild_id'))
-        value = Column(String)
-        miner = Column(String)
-        date = Column(String)
-
-        @validates('id')
-        def validate_id(self, key, id):
-            if not type(id) == int:
-                raise NameError('[Validates] ServerShiet - id')
-            return id
-
-        @validates('server_id')
-        def validate_server_id(self, key, server_id):
-            if not type(server_id) == int:
-                raise NameError('[Validates] ServerShiet - server_id')
-            return server_id
-
-        @validates('value')
-        def validate_value(self, key, value):
-            if not type(value) == str:
-                raise NameError('[Validates] ServerShiet - value')
-            return value
-
-        @validates('miner')
-        def validate_miner(self, key, miner):
-            if not type(miner) == str:
-                raise NameError('[Validates] ServerShiet - miner')
-            return miner
-
-        @validates('date')
-        def validate_date(self, key, date):
-            if not type(date) == str:
-                raise NameError('[Validates] ServerShiet - date')
-            return date
-
-    @classmethod
-    def create_database(cls):
-        Database.Base.metadata.create_all(Database.engine)
-
-    @classmethod
-    def add(cls, _class, **parameters):
-        try:
-            cls.session.add(_class(**parameters))
-            cls.session.commit()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
-
-    @classmethod
-    def add_guild(cls, id):
-        try:
-            cls.session.add(cls.Guild(guild_id=id))
-            cls.session.commit()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
-            print('add g')
-
-    @classmethod
-    def add_guild_settings(cls, id):
-        try:
-            cls.session.add(cls.Settings(guild_id=id))
-            cls.session.commit()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
-            print('add g')
-
-    @classmethod
-    def add_member(cls, id, g_id):
-        try:
-            cls.session.add(cls.Member(member_id=id, guild_id=g_id))
-            cls.session.commit()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
-            print('add m')
-
-    @classmethod
-    def get_all(cls, _class, filter):
-        try:
-            return cls.session.query(_class).filter(filter).all()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
+def get_game_username(member: Union[User, Member], game: Literal['osu', 'lol', 'osrs']) -> Optional[str]:
+    tag = session.query(DiscordUser).filter(DiscordUser.member_id == member.id).one_or_none()
+    if not tag:
         return None
+    else:
+        return getattr(tag, game + '_username')
 
-    @classmethod
-    def get_first(cls, _class, *filter):
-        try:
-            return cls.session.query(_class).filter(*filter).first()
-        except Exception as error:
-            print('\n[ERROR DB]', *error.args)
-            print('get')
-        return None
-
-    @classmethod
-    def update_database(cls, bot):
-        for guild in bot.guilds:
-            print(guild.name)
-            if not Database.get_first(Database.Guild, Database.Guild.guild_id == guild.id):
-                Database.add_guild(guild.id)
-                guild_db = Database.get_first(
-                    Database.Guild, Database.Guild.guild_id == guild.id)
-                guild_db.name = guild.name
-                guild_db.members_count = guild.member_count
-            for member in guild.members:
-                if not member.bot:
-                    if not Database.get_first(
-                            Database.Member, Database.Member.member_id == member.id, Database.Member.guild_id == guild.id):
-                        Database.add_member(member.id, guild.id)
-            if not Database.get_first(Database.Settings, Database.Settings.guild_id == guild.id):
-                Database.add_guild_settings(guild.id)

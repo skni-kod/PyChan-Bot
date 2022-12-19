@@ -1,6 +1,9 @@
+from typing import Optional
 from nextcord.ext import commands
 from nextcord import Color, Embed
+from nextcord.ext.commands.bot import Context
 from ossapi import Ossapi, GameMode, UserLookupKey
+import Database
 from config import osu_token
 
 
@@ -10,13 +13,26 @@ class Osu(commands.Cog):
         self._osu = Ossapi(osu_token)
 
     @commands.group(name="osu", category="Gry")
-    async def osu(self, _: commands.Context):
+    async def osu(self, ctx: commands.Context):
         '''Komendy związane z grą osu!'''
-        pass
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help("osu")
 
-    @osu.command(name="profil", pass_context=True)
-    async def profil(self, ctx: commands.Context, *, username: str):
+    @osu.command(name='ustaw')
+    async def set_profile(self, ctx: Context, *, username: str):
+        '''Ustawia nazwę profilu użytkownika'''
+        Database.set_game_username(ctx.author, username, 'osu')
+        await ctx.reply(f'Twoja nazwa użytkownika w osu! to teraz `{username}`')
+
+    
+    @osu.command(name="profil", pass_context=True, aliases=["konto"])
+    async def profil(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla informacje na temat gracza'''
+        if not username:
+            username = Database.get_game_username(ctx.author, 'osu')
+        if not username:
+            await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
+            return
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -38,8 +54,13 @@ class Osu(commands.Cog):
         await ctx.send(embed=embed)
 
     @osu.command(name="top", pass_context=True)
-    async def top(self, ctx: commands.Context, *, username: str):
+    async def top(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla najlepsze wyniki gracza'''
+        if not username:
+            username = Database.get_game_username(ctx.author, 'osu')
+        if not username:
+            await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
+            return
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
@@ -80,9 +101,14 @@ class Osu(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @osu.command(name="ostatni", pass_context=True)
-    async def ostatni(self, ctx: commands.Context, *, username):
+    @osu.command(name="ostatni", pass_context=True, aliases=['recent', 'rs'])
+    async def ostatni(self, ctx: commands.Context, *, username: Optional[str]):
         '''Wyświetla ostatnie zagranie gracza'''
+        if not username:
+            username = Database.get_game_username(ctx.author, 'osu')
+        if not username:
+            await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
+            return
         user = self._osu.get_user(username, GameMode.STD)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
