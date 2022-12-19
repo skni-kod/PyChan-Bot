@@ -1,4 +1,5 @@
-from nextcord import Guild
+from typing import Literal, Optional, Union
+from nextcord import Guild, Member, User
 from nextcord.ext.commands.bot import Bot
 from nextcord.message import Message
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,7 +19,7 @@ class GuildMember(Base):
     coins = Column(Integer, default=0)
 
 # Stats and settings for users across all guilds
-class Member(Base):
+class DiscordUser(Base):
     __tablename__ = 'members'
     member_id = Column(Integer, primary_key=True)
     osu_username  = Column(String)
@@ -29,7 +30,6 @@ class GuildSettings(Base):
     __tablename__ = 'guild_settings'
     guild_id = Column(Integer, primary_key=True)
     prefix = Column(String, default=config.default_prefix)
-
 
 class QuizAnswer(Base):
     __tablename__ = 'quiz_answers'
@@ -70,6 +70,27 @@ def set_guild_prefix(guild: Guild, prefix: str):
 
     session.execute(stmt)
     session.commit()
+
+def set_game_username(member: Union[User, Member], username: str, game: Literal['osu', 'lol', 'osrs']):
+    tag = session.query(DiscordUser) \
+            .filter(DiscordUser.member_id == member.id).one_or_none()
+
+    if not tag:
+        member = DiscordUser(member_id=member.id)
+        setattr(member, game + '_username', username)
+        session.add(member)
+    else:
+        tag.osu_username = username
+
+    session.commit()
+
+def get_game_username(member: Union[User, Member], game: Literal['osu', 'lol', 'osrs']) -> Optional[str]:
+    tag = session.query(DiscordUser).filter(DiscordUser.member_id == member.id).one_or_none()
+    if not tag:
+        return None
+    else:
+        return getattr(tag, game + '_username')
+
 
 # def add_question(guild: Guild, question: Question):
 #     stmt = insert(QuizQuestions).values(guild_id=guild.id, question=question.question, category=question.category)
