@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship, sessionmaker
 import config
 
 Base = declarative_base()
-engine = create_engine(config.sqlalchemy_db_url, echo=True)
+engine = create_engine(config.sqlalchemy_db_url, echo=config.database_echo)
 session = sessionmaker(bind=engine)()
 
 # Stats and settings for guild members
@@ -90,31 +90,4 @@ def get_game_username(member: Union[User, Member], game: Literal['osu', 'lol', '
         return None
     else:
         return getattr(tag, game + '_username')
-
-
-# def add_question(guild: Guild, question: Question):
-#     stmt = insert(QuizQuestions).values(guild_id=guild.id, question=question.question, category=question.category)
-#     question_id = session.execute(stmt).one()['question_id']
-#     print(question_id)
-#     for answer in question.answers:
-#         stmt = insert(QuizAnswers).values(question_id=question_id, answer=answer.answer, correct=answer.correct)
-#         session.execute(stmt)
-#     session.commit()
-#
-# def get_questions(guild: Guild) -> list[Question]:
-#     questions: list[Question] = []
-#
-#     stmt = select(QuizQuestions) \
-#         .where(QuizQuestions.guild_id == guild.id)
-#
-#     question_rows = session.execute(stmt).all()
-#     
-#     for row in question_rows:
-#         answers: list[Answer] = []
-#         stmt = select(QuizAnswers) \
-#             .where(QuizAnswers.question_id == row['question_id'])
-#         answer_rows = session.execute(stmt).all()
-#
-#     return questions
-#
 
