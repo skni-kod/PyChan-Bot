@@ -15,16 +15,10 @@ class Graphs(commands.Cog):
         pass_context=True,
         name="prufer",
         category="Nauka",
-        help_={
-            "title": "Prufer",
-            "description": "Funkcja do rysowania drzewa z kodu Prüfera.",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`prufer <kod>`",
-                },
-            ],
-        },
+        help = """
+               Funkcja do rysowania drzewa z kodu Prüfera
+               """,
+        usage = "<kod>"
     )
     async def prufer(self, ctx, *, code):
         """
@@ -83,25 +77,7 @@ class Graphs(commands.Cog):
         pass_context=True,
         name="graf",
         aliases=["g"],
-        category="Nauka",
-        help_={
-            "title": "Graf",
-            "description": "Funkcja do rysowania grafów nieskierowanych.",
-            "fields": [
-                {
-                    "name": "Składnia",
-                    "value": "`graf rysuj [lista wierzchołków] [lista krawędzi]` - wyświetla informacje o permutacji.",
-                },
-                {
-                    "name": "Aliasy komendy",
-                    "value": "`graf`, `g`",
-                },
-                {
-                    "name": "Dodatkowe informacje",
-                    "value": "W liście wierzchołków nie trzeba uwzględniać tych, które są wymienione w liście krawędzi.\nPrzykład użycia: `g rysuj [] [(1,2)(1,3)(2,3)]` - generuje graf pełny K3",
-                },
-            ],
-        },
+        category="Nauka",  
     )
     async def graf(self, ctx):
         """
@@ -117,7 +93,16 @@ class Graphs(commands.Cog):
             )
         )
 
-    @graf.command(name="rysuj")
+    @graf.command(
+        name="rysuj",
+        help = """
+        Funkcja do rysowania grafów nieskierowanych
+
+        **Dodatkowe informacje**
+        W liście wierzchołków nie trzeba uwzględniać tych, które są wymienione w liście krawędzi.\nPrzykład użycia: `g rysuj [] [(1,2)(1,3)(2,3)]` - generuje graf pełny K3
+        """,
+        usage = "<lista wierzchołków> <lista krawędzi>"
+    )
     async def rysuj(self, ctx, *, args):
         """
         Sends the reply message to the user with graph image
