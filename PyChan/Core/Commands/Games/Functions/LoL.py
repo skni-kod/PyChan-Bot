@@ -31,7 +31,7 @@ class LoL(commands.Cog):
 
     @lol.command(
         pass_context = True,
-        name = 'lolkonto',
+        name = 'konto',
         usage = '<nick>',
         help = """Funkcja do pokazywania informacji o przywoływaczu
                """
@@ -39,11 +39,13 @@ class LoL(commands.Cog):
 
 
     @Decorator.pychan_decorator
-    async def lolkonto(self, ctx, name):
+    async def konto(self, ctx, name):
         headers = {"X-Riot-Token": riot_token}
         url = "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
         data = requests.get(f"{url}{name}", headers=headers)
         data = data.json()
+
+
 
         urlRanks = "https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/"
         dataRanks = requests.get(f'{urlRanks}{data["id"]}', headers=headers)
@@ -77,12 +79,19 @@ class LoL(commands.Cog):
         )
         dataChampionMastery = dataChampionMastery.json()
 
+# "http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/" + nameChampion + ".png"
+# "http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/" + nameChampion[str(dataHelp["championId"])] + ".png"
         championMastery = ""
+        pictureChampionLink = []
         for x in range(0, 3):
             dataHelp = dict(dataChampionMastery[x])
             championMastery += (
                 str(x + 1) + " : " + nameChampion[str(dataHelp["championId"])]
             )
+#             name = str(nameChampion[str(dataHelp["championId"])])
+   
+#             pictureChampionLink.append("http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/" + name + ".png")            
+            
             championMastery += (
                 "\nLVL Mastery : "
                 + str(dataHelp["championLevel"])
@@ -90,33 +99,47 @@ class LoL(commands.Cog):
                 + str(dataHelp["championPoints"])
                 + "\n\n"
             )
+        
+
+        iconLink = "http://ddragon.leagueoflegends.com/cdn/12.23.1/img/profileicon/"+ str(data["profileIconId"]) +".png"
+        
 
         embed = nextcord.Embed(title=f'{data["name"]}', color=nextcord.Color.dark_blue())
         embed.add_field(
             name="Poziom konta : ", value=f'{data["summonerLevel"]}', inline=False
         )
+
         embed.add_field(name="Ranga : ", value=f"{rangaPlayer}", inline=False)
+
+        embed.set_thumbnail(url = iconLink)
+
         embed.add_field(
             name="Champion top 3 Mastery : ", value=f"{championMastery}", inline=False
         )
+
         await ctx.send(embed=embed)
+
+
 
     @lol.command(
         pass_context = True,
-        name = 'lolmecze',
+        name = 'mecze',
         usage = '<nick> <ile meczy>',
         help = """Wyświetla podstawowe statystyki meczu
                 """
         )
 
     @Decorator.pychan_decorator
-    async def lolmecze(self, ctx, name, numberMatch):
+    async def mecze(self, ctx, name, numberMatch):
         headers = {"X-Riot-Token": riot_token}
         
+
         embed = nextcord.Embed(
             title=f'{"Trochę to zajmie"}', color=nextcord.Color.green()
         )
-        await ctx.send(embed=embed)
+        mes = await ctx.send(embed=embed)
+        
+
 
         url = "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
         data = requests.get(f"{url}{name}", headers=headers)
@@ -192,4 +215,5 @@ class LoL(commands.Cog):
                 value=f"{matchChampionStatsWhoWinList[x]}",
                 inline=False,
             )
+        await mes.delete()
         await ctx.send(embed=embed)
