@@ -1,0 +1,14 @@
+# API Keys
+discord_token = ''
+
+ocr_token = ''
+riot_token = ''
+apod_token = ''
+osu_token = ''
+waifu2x_token = ''
+aoc_session_id = ''
+
+# Settings
+default_prefix = '^'
+sqlalchemy_db_url = 'sqlite:///PyChan.db?charset=utf8mb4'
+database_echo = False

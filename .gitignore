@@ -203,6 +203,9 @@ fabric.properties
 #Config file
 config.py
 
+#FFMPEG
+ffmpeg/
+
 #Discord token
 token_key.py
 

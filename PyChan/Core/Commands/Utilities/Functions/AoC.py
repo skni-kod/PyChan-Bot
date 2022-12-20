@@ -82,9 +82,10 @@ class AoC(commands.Cog):
         '''Wyświetla listę kanałów z śledzeniem rankingów'''
         embed = Embed(color=Color.dark_purple())
         embed.title = 'Kanały z aktywnym śledzeniem rankingów AoC'
+        embed.description = ''
         for channel_id, tracker in self.tracked_channels.items():
             msg = tracker.messages[0]
-            embed.description = f'<#{channel_id}> → (Link) [https://discord.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}/]\n'
+            embed.description += f'<#{channel_id}> → https://discord.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}/\n'
         await ctx.reply(embed=embed)
 
     @tasks.loop(minutes=15)
