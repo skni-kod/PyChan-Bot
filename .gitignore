@@ -206,22 +206,8 @@ config.py
 #FFMPEG
 ffmpeg/
 
-#Discord token
-token_key.py
-
 #Database
 *.db
-
-#OCR Space token
-ocr_token.py
-
-apod_token.py
-
-#Riot token
-riot_token.py
-
-#Astronomy picture of the day token
-apod_token.py
 
 #FrontEnd
 .DS_Store
