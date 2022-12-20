@@ -36,7 +36,7 @@ class OCR(commands.Cog):
     @commands.command(
         pass_context=True,
         name='ocr',
-        category='Obraz',
+        category='Media',
         usage='<zdjęcie w formacie .png lub .jpg jako załącznik>',
         help="""
               Rozpoznaje tekst ze zdjęcia w formacie 

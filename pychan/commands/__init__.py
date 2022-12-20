@@ -1,7 +1,6 @@
 from nextcord.ext import commands
 
-from .images import Images
-from .music import Music
+from .media import Media
 from .science import Science
 from .settings import Settings
 from .sknikod import SKNIKOD
@@ -13,8 +12,7 @@ from .games import Games
 class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bot.add_cog(Images(bot))
-        self.bot.add_cog(Music(bot))
+        self.bot.add_cog(Media(bot))
         self.bot.add_cog(Science(bot))
         self.bot.add_cog(SKNIKOD(bot))
         self.bot.add_cog(Settings(bot))

@@ -9,7 +9,7 @@ class QR(commands.Cog):
     @commands.command(
         pass_context=True,
         name="qr",
-        category="Obraz",
+        category="Media",
         usage="<link do obrazu>",
         help="""
                Generuje kod QR z podanego linku do obrazu.

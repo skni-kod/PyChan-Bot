@@ -35,7 +35,7 @@ class PlayingMusic(commands.Cog):
 
     @commands.group(
         name="muzyka",
-        category="Muzyka"
+        category="Media"
     )
     async def playing_music(self, ctx: commands.Context):
         '''Komendy związane z graniem muzyki'''

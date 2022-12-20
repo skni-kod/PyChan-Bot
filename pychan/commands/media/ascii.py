@@ -65,7 +65,7 @@ class ASCII(commands.Cog):
     @commands.command(
         pass_context=True,
         name='ascii',
-        category='Obraz',
+        category='Media',
         usage='<grafika w formacie .jpg i .png w załączniku> <jakość>',
         help="""
                Konwertuje podany obraz na styl ASCII Art. Przyjmowane są tylko pliki .jpg i .png

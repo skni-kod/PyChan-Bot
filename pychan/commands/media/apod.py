@@ -5,21 +5,19 @@ from config import apod_token
 
 
 class ApodImage(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
     """
     Sends a request to NASA's Astronomy picture of the day via API
     and gets an image (or video) along with a description
     """
 
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(
         pass_context=True,
         name='apod',
-        category='Obraz',
-        help="""
-               Wyświetla zdjęcie (lub film) dnia od NASA
-               wraz z krótkim opisem
-               """
+        category='Media',
+        help='Wyświetla zdjęcie (lub film) dnia od NASA wraz z krótkim opisem'
     )
     async def apod(self, ctx: commands.Context):
         data = requests.get(
