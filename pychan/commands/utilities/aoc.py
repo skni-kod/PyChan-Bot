@@ -56,7 +56,7 @@ class AoC(commands.Cog):
         self.tracked_channels = {}
         self.loop.cancel()
 
-    @commands.group(name='aoc')
+    @commands.group(name='aoc', category='Narzędzia')
     async def aoc(self, ctx: Context):
         '''Komendy służące do śledzenia prywatnego rankingu Advent of Code'''
         if not ctx.subcommand_passed:
