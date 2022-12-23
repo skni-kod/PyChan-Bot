@@ -98,7 +98,7 @@ class Osrs(commands.Cog):
             result += f"\n\n**{accountData.rank} miejsce na globalnej liście**"
             result += f"\n\n**{xpTotal} XP**"
             embed.description = result
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @osrs.command(
         pass_context=True,
@@ -106,7 +106,7 @@ class Osrs(commands.Cog):
         usage='<przedmiot>',
         help="""Wyświetla cenę danego przedmiotu.
         
-                  Jesli przedmiot przedmiot ma więcej niż jeden wynik, \
+                  Jesli przedmiot ma więcej niż jeden wynik, \
                   lub została wprowadzona niepełna nazwa, zostaną wyświetlone wszystkie przedmioty z pasującą nazwą.
                   Wszystkie wyniki zostaną wyświetlone z trendem z ostatnich 30 dni.
                """
