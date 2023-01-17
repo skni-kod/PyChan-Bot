@@ -4,6 +4,7 @@ from .osrs import Osrs
 from .osu import Osu
 from .lol import LoL
 from .tft import TfT
+from .quiz import Quiz
 
 import config
 
