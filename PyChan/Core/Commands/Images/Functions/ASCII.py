@@ -173,8 +173,10 @@ class ASCII(commands.Cog):
                **medium**   - szerokość 256 znaków
                **small**    - szerokość 128 znaków
                **liczba**   - dowolna szerokość znaków (wymagana liczba całkowita, wartość większa od oryginalnej da taki sam efekt jak **orig**)
+
+               Parametr jakości jest opcjonalny, w przypadku niewpisania go wykorzystana zostanie wartość **small**
                """
-    )
+        )
     
 
     async def standard(self, ctx, quality="small"):
@@ -230,6 +232,8 @@ class ASCII(commands.Cog):
 
                 Wykorzystanie opcjonalnego parametru **invert** skutkuje odwróceniem kolorów gotowego pliku.
                 W przypadku niektórych grafik może pomóc to w uzyskaniu czytelniejszego wyniku
+                
+                Parametr jakości jest opcjonalny, w przypadku niewpisania go wykorzystana zostanie wartość **small**
                 """
         )
         
