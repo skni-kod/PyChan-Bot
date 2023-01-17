@@ -3,6 +3,7 @@ discord_token = ''
 
 ocr_token = ''
 riot_token = ''
+riot_token_TFT = ''
 apod_token = ''
 osu_token = ''
 waifu2x_token = ''
