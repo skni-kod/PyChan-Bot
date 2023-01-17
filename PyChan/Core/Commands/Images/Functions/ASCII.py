@@ -10,31 +10,32 @@ import numpy as np
 
 # String containing ASCII characters, ordered by their area
 ascii_characters_list = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'`. "
+ascii_characters_list_2 = "ÆÑÊŒØMÉËÈÃÂWQBÅæ#NÁþEÄÀHKRŽœXgÐêqÛŠÕÔA€ßpmãâG¶øðé8ÚÜ$ëdÙýèÓÞÖåÿÒb¥FDñáZPäšÇàhû§ÝkŸ®S9žUTe6µOyxÎ¾f4õ5ôú&aü™2ùçw©Y£0VÍL±3ÏÌóC@nöòs¢u‰½¼‡zJƒ%¤Itocîrjv1lí=ïì<>i7†[¿?×}*{+()\/»«•¬|!¡÷¦¯—^ª„”“~³º²–°­¹‹›;:’‘‚’˜ˆ¸…·¨´` "
 
 max_width = {
     "orig": 8000000,
     "medium": 256,
     "small": 128,
-    "braille": 256,
+    "invert": 128,
 }
 
 
-def downsize(image, quality):
+def downsize(image, quality, mode, invert):
 
     # Downscale image to the desired size
     width, height = image.size
 
-
-    if width > max_width.get(quality):
-        factor = width/max_width.get(quality)
+    if width > quality:
+        factor = width/quality
         width = int(width/factor)
         height = int(height/factor)
 
     # Changing into black and white for braille style
-    if quality == "braille":
+    if mode == "braille":
         image = image.resize((round(width), round(height)))
         image = image.convert("L")
-        image = ImageOps.invert(image)
+        if invert:
+            image = ImageOps.invert(image)
 
     # Adjustment for font's proportions
     else:
@@ -149,31 +150,45 @@ class ASCII(commands.Cog):
         Constructor method
         """
         self.bot = bot
-    
-    @commands.command(
+
+    @commands.group(
+        name = "ascii",
+        category = "Obraz",
+    )
+
+    async def ascii(self, ctx: commands.Context):
+        '''Komendy związane z grafiką ASCII'''
+        pass
+
+    @ascii.command(
         pass_context=True,
-        name='ascii',
-        category='Obraz',
+        name='standard',
         usage='<grafika w formacie .jpg i .png w załączniku> <jakość>',
         help = """
-               Konwertuje podany obraz na styl ASCII Art. Przyjmowane są tylko pliki .jpg i .png
+               Konwertuje podany obraz na styl ASCII Art wykorzystując podstawowe znaki.
+               Przyjmowane są tylko pliki .jpg lub .png
+
                Jakości to:
                **orig**     - oryginaly rozmiar grafiki
                **medium**   - szerokość 256 znaków
                **small**    - szerokość 128 znaków
-               **braille**  - wykorzystanie znaków systemu Braille
+               **liczba**   - dowolna szerokość znaków (wymagana liczba całkowita, wartość większa od oryginalnej da taki sam efekt jak **orig**)
                """
     )
     
 
-    async def ASCII(self, ctx, quality="small"):
+    async def standard(self, ctx, quality="small"):
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
                 await ctx.send("Proszę czekać, konwertowanie na ASCII")
                 
-                if quality not in max_width:
+                if quality.isdigit():
+                    await ctx.send("Szerokość " + quality)
+                elif quality in max_width:
+                    quality = max_width.get(quality)
+                else:
                     await ctx.send("Błedny argument jakości, wykorzystanie domyślnej wartości small")
-                    quality = 'small'
+                    quality = max_width.get('small')
                 
                 image_url = ctx.message.attachments[0].url
                 name_len = len(ctx.message.attachments[0].filename)
@@ -183,21 +198,75 @@ class ASCII(commands.Cog):
                 image = Image.open(BytesIO(response.content))
 
 
-                image = downsize(image,quality)
+                image = downsize(image, int(quality),'standard', False)
                 
-                if quality == 'braille':
-                    ascii_image = img_to_ascii_braille(image)
-                    buffer = StringIO(ascii_image)
-                    file = nextcord.File(buffer, filename=name, force_close=True)
-                    await ctx.send(file=file)
+
+                ascii_image = img_to_ascii(image)
+                # Saving ASCII art to .txt file. Number of characters is technically unlimited, 
+                # practical limit of 1024 characters per line for Windows Notepad
+                buffer = StringIO(ascii_image)
+                file = nextcord.File(buffer, filename=name, force_close=True)
+                await ctx.send(file=file)
+
+            else:
+                await ctx.send("Błędny format pliku")
+        else:
+            await ctx.send("Brak załącznika")
+
+
+    @ascii.command(
+            pass_context=True,
+            name='braille',
+            usage='<grafika w formacie .jpg i .png w załączniku> <jakość> <invert>',
+            help = """
+                Konwertuje podany obraz na styl ASCII Art wykorzystując znaki systemu Braille.
+                Przyjmowane są tylko pliki .jpg lub .png
+
+                Jakości to:
+                **orig**     - oryginalna szerokość grafiki
+                **medium**   - szerokość 256 znaków
+                **small**    - szerokość 128 znaków
+                **liczba**   - dowolna szerokość w znakach (wymagana liczba całkowita, wartość większa od oryginalnej da taki sam efekt jak **orig**)
+
+                Wykorzystanie opcjonalnego parametru **invert** skutkuje odwróceniem kolorów gotowego pliku.
+                W przypadku niektórych grafik może pomóc to w uzyskaniu czytelniejszego wyniku
+                """
+        )
+        
+
+    async def braille(self, ctx, quality="small", invert = "False"):
+        if len(ctx.message.attachments) != 0:
+            if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
+                await ctx.send("Proszę czekać, konwertowanie na ASCII")
                 
+                if invert == 'invert' or quality == 'invert':
+                    invert = True
                 else:
-                    ascii_image = img_to_ascii(image)
-                    # Saving ASCII art to .txt file. Number of characters is technically unlimited, 
-                    # practical limit of 1025 characters per line for Windows Notepad
-                    buffer = StringIO(ascii_image)
-                    file = nextcord.File(buffer, filename=name, force_close=True)
-                    await ctx.send(file=file)
+                    invert = False
+
+                if quality.isdigit():
+                    await ctx.send("Szerokość " + quality)
+                elif quality in max_width:
+                    quality = max_width.get(quality)
+                else:
+                    await ctx.send("Błedny argument jakości, wykorzystanie domyślnej wartości small")
+                    quality = max_width.get('small')
+
+                image_url = ctx.message.attachments[0].url
+                name_len = len(ctx.message.attachments[0].filename)
+                name = ctx.message.attachments[0].filename[:name_len - 4] + "_ascii.txt"
+
+                response = requests.get(image_url)
+                image = Image.open(BytesIO(response.content))
+
+
+                image = downsize(image, int(quality),'braille', invert)
+                
+                ascii_image = img_to_ascii_braille(image)
+                buffer = StringIO(ascii_image)
+                file = nextcord.File(buffer, filename=name, force_close=True)
+                await ctx.send(file=file)
+                
 
             else:
                 await ctx.send("Błędny format pliku")
