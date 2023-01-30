@@ -12,6 +12,8 @@ from urllib.request import urlopen
 from colorthief import ColorThief
 from io import BytesIO
 
+import asyncio
+
 
 class PlayingMusic(commands.Cog):
     def __init__(self, bot):
@@ -35,15 +37,18 @@ class PlayingMusic(commands.Cog):
         return colour
 
     async def manage_queue(self):
+
         if len(self.queue) > 0:
+            ctx = self.queue[0]['ctx']
             voice = get(self.bot.voice_clients,
-                        guild=self.queue[0]['ctx'].guild)
-            voice.play(FFmpegOpusAudio(
-                self.queue[0]['url'], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
-            await self.queue[0]['ctx'].send(embed=self.queue[0]['embed'])
-            self.queue.pop(0)
-        else:
-            self.queue.pop(0)
+                        guild=ctx.guild)
+            if voice.is_playing() == False:
+                embed = self.queue[0]['embed']
+                URL = self.queue[0]['url']
+                self.queue.pop(0)
+                voice.play(FFmpegOpusAudio(
+                    URL, **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
+                await ctx.send(embed=embed)
 
     @commands.group(
         name="muzyka",
@@ -109,6 +114,7 @@ class PlayingMusic(commands.Cog):
             embed.set_thumbnail(url=thumbnail)
             self.queue.append({"ctx": ctx, "url": URL, "embed": embed})
         if voice.is_playing() == False:
+            await asyncio.sleep(0.2)
             await self.manage_queue()
         else:
             await ctx.send(embed=nextcord.Embed(title="**Już coś gram, ale piosenka została dodana do kolejki! 🎵**", color=Color.blue()))
