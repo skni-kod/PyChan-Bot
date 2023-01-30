@@ -21,8 +21,6 @@ class PlayingMusic(commands.Cog):
         self.FFMPEG_OPTIONS = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.queue = []
-        self.queue_embed = []
-        self.queue_ctx = []
 
     def get_colour(self, id):
         """Function returns main colour of song thumbnail"""
@@ -38,17 +36,14 @@ class PlayingMusic(commands.Cog):
 
     async def manage_queue(self):
         if len(self.queue) > 0:
-            voice = get(self.bot.voice_clients, guild=self.queue_ctx[0].guild)
+            voice = get(self.bot.voice_clients,
+                        guild=self.queue[0]['ctx'].guild)
             voice.play(FFmpegOpusAudio(
-                self.queue[0], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
-            await self.queue_ctx[0].send(embed=self.queue_embed[0])
+                self.queue[0]['url'], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
+            await self.queue[0]['ctx'].send(embed=self.queue[0]['embed'])
             self.queue.pop(0)
-            self.queue_embed.pop(0)
-            self.queue_ctx.pop(0)
         else:
             self.queue.pop(0)
-            self.queue_embed.pop(0)
-            self.queue_ctx.pop(0)
 
     @commands.group(
         name="muzyka",
@@ -100,21 +95,19 @@ class PlayingMusic(commands.Cog):
                     seconds=info['entries'][0]['duration'])
                 URL = info["entries"][0]["url"]
             else:
-                if '/shorts/' in args:
+                if "/shorts/" in args:
                     args = "https://www.youtube.com/watch?v=" + \
                         str(args[-11:])
                 info = ydl.extract_info(args, download=False)
-                title = info['title']
+                title = info["title"]
                 id = info["id"]
-                thumbnail = f'https://img.youtube.com/vi/{id}/0.jpg'
+                thumbnail = f"https://img.youtube.com/vi/{id}/0.jpg"
                 duration = timedelta(seconds=info['duration'])
-                URL = info['formats'][0]['url']
+                URL = info["formats"][0]["url"]
             embed = nextcord.Embed(
                 title=title, description=f"Czas trwania: {duration}", color=self.get_colour(id))
             embed.set_thumbnail(url=thumbnail)
-            self.queue_embed.append(embed)
-            self.queue.append(URL)
-            self.queue_ctx.append(ctx)
+            self.queue.append({"ctx": ctx, "url": URL, "embed": embed})
         if voice.is_playing() == False:
             await self.manage_queue()
         else:
