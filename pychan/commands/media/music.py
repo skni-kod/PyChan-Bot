@@ -39,7 +39,8 @@ class PlayingMusic(commands.Cog):
     async def manage_queue(self):
         if len(self.queue) > 0:
             voice = get(self.bot.voice_clients, guild=self.queue_ctx[0].guild)
-            voice.play(FFmpegOpusAudio(self.queue[0], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
+            voice.play(FFmpegOpusAudio(
+                self.queue[0], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
             await self.queue_ctx[0].send(embed=self.queue_embed[0])
             self.queue.pop(0)
             self.queue_embed.pop(0)
@@ -85,7 +86,7 @@ class PlayingMusic(commands.Cog):
         if not ctx.guild.voice_client in self.bot.voice_clients:
             channel = ctx.author.voice.channel
             await channel.connect()
-        
+
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         with YoutubeDL(self.YDL_OPTIONS) as ydl:
             if validators.url(args) != 1:
@@ -118,7 +119,6 @@ class PlayingMusic(commands.Cog):
             await self.manage_queue()
         else:
             await ctx.send(embed=nextcord.Embed(title="**Już coś gram, ale piosenka została dodana do kolejki! 🎵**", color=Color.blue()))
-            
 
     @playing_music.command(
         name='skip',
