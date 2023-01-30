@@ -20,6 +20,9 @@ class PlayingMusic(commands.Cog):
                             'noplaylist': 'True', 'youtube_include_dash_manifest': False}
         self.FFMPEG_OPTIONS = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+        self.queue = []
+        self.queue_embed = []
+        self.queue_ctx = []
 
     def get_colour(self, id):
         """Function returns main colour of song thumbnail"""
@@ -32,6 +35,19 @@ class PlayingMusic(commands.Cog):
         colour = Color.from_rgb(
             rgb[which_palette][0], rgb[which_palette][1], rgb[which_palette][2])
         return colour
+
+    async def manage_queue(self):
+        if len(self.queue) > 0:
+            voice = get(self.bot.voice_clients, guild=self.queue_ctx[0].guild)
+            voice.play(FFmpegOpusAudio(self.queue[0], **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
+            await self.queue_ctx[0].send(embed=self.queue_embed[0])
+            self.queue.pop(0)
+            self.queue_embed.pop(0)
+            self.queue_ctx.pop(0)
+        else:
+            self.queue.pop(0)
+            self.queue_embed.pop(0)
+            self.queue_ctx.pop(0)
 
     @commands.group(
         name="muzyka",
@@ -69,39 +85,40 @@ class PlayingMusic(commands.Cog):
         if not ctx.guild.voice_client in self.bot.voice_clients:
             channel = ctx.author.voice.channel
             await channel.connect()
-
+        
         voice = get(self.bot.voice_clients, guild=ctx.guild)
-        if voice.is_playing():
-            await ctx.send(embed=nextcord.Embed(title="**Juz cos gram! 🎵**", color=Color.blue()))
+        with YoutubeDL(self.YDL_OPTIONS) as ydl:
+            if validators.url(args) != 1:
+                args = unidecode(args)
+                info = ydl.extract_info(
+                    f"ytsearch: {args}", download=False)
+                title = info["entries"][0]["title"]
+                id = info["entries"][0]["id"]
+                thumbnail = f'https://img.youtube.com/vi/{id}/0.jpg'
+                duration = timedelta(
+                    seconds=info['entries'][0]['duration'])
+                URL = info["entries"][0]["url"]
+            else:
+                if '/shorts/' in args:
+                    args = "https://www.youtube.com/watch?v=" + \
+                        str(args[-11:])
+                info = ydl.extract_info(args, download=False)
+                title = info['title']
+                id = info["id"]
+                thumbnail = f'https://img.youtube.com/vi/{id}/0.jpg'
+                duration = timedelta(seconds=info['duration'])
+                URL = info['formats'][0]['url']
+            embed = nextcord.Embed(
+                title=title, description=f"Czas trwania: {duration}", color=self.get_colour(id))
+            embed.set_thumbnail(url=thumbnail)
+            self.queue_embed.append(embed)
+            self.queue.append(URL)
+            self.queue_ctx.append(ctx)
+        if voice.is_playing() == False:
+            await self.manage_queue()
         else:
-            with YoutubeDL(self.YDL_OPTIONS) as ydl:
-                if validators.url(args) != 1:
-                    args = unidecode(args)
-                    info = ydl.extract_info(
-                        f"ytsearch: {args}", download=False)
-                    title = info["entries"][0]["title"]
-                    id = info["entries"][0]["id"]
-                    thumbnail = f'https://img.youtube.com/vi/{id}/0.jpg'
-                    duration = timedelta(
-                        seconds=info['entries'][0]['duration'])
-                    URL = info["entries"][0]["url"]
-
-                else:
-                    if '/shorts/' in args:
-                        args = "https://www.youtube.com/watch?v=" + \
-                            str(args[-11:])
-                    info = ydl.extract_info(args, download=False)
-                    title = info['title']
-                    id = info["id"]
-                    thumbnail = f'https://img.youtube.com/vi/{id}/0.jpg'
-                    duration = timedelta(seconds=info['duration'])
-                    URL = info['formats'][0]['url']
-                embed = nextcord.Embed(
-                    title=title, description=f"Czas trwania: {duration}", color=self.get_colour(id))
-                embed.set_thumbnail(url=thumbnail)
-                await ctx.send(embed=embed)
-
-            voice.play(FFmpegOpusAudio(URL, **self.FFMPEG_OPTIONS))
+            await ctx.send(embed=nextcord.Embed(title="**Już coś gram, ale piosenka została dodana do kolejki! 🎵**", color=Color.blue()))
+            
 
     @playing_music.command(
         name='skip',
