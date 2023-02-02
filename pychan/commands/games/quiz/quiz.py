@@ -1,6 +1,7 @@
 from nextcord.ext import commands
 from nextcord import Colour, Embed
 import nextcord
+import asyncio
 
 from pychan import database
 #from .embedModal import EmbedModal
@@ -44,6 +45,20 @@ class MenuButtons(nextcord.ui.View):
     async def startB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         #await interaction.response.send_message('inicjalizuje draus.exe', ephemeral=False)
         self.value = True
+
+        question = database.QuizQuestion(question="W celu odczytania tekstu wpisanego w oknie edycji należy użyć funkcji:", category="Systemy Operacyjne")
+        question.answers.append(database.QuizAnswer(answer="GetWindowText", correct=True))
+        question.answers.append(database.QuizAnswer(answer="SetWindowText", correct=False))
+        question.answers.append(database.QuizAnswer(answer="sscanf", correct=False))
+
+        quizView = startQuiz(question)
+        for i, ans in enumerate(question.answers):
+            button = nextcord.ui.Button(style=nextcord.ButtonStyle.blurple,
+                                        label=ans.answer)
+            quizView.listOfButtons.append(button)
+            quizView.add_item(button)
+
+        await self.viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
         self.stop()
 
     #add
@@ -53,7 +68,7 @@ class MenuButtons(nextcord.ui.View):
 
         mod = EmbedModal(self.viewYouCanEdit)
         await interaction.response.send_modal(mod)
-        
+
         self.stop()
 
     #ranking
@@ -92,40 +107,49 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             max_values = 1,
             placeholder = "Wybierz kategorie",
             options=[
-                nextcord.SelectOption(label="jajo"),
-                nextcord.SelectOption(label="so"),
-                nextcord.SelectOption(label="cpp"),
-                nextcord.SelectOption(label="pe")
+                nextcord.SelectOption(label="JAIO"),
+                nextcord.SelectOption(label="Systemy Operacyjne"),
+                nextcord.SelectOption(label="C++"),
+                nextcord.SelectOption(label="Podstawy Elektroniki")
             ])
         self.add_item(self.selectCategory)
 
     @nextcord.ui.button(label = "Dodaj kategorię", style=nextcord.ButtonStyle.blurple)
     async def addCategoryB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
-        
-        strlist = [""]
         #this modal should change first value of our strlist
         #todo
-        modal = CategoryModal(strlist)
+        semaf = asyncio.Semaphore(1)
+        modal = CategoryModal(semaf)
+        await semaf.acquire()
         await interaction.response.send_modal(modal)
-
-        self.category = strlist[0]
-        #tu bardziej gdy anuluje sparwdz
-        if self.category != "":
-            self.newCategory = True
-            print("nowa kategoria")
-
-        self.stop()
+        #await modal.wait()
+        async with semaf:
+            self.category = modal.categoryStr
     
     @nextcord.ui.button(label = "Gotowe", style=nextcord.ButtonStyle.green)
     async def endAdding(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
         
-        #test output when categ[0] is empty
-        result = [self.question, self.answers, self.selectOdpPopr.values[0], self.selectCategory.values[0]]
+        #psarwdz czy nie wybrano opcji c lub d jak jej nie podano
+        try:
+            if len(self.selectCategory.values) != 0: #not empty
+                self.category = self.selectCategory.values[0]
+            elif self.category == "":
+                raise KeyError("Nie wybrano kategorii")
+
+            if len(self.selectOdpPopr.values) == 0:
+                raise KeyError("Nie wybrano poprawnej odpowiedzi")
+        except KeyError as keyE:
+            await interaction.send(embed=Embed(title=keyE.args[0]))
+            return
+
+        result = [self.question, self.answers, self.selectOdpPopr.values[0], self.category]
         final_view = successfulQuestion(result)
         await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed)
 
+
+        #todo dodawanie do bazy
         self.stop()
 
 class successfulQuestion(nextcord.ui.View):
@@ -143,7 +167,19 @@ class successfulQuestion(nextcord.ui.View):
         description += f"Poprawna: {result[2]}\n Kategoria: {result[3]}"
 
         self.embed = Embed( title = "Udało się dodać pytanie",
-                            description = description)
+                            description = description,
+                            color = Colour.green()
+                            )
+
+class startQuiz(nextcord.ui.View):
+    def __init__(self, question: database.QuizQuestion):
+        super().__init__()
+        self.value = None
+        self.question = question
+        self.embed = Embed( title = question.question,
+                            color = Colour.blurple()
+                            )
+        self.listOfButtons = []
 
 #todo move this to modals file
 class EmbedModal(nextcord.ui.Modal):
@@ -186,14 +222,16 @@ class EmbedModal(nextcord.ui.Modal):
                 description = "Dodaj poprawną odpowiedź oraz kategorię",
                 color = nextcord.Colour.green(), 
             )
-
+        
+        answers = [self.embedOdpA.value, self.embedOdpB.value,]
+        if self.embedOdpC.value != "":
+            answers.append(self.embedOdpC.value)
+        if self.embedOdpD.value != "":
+            answers.append(self.embedOdpD.value)
+    
         newView = AddCategoryAndAnswer(self.viewYouCanEdit,
                                     self.embedTitle.value, 
-                                    [self.embedOdpA.value,
-                                     self.embedOdpB.value,
-                                     self.embedOdpC.value,
-                                     self.embedOdpD.value
-                                    ])
+                                    answers)
         await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
         
         self.stop()
