@@ -3,6 +3,8 @@ from io import BytesIO
 import nextcord
 from nextcord.ext import commands
 
+from pychan.checks import check_sknikod
+
 
 class GetMembersProjects(commands.Cog):
     def __init__(self, bot):
@@ -14,6 +16,7 @@ class GetMembersProjects(commands.Cog):
         category="SKNIKOD",
         help="Wysyła plik txt z aktualną listą członków z rolą `Członek` i przypisanymi do nich projektami"
     )
+    @commands.check(check_sknikod)
     async def get_members_projects(self, ctx):
         with BytesIO() as file:
             async with ctx.channel.typing():
