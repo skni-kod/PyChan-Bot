@@ -61,7 +61,7 @@ class PyChanHelp(HelpCommand):
         return await self.get_destination().send(embed=embed)
 
     async def subcommand_not_found(self, command: Command, string: str):
-        return f'Komenda `{command.qualified_name}` nieposiada podkomendy `{string}`'
+        return f'Komenda `{command.qualified_name}` nie posiada podkomendy `{string}`'
 
     async def command_not_found(self, string: str):
         return f'Komenda `{string}` nie istnieje'
