@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from Core.Commands.Games.Functions.osrs import Osrs
 from Core.Commands.Games.Functions.osu import Osu
 from Core.Commands.Games.Functions.LoL import LoL
+from Core.Commands.Games.Functions.TicTacToe import TicTacToe
 
 import config
 
@@ -26,3 +27,4 @@ class Games(commands.Cog):
             print("Riot API token not found. Related commands will not be loaded")
 
         self.bot.add_cog(Osrs(bot))
+        self.bot.add_cog(TicTacToe(bot))
