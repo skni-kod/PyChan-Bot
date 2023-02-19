@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from nextcord import FFmpegOpusAudio, Color
 from nextcord.utils import get
 
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 import validators
 from datetime import timedelta
 from unidecode import unidecode
@@ -18,8 +18,8 @@ import asyncio
 class PlayingMusic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.YDL_OPTIONS = {'format': 'bestaudio',
-                            'noplaylist': 'True', 'youtube_include_dash_manifest': False}
+        self.YDL_OPTIONS = {'format': 'bestaudio/best',
+                            'noplaylist': True, 'youtube_include_dash_manifest': False, 'quiet' : True}
         self.FFMPEG_OPTIONS = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.queue = []
@@ -37,7 +37,6 @@ class PlayingMusic(commands.Cog):
         return colour
 
     async def manage_queue(self):
-
         if len(self.queue) > 0:
             ctx = self.queue[0]['ctx']
             voice = get(self.bot.voice_clients,
@@ -100,15 +99,12 @@ class PlayingMusic(commands.Cog):
                     seconds=info['entries'][0]['duration'])
                 URL = info["entries"][0]["url"]
             else:
-                if "/shorts/" in args:
-                    args = "https://www.youtube.com/watch?v=" + \
-                        str(args[-11:])
                 info = ydl.extract_info(args, download=False)
                 title = info["title"]
                 id = info["id"]
                 thumbnail = f"https://img.youtube.com/vi/{id}/0.jpg"
                 duration = timedelta(seconds=info['duration'])
-                URL = info["formats"][0]["url"]
+                URL = info["url"]
             embed = nextcord.Embed(
                 title=title, description=f"Czas trwania: {duration}", color=self.get_colour(id))
             embed.set_thumbnail(url=thumbnail)
