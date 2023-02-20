@@ -3,6 +3,12 @@
 ## Instalowanie wymaganych pakietów
 ```python -m pip install -r req.txt```
 
+Aby w pełni korzystać z muzycznych funkcji bota, należy oddzielnie pobrać [FFmpeg](https://ffmpeg.org/) i folder `ffmpeg` umieścić w folderze z projektem.
+
+[Instalacja FFmpeg - system Windows](https://phoenixnap.com/kb/ffmpeg-windows)
+
+[Instalacja FFmpeg - system Linux](https://phoenixnap.com/kb/install-ffmpeg-ubuntu)
+
 ## Konfiguracja
 Skopiuj plik `config.py.sample` i zmień jego nazwę na `config.py`.  
 Wypełnij `config.py` odpowiednimi wartościami.
@@ -14,19 +20,27 @@ Uruchom terminal w katalogu PyChan i wpisz `python main.py`
 Po zaproszeniu bota na serwer można użyć komendy `help` aby wyświetlić listę wszystkich komend.
 
 ## Struktura projektu
-    PyChan
-    ├── main.py           # Ingresja bota, tutaj wszystko się zaczyna
-    ├── config.py         # Plik konfiguracyjny, należy go ręcznie utworzyć na podstawie config.py.sample
-    ├── Core              # Katalog zawierający „Rdzeń” PyChan'a, wszystko co jest związane z Discordem
-    │   ├── Commands      # Katalog zawierający komendy.
-    │   │   ├── Games     # Każda komenda ma przydzieloną kategorię
-    │   │   ├── Images    # Struktura katalogów kategorii: 
-    │   │   ├── Science   #   Kategoria
-    │   │   ├── Settings  #   ├── Functions
-    │   │   ├── SKNIKOD   #   │   ├── komenda1.py
-    │   │   ├── Text      #   │   └── komenda2.py
-    │   │   └── Utilities #   └── kategoria.py
-    │   ├── Decorators    # Dekoratory. Roszerzają komendy o dodatkowe funkcjonalności
-    │   ├── Errors        # Globalny error handler projektu
-    │   └── Listeners     # Obsługa wydarzeń niepowiązanych z systemem komend
-    └── Database          # Obsługa bazy danych
+```text
+├── main.py              # Punkt wejścia
+├── config.py            # Plik konfiguracyjny, należy go ręcznie utworzyć na podstawie config.py.sample
+└── pychan               # Moduł zawierający całą funkcjonalność bota
+    ├── core.py          # Sedno sprawy
+    ├── help.py          # Generator pomocy
+    ├── checks.py        # Niestandardowe filtry dla komend
+    ├── errors.py        # Obsługa wszelkich błędów
+    ├── status.py        # W co PyChan teraz gra?
+    ├── database.py      # Obsługa bazy danych
+    ├── listeners.py     # Obsługa wydarzeń niepowiązanych z systemem komend
+    ├── decorators.py    # Dekoratory. Rozszerzają komendy o dodatkowe funkcjonalności
+    └── commands         # Katalog zawiera komendy pogrupowane kategoriami
+        ├── games        
+        │   ├── lol.py
+        │   ├── osrs.py
+        │   ├── osu.py
+        │   └── tft.py
+        ├── media
+        ├── science
+        ├── sknikod
+        ├── text
+        └── utilities
+```

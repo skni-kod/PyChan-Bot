@@ -203,22 +203,11 @@ fabric.properties
 #Config file
 config.py
 
-#Discord token
-token_key.py
+#FFMPEG
+ffmpeg/
 
 #Database
 *.db
-
-#OCR Space token
-ocr_token.py
-
-apod_token.py
-
-#Riot token
-riot_token.py
-
-#Astronomy picture of the day token
-apod_token.py
 
 #FrontEnd
 .DS_Store
