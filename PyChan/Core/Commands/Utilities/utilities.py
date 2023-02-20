@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from Core.Commands.Utilities.Functions.ssh import SSH
 from Core.Commands.Utilities.Functions.AoC import AoC
 from Core.Commands.Utilities.Functions.Chomsky import Chomsky
+from Core.Commands.Utilities.Functions.Greybach import Greybach
 
 class Utilities(commands.Cog):
     """Class contains commands with utilities
@@ -16,3 +17,4 @@ class Utilities(commands.Cog):
         self.bot.add_cog(SSH(bot))
         self.bot.add_cog(AoC(bot))
         self.bot.add_cog(Chomsky(bot))
+        self.bot.add_cog(Greybach(bot))
