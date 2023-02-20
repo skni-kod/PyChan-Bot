@@ -2,6 +2,8 @@ import nextcord
 from nextcord.ext import commands
 import requests
 import json
+from datetime import datetime
+
 
 weather_codes = {
     '0': 'Nie występują żadne znaczące zjawiska pogodowe',
@@ -109,10 +111,22 @@ def send_weather_request(location):
     lat = location['latitude']
     lot = location['longitude']
 
-    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=rain&current_weather=true'      
+    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=rain&current_weather=true&timezone=Europe%2FBerlin'      
     r = requests.get(url)
     weather = r.json()
     weather = weather['current_weather']
+
+    return weather
+
+
+def send_temperature_request(location):
+    lat = location['latitude']
+    lot = location['longitude']
+
+    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=temperature_2m&timezone=Europe%2FBerlin'
+    r = requests.get(url)
+    weather = r.json()
+    weather = weather['hourly']
 
     return weather
 
@@ -149,6 +163,30 @@ def prepare_weather(location, weather):
     return data
 
 
+def prepare_temperature(location, weather):
+    tmp = weather['time']
+    time = []
+    for i in range(len(tmp)):
+        time.append(tmp[i][5:10] + ' ' + tmp[i][-5:])
+    now = datetime.now()
+    current_time = now.strftime("%m-%d %H:00")
+
+    combined = []
+    stop = 0
+
+    for i in range(len(weather['time'])):
+        if stop != 24:
+            if time[i] >= current_time:
+                stop += 1
+                combined.append(time[i] + '  ' + str(weather['temperature_2m'][i]) + ' °C' + '\n')
+    
+    data = {
+    'name': location['name'],
+    'temperature': combined,
+    }
+
+    return data
+
 class Meteo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -159,17 +197,25 @@ class Meteo(commands.Cog):
         """
         self.bot = bot
 
-    @commands.command(
-        pass_context=True,
+    @commands.group(
         name='meteo',
         category='Narzędzia',
-        usage='placeholder',
-        help="""
-              aaaa
-              """
     )
 
-    async def meteo(self, ctx, *, search):
+    async def meteo(self, ctx: commands.Context):
+        '''Komendy Związane z pogodą'''
+        pass
+
+    @meteo.command(
+        pass_context=True,
+        name='teraz',
+        usage='TODO',
+        help=   """
+                TODO
+                """
+        )
+
+    async def teraz(self, ctx, *, search):
 
         if len(search) != 0:
             location = get_location(search)
@@ -187,5 +233,38 @@ class Meteo(commands.Cog):
 
                 await ctx.send(embed=embed)
             
+        else:
+            await ctx.send("Proszę podać lokalizację")
+    
+
+    @meteo.command(
+        pass_context=True,
+        name='temperatura',
+        usage='TODO',
+        help=   """
+                TODO
+                """
+    )
+
+
+    async def temperatura(self, ctx, *, search):
+        if len(search) != 0:
+            location = get_location(search)
+            if location == 0:
+                await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
+            else:
+                weather = send_temperature_request(location)
+                weather = prepare_temperature(location, weather)
+                embed = nextcord.Embed(title="Meteo Temperatura \U0001F321")
+                embed.add_field(name="Lokalizacja", value=weather['name'], inline=False)
+                for x in weather['temperature']:
+                    embed.add_field(name = x[:11], value= x[-9:] , inline=False)
+
+                await ctx.send(embed=embed)
+                # await ctx.send("Temperatura \u1f321")
+                # await ctx.send(weather['name'])
+                # for x in weather['temperature']:
+                #     await ctx.send(x)
+
         else:
             await ctx.send("Proszę podać lokalizację")
