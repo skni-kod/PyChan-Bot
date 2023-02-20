@@ -3,7 +3,7 @@
 ## Instalowanie wymaganych pakietów
 ```python -m pip install -r req.txt```
 
-Aby w pełni korzystać z muzycznych funkcji bota, należy oddzielnie pobrać [FFmpeg](https://ffmpeg.org/) i folder `ffmpeg` umieścić w folderze z projektem.
+Aby w pełni korzystać z muzycznych funkcji bota, należy oddzielnie pobrać [FFmpeg](https://ffmpeg.org/).
 
 [Instalacja FFmpeg - system Windows](https://phoenixnap.com/kb/ffmpeg-windows)
 
