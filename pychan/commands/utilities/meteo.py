@@ -1,9 +1,17 @@
 import nextcord
 from nextcord.ext import commands
 import requests
-import json
 from datetime import datetime
+import matplotlib.pyplot as plt
+from io import BytesIO
 
+plt.rcParams['figure.facecolor'] = '#313338'
+plt.rcParams['axes.facecolor'] = '#313338'
+plt.rcParams['text.color'] = '#ffffff'
+plt.rcParams['axes.labelcolor'] = '#ffffff'
+plt.rcParams['xtick.color'] = '#ffffff'
+plt.rcParams['ytick.color'] = '#ffffff'
+plt.rc('axes',edgecolor='#ffffff')
 
 weather_codes = {
     '0': 'Nie występują żadne znaczące zjawiska pogodowe',
@@ -166,26 +174,53 @@ def prepare_weather(location, weather):
 def prepare_temperature(location, weather):
     tmp = weather['time']
     time = []
-    for i in range(len(tmp)):
-        time.append(tmp[i][5:10] + ' ' + tmp[i][-5:])
+    temperature = []    
     now = datetime.now()
-    current_time = now.strftime("%m-%d %H:00")
-
-    combined = []
+    current_time = now.strftime("%Y-%m-%dT%H:00")
     stop = 0
 
-    for i in range(len(weather['time'])):
+    for i in range(len(tmp)):
         if stop != 24:
-            if time[i] >= current_time:
+            if str(tmp[i]) >= current_time:
                 stop += 1
-                combined.append(time[i] + '  ' + str(weather['temperature_2m'][i]) + ' °C' + '\n')
+                time.append(tmp[i][5:10] + ' ' + tmp[i][-5:])
+                temperature.append(weather['temperature_2m'][i])
     
     data = {
     'name': location['name'],
-    'temperature': combined,
+    'time': time,
+    'temperature': temperature,
     }
 
     return data
+
+
+def create_graph(weather):
+    x_set = weather['time']
+    y_set = weather['temperature']
+
+    # x_set = np.asarray(x_set)
+    
+    fig = plt.figure()
+
+    fig.set_figwidth(14)
+    plt.plot(x_set,y_set, marker='o')
+
+
+    for x,y in zip(x_set,y_set):
+        label = str(y) + '°C'
+        plt.annotate(label,
+                     (x,y),
+                     textcoords='offset points', xytext=(0,-10), color='white', ha='center')
+
+    plt.axvline(x=x_set[0], color='g', linestyle='-')
+    plt.gcf().autofmt_xdate()
+    plt.grid()
+
+    plt.title(weather['name'])
+
+    return fig
+
 
 class Meteo(commands.Cog):
     def __init__(self, bot):
@@ -255,12 +290,20 @@ class Meteo(commands.Cog):
             else:
                 weather = send_temperature_request(location)
                 weather = prepare_temperature(location, weather)
-                embed = nextcord.Embed(title="Meteo Temperatura \U0001F321")
-                embed.add_field(name="Lokalizacja", value=weather['name'], inline=False)
-                for x in weather['temperature']:
-                    embed.add_field(name = x[:11], value= x[-9:] , inline=False)
+                f = create_graph(weather)
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                dfile = nextcord.File(bytes, filename="image.png")
+                await ctx.send("***Meteo Temperatura \U0001F321***")
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                
+                # embed = nextcord.Embed(title="Meteo Temperatura \U0001F321")
+                # embed.add_field(name="Lokalizacja", value=weather['name'], inline=False)
+                # for x in weather['temperature']:
+                #     embed.add_field(name = x[:11], value= x[-9:] , inline=False)
 
-                await ctx.send(embed=embed)
+                # await ctx.send(embed=embed)
                 # await ctx.send("Temperatura \u1f321")
                 # await ctx.send(weather['name'])
                 # for x in weather['temperature']:
