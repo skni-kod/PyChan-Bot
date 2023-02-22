@@ -8,7 +8,7 @@ matplotlib
 python-osrsapi
 Pillow
 PyNaCl
-youtube_dl
+yt-dlp
 Unidecode
 validators
 colorthief
