@@ -10,7 +10,7 @@ class Chomsky(commands.Cog):
         pass_context=True,
         name="chomsky",
         usage="<reguly>",
-        category="Others",
+        category="Nauka",
         help="""Funkcja do przekształcanie reguł produkcji do postaci Chomskiego reguły należy podać w postaci:
                 (symbole terminalne);(symbol produkujący reguły)>(reguły produkowane)
                 reguły i symbole należy odzlenać przecinkiem przykładowy zapis:

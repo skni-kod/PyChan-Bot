@@ -11,7 +11,7 @@ class Greybach(commands.Cog):
         pass_context=True,
         name="greybach",
         usage="<reguly>",
-        category="Others",
+        category="Nauka",
         help=""
     )
     async def chomsky(self, ctx, *, rules: str):
