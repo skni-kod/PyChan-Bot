@@ -27,12 +27,14 @@ class Game:
                                 custom_id=f"{row-1},{column-1}",
                                 disabled=True if temp is not None or self.winner is not None else False)
                 if temp is not None:
-                    button.emoji = '🅾️' if temp=="user" else '❎'
+                    button.emoji = '🅾️' if temp == "user" else '❎'
 
-                if self.winner =="user":
-                    button.style = nextcord.ButtonStyle.red if self.win_filed[row-1][column-1] else nextcord.ButtonStyle.gray
-                elif self.winner =="pc":
-                    button.style = nextcord.ButtonStyle.green if self.win_filed[row-1][column-1] else nextcord.ButtonStyle.gray
+                if self.winner == "user":
+                    button.style = nextcord.ButtonStyle.red if self.win_filed[row -
+                                                                              1][column-1] else nextcord.ButtonStyle.gray
+                elif self.winner == "pc":
+                    button.style = nextcord.ButtonStyle.green if self.win_filed[row -
+                                                                                1][column-1] else nextcord.ButtonStyle.gray
 
                 button.callback = self.button_callback
                 view.add_item(button)
@@ -144,8 +146,8 @@ class Game:
                     if board[i][j] is None:
                         board[i][j] = pc
                         best = max(best, self.minimax(board,
-                                                 depth + 1,
-                                                 not isMaximizing))
+                                                      depth + 1,
+                                                      not isMaximizing))
                         board[i][j] = None
             return best
 
@@ -155,7 +157,8 @@ class Game:
                 for j in range(3):
                     if board[i][j] is None:
                         board[i][j] = player
-                        best = min(best, self.minimax(board, depth + 1, not isMaximizing))
+                        best = min(best, self.minimax(
+                            board, depth + 1, not isMaximizing))
                         board[i][j] = None
             return best
 
@@ -177,10 +180,10 @@ class Game:
 
         self.board[bestMove[0]][bestMove[1]] = "pc"
 
+
 async def start_game(interaction: nextcord.Interaction):
     game = Game(int(interaction.data['values'][0]), interaction.user)
     view = game.prepare_view()
 
     await interaction.response.edit_message(
         content=f"Ruch gracza {interaction.user.mention}:", view=view)
-

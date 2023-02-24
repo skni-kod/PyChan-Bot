@@ -19,7 +19,7 @@ class PlayingMusic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.YDL_OPTIONS = {'format': 'bestaudio/best',
-                            'noplaylist': True, 'youtube_include_dash_manifest': False, 'quiet' : True}
+                            'noplaylist': True, 'youtube_include_dash_manifest': False, 'quiet': True}
         self.FFMPEG_OPTIONS = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.queue = []

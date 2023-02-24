@@ -27,6 +27,6 @@ class Games(commands.Cog):
             self.bot.add_cog(TfT(bot))
         else:
             print("Riot API token TFT not found. Related commands will not be loaded")
-            
+
         self.bot.add_cog(Osrs(bot))
         self.bot.add_cog(TicTacToe(bot))

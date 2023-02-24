@@ -4,6 +4,7 @@ from nextcord import Interaction
 from nextcord.ui import View, StringSelect, Button
 from .tictactoe_functions import *
 
+
 class TicTacToe(commands.Cog):
 
     def __init__(self, bot):
@@ -22,7 +23,8 @@ class TicTacToe(commands.Cog):
             nextcord.SelectOption(label="Łatwy", value=1),
             nextcord.SelectOption(label="Trudny", value=2)
         ]
-        select = StringSelect(options=options, placeholder="Wybierz poziom trudności")
+        select = StringSelect(
+            options=options, placeholder="Wybierz poziom trudności")
         view = View()
         view.add_item(select)
         select.callback = start_game

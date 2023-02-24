@@ -3,6 +3,7 @@ from nextcord.ext import commands
 import copy
 import random
 
+
 class Greybach(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -60,7 +61,6 @@ class Greybach(commands.Cog):
                                 zmienna1[i].pop(x)
                                 break
 
-
         """
          wprowadzanie danych
         """
@@ -103,7 +103,8 @@ class Greybach(commands.Cog):
                     for a in range(len(reguly_prod)):
                         for b in range(len(reguly_prod[a])):
                             if symbole_pocz[i] in reguly_prod[a][b]:
-                                reguly_prod[a][b] = reguly_prod[a][b].replace(symbole_pocz[i], reguly_prod[i][x])
+                                reguly_prod[a][b] = reguly_prod[a][b].replace(
+                                    symbole_pocz[i], reguly_prod[i][x])
                                 reguly_prod[i].pop(x)
         for i in range(0, len(reguly_prod)):
             for x in range(0, len(reguly_prod[i])):
@@ -133,10 +134,12 @@ class Greybach(commands.Cog):
                 symbole_pocz.append(nowy_symbol)
                 for x in reversed(range(len(lista_pomocznicza))):
                     if lista_pomocznicza[x] == "alfa":
-                        reguly_prod[-1].append(reguly_prod[i][x][1:] + symbole_pocz[-1])
+                        reguly_prod[-1].append(reguly_prod[i]
+                                               [x][1:] + symbole_pocz[-1])
                         reguly_prod[-1].append(reguly_prod[i][x][1:])
                     else:
-                        reguly_prod[i].append(reguly_prod[i][x]+symbole_pocz[-1])
+                        reguly_prod[i].append(
+                            reguly_prod[i][x]+symbole_pocz[-1])
                         reguly_prod[i].append(reguly_prod[i][x])
                     reguly_prod[i].pop(x)
 
@@ -166,7 +169,8 @@ class Greybach(commands.Cog):
                         if reguly_prod[i][x][y] in terminalne:
                             for z in range(len(reguly_prod)):
                                 if len(reguly_prod[z]) == 1 and reguly_prod[z][0] == reguly_prod[i][x][y]:
-                                    reguly_prod[i][x] = reguly_prod[i][x].replace(reguly_prod[i][x][y], symbole_pocz[z])
+                                    reguly_prod[i][x] = reguly_prod[i][x].replace(
+                                        reguly_prod[i][x][y], symbole_pocz[z])
 
             for i in range(len(reguly_prod)):
                 for x in reversed(range(len(reguly_prod[i]))):
@@ -174,7 +178,8 @@ class Greybach(commands.Cog):
                         for y in range(len(symbole_pocz)):
                             if symbole_pocz[y] == reguly_prod[i][x][0]:
                                 for z in range(len(reguly_prod[y])):
-                                    reguly_prod[i].append(reguly_prod[y][z]+reguly_prod[i][x][1:])
+                                    reguly_prod[i].append(
+                                        reguly_prod[y][z]+reguly_prod[i][x][1:])
                                 reguly_prod[i].pop(x)
 
             if reguly_prod == lista_pomocznicza:
@@ -195,4 +200,3 @@ class Greybach(commands.Cog):
             embed.description += f"{reguly_prod[i][-1]}\n"
 
         await ctx.send(embed=embed)
-

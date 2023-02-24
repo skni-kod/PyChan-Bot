@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import random
 
+
 class Chomsky(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -19,7 +20,6 @@ class Chomsky(commands.Cog):
              """
     )
     async def chomsky(self, ctx, *, rules: str):
-
 
         symbole_terminalne = []
         Reguły_produkcji = []
@@ -47,7 +47,8 @@ class Chomsky(commands.Cog):
                             oznaczenia_symboli.append(reguly[i])
                             Reguły_produkcji.append([])
                         case ">":
-                            Reguły_produkcji[zmienna_pomocnicza].append(reguly[i])
+                            Reguły_produkcji[zmienna_pomocnicza].append(
+                                reguly[i])
 
         # Nie zmieniać
         symbole = []
@@ -74,7 +75,8 @@ class Chomsky(commands.Cog):
                             nowy_symbol_wejściowy = chr(random.randint(65, 90))
                         else:
 
-                            element = Reguły_produkcji[i][x][:-2] + nowy_symbol_wejściowy
+                            element = Reguły_produkcji[i][x][:-
+                                                             2] + nowy_symbol_wejściowy
                             lista_pomocnicza = [Reguły_produkcji[i][x][-2:]]
                             Reguły_produkcji.append(lista_pomocnicza)
                             Reguły_produkcji[i][x] = element
@@ -125,7 +127,8 @@ class Chomsky(commands.Cog):
                                 Reguły_produkcji[i].pop(x)
                                 x = x - 1
                                 for c in range(0, len(Reguły_produkcji[b])):
-                                    Reguły_produkcji[i].append(Reguły_produkcji[b][c])
+                                    Reguły_produkcji[i].append(
+                                        Reguły_produkcji[b][c])
 
         """
         usnięcie lambdy
@@ -143,7 +146,8 @@ class Chomsky(commands.Cog):
         for i in range(0, len(Reguły_produkcji)):
             for x in reversed(range(0, len(Reguły_produkcji[i]))):
                 if "^" in Reguły_produkcji[i][x]:
-                    Reguły_produkcji[i][x] = Reguły_produkcji[i][x].replace("^", "")
+                    Reguły_produkcji[i][x] = Reguły_produkcji[i][x].replace(
+                        "^", "")
 
         """
         usuwanie syboli bezuzytecznych
@@ -170,7 +174,7 @@ class Chomsky(commands.Cog):
 
         for i in range(0, len(symbole)):
             if symbole[i] not in symbole_użyteczne and symbole[i] not in symbole_terminalne and symbole[
-                i] not in symbole_bezużyteczne:
+                    i] not in symbole_bezużyteczne:
                 symbole_bezużyteczne.append(symbole[i])
 
         for i in range(0, len(symbole)):
@@ -191,8 +195,6 @@ class Chomsky(commands.Cog):
                     oznaczenia_symboli.pop(i)
                     i = i - 1
                 i = i + 1
-
-
 
         embed = nextcord.Embed(
             title=f"Gramatyka Chomsky'ego",

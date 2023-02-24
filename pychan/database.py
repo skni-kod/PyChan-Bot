@@ -9,10 +9,13 @@ import config
 engine = create_engine(config.sqlalchemy_db_url, echo=config.database_echo)
 session = sessionmaker(bind=engine)()
 
+
 class Base(DeclarativeBase):
     pass
 
 # Stats and settings for guild members
+
+
 class GuildMember(Base):
     __tablename__ = 'guild_members'
     member_id: Mapped[int] = mapped_column(primary_key=True)
@@ -20,12 +23,14 @@ class GuildMember(Base):
     coins: Mapped[int] = mapped_column(default=0)
 
 # Stats and settings for users across all guilds
+
+
 class DiscordUser(Base):
     __tablename__ = 'discord_users'
-    user_id       : Mapped[int]=mapped_column(primary_key=True)
-    osu_username  : Mapped[Optional[str]]= mapped_column()
-    osrs_username : Mapped[Optional[str]]= mapped_column()
-    lol_username  : Mapped[Optional[str]]= mapped_column()
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+    osu_username: Mapped[Optional[str]] = mapped_column()
+    osrs_username: Mapped[Optional[str]] = mapped_column()
+    lol_username: Mapped[Optional[str]] = mapped_column()
 
 
 class GuildSettings(Base):
@@ -42,12 +47,15 @@ class QuizQuestion(Base):
     question: Mapped[str] = mapped_column()
     category: Mapped[str] = mapped_column()
 
+
 class QuizAnswer(Base):
     __tablename__ = 'quiz_answers'
     answer_id: Mapped[int] = mapped_column(primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey('quiz_questions.question_id'))
-    answer : Mapped[str] =  mapped_column()
+    question_id: Mapped[int] = mapped_column(
+        ForeignKey('quiz_questions.question_id'))
+    answer: Mapped[str] = mapped_column()
     correct: Mapped[bool] = mapped_column()
+
 
 def create_database():
     Base.metadata.create_all(engine)

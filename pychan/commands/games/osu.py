@@ -1,7 +1,7 @@
 from typing import Optional
 from nextcord.ext import commands
 from nextcord import Color, Embed
-from ossapi import  OssapiV1, UserLookupKey
+from ossapi import OssapiV1, UserLookupKey
 from config import osu_token
 from pychan import database
 

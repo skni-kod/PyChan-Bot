@@ -130,12 +130,16 @@ def dithering_floyd_steinberg(image):
                 error = image_array[y, x] + error_array[y + 1, x + 1]
             else:
                 result[y, x] = 0        # white
-                error = image_array[y, x] + error_array[y + 1, x + 1] - max_value
+                error = image_array[y, x] + \
+                    error_array[y + 1, x + 1] - max_value
 
-            error_array[y + 1, x + 2] = error_array[y + 1, x + 2] + 7 / 16 * error
+            error_array[y + 1, x + 2] = error_array[y +
+                                                    1, x + 2] + 7 / 16 * error
             error_array[y + 2, x] = error_array[y + 2, x] + 3 / 16 * error
-            error_array[y + 2, x + 1] = error_array[y + 2, x + 1] + 5 / 16 * error
-            error_array[y + 2, x + 2] = error_array[y + 2, x + 2] + 1 / 16 * error
+            error_array[y + 2, x + 1] = error_array[y +
+                                                    2, x + 1] + 5 / 16 * error
+            error_array[y + 2, x + 2] = error_array[y +
+                                                    2, x + 2] + 1 / 16 * error
 
     return result
 
@@ -145,10 +149,9 @@ class ASCII(commands.Cog):
         self.bot = bot
 
     @commands.group(
-        name = "ascii",
-        category = "Media",
+        name="ascii",
+        category="Media",
     )
-
     async def ascii(self, ctx: commands.Context):
         '''Komendy związane z grafiką ASCII'''
         pass
@@ -157,7 +160,7 @@ class ASCII(commands.Cog):
         pass_context=True,
         name='standard',
         usage='<grafika w formacie .jpg i .png w załączniku> <jakość>',
-        help = """
+        help="""
                Konwertuje podany obraz na styl ASCII Art wykorzystując podstawowe znaki.
                Przyjmowane są tylko pliki .jpg lub .png
 
@@ -169,14 +172,12 @@ class ASCII(commands.Cog):
 
                Parametr jakości jest opcjonalny, w przypadku niewpisania go wykorzystana zostanie wartość **small**
                """
-        )
-    
-
+    )
     async def standard(self, ctx, quality="small"):
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
                 await ctx.send("Proszę czekać, konwertowanie na ASCII")
-                
+
                 if quality.isdigit():
                     await ctx.send("Szerokość " + quality)
                 elif quality in max_width:
@@ -184,7 +185,7 @@ class ASCII(commands.Cog):
                 else:
                     await ctx.send("Błedny argument jakości, wykorzystanie domyślnej wartości small")
                     quality = max_width.get('small')
-                
+
                 image_url = ctx.message.attachments[0].url
                 name_len = len(ctx.message.attachments[0].filename)
                 name = ctx.message.attachments[0].filename[:name_len -
@@ -193,11 +194,10 @@ class ASCII(commands.Cog):
                 response = requests.get(image_url)
                 image = Image.open(BytesIO(response.content))
 
-                image = downsize(image, int(quality),'standard', False)
-                
+                image = downsize(image, int(quality), 'standard', False)
 
                 ascii_image = img_to_ascii(image)
-                # Saving ASCII art to .txt file. Number of characters is technically unlimited, 
+                # Saving ASCII art to .txt file. Number of characters is technically unlimited,
                 # practical limit of 1024 characters per line for Windows Notepad
                 buffer = StringIO(ascii_image)
                 file = nextcord.File(buffer, filename=name, force_close=True)
@@ -208,12 +208,11 @@ class ASCII(commands.Cog):
         else:
             await ctx.send("Brak załącznika")
 
-
     @ascii.command(
-            pass_context=True,
-            name='braille',
-            usage='<grafika w formacie .jpg i .png w załączniku> <jakość> <invert>',
-            help = """
+        pass_context=True,
+        name='braille',
+        usage='<grafika w formacie .jpg i .png w załączniku> <jakość> <invert>',
+        help="""
                 Konwertuje podany obraz na styl ASCII Art wykorzystując znaki systemu Braille.
                 Przyjmowane są tylko pliki .jpg lub .png
 
@@ -228,14 +227,12 @@ class ASCII(commands.Cog):
                 
                 Parametr jakości jest opcjonalny, w przypadku niewpisania go wykorzystana zostanie wartość **small**
                 """
-        )
-        
-
-    async def braille(self, ctx, quality="small", invert = "False"):
+    )
+    async def braille(self, ctx, quality="small", invert="False"):
         if len(ctx.message.attachments) != 0:
             if ctx.message.attachments[0].filename.lower().endswith((".png", ".jpg")):
                 await ctx.send("Proszę czekać, konwertowanie na ASCII")
-                
+
                 if invert == 'invert' or quality == 'invert':
                     invert = True
                 else:
@@ -251,19 +248,18 @@ class ASCII(commands.Cog):
 
                 image_url = ctx.message.attachments[0].url
                 name_len = len(ctx.message.attachments[0].filename)
-                name = ctx.message.attachments[0].filename[:name_len - 4] + "_ascii.txt"
+                name = ctx.message.attachments[0].filename[:name_len -
+                                                           4] + "_ascii.txt"
 
                 response = requests.get(image_url)
                 image = Image.open(BytesIO(response.content))
 
+                image = downsize(image, int(quality), 'braille', invert)
 
-                image = downsize(image, int(quality),'braille', invert)
-                
                 ascii_image = img_to_ascii_braille(image)
                 buffer = StringIO(ascii_image)
                 file = nextcord.File(buffer, filename=name, force_close=True)
                 await ctx.send(file=file)
-                
 
             else:
                 await ctx.send("Błędny format pliku")
