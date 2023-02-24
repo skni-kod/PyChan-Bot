@@ -1,4 +1,4 @@
-nextcord
+nextcord==2.3.3
 nextcord[voice]
 sqlalchemy
 tabulate
