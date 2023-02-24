@@ -1,7 +1,7 @@
 from typing import Optional
 from nextcord.ext import commands
 from nextcord import Color, Embed
-from ossapi import Ossapi, GameMode, UserLookupKey
+from ossapi import OssapiV1, UserLookupKey
 from config import osu_token
 from pychan import database
 
@@ -9,7 +9,7 @@ from pychan import database
 class Osu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._osu = Ossapi(osu_token)
+        self._osu = OssapiV1(osu_token)
 
     @commands.group(name="osu", category="Gry")
     async def osu(self, ctx: commands.Context):
@@ -31,7 +31,7 @@ class Osu(commands.Cog):
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return
-        user = self._osu.get_user(username, GameMode.STD)
+        user = self._osu.get_user(username, 0)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
@@ -59,7 +59,7 @@ class Osu(commands.Cog):
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return
-        user = self._osu.get_user(username, GameMode.STD)
+        user = self._osu.get_user(username, "")
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
@@ -110,11 +110,11 @@ class Osu(commands.Cog):
         if not username:
             await ctx.reply(f'Podaj nazwę gracza którego statystyki chcesz sprawdzić, albo ustaw swoją nazwę użytkownika pisząc `{ctx.prefix}osu ustaw <nazwa_gracza>`')
             return
-        user = self._osu.get_user(username, GameMode.STD)
+        user = self._osu.get_user(username, 0)
         if not user:
             return await ctx.reply('Taki gracz nie istnieje!')
 
-        recent_plays = self._osu.get_user_recent(user.user_id, mode=GameMode.STD, limit=1,
+        recent_plays = self._osu.get_user_recent(user.user_id, mode=0, limit=1,
                                                  user_type=UserLookupKey.ID)
         if not len(recent_plays):
             return await ctx.reply('Nie odnaleziono żadnych wyników')

@@ -2,6 +2,8 @@ from nextcord import Color, Embed
 from nextcord.ext.commands import Group, HelpCommand, Cog, Command
 from typing import Mapping, Optional, List
 
+from pychan.checks import check_sknikod
+
 
 class PyChanHelp(HelpCommand):
     async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[Command]]):
@@ -9,9 +11,12 @@ class PyChanHelp(HelpCommand):
         embed.description = f"Wpisz `{self.context.prefix}help <nazwa_komendy>` aby uzyskać więcej informacji.\n"
         embed.description += "Dostępne komendy:"
 
+        dest = self.get_destination()
         fields: dict[str, List[Command]] = {}
         for cog_commands in mapping.values():
             for command in cog_commands:
+                if check_sknikod in command.checks and dest.guild.id != 381092165729910786:
+                    continue
                 category = command.extras.get(
                     'category') or command.__original_kwargs__.get('category') or 'Inne'
                 if category not in fields.keys():
@@ -56,7 +61,7 @@ class PyChanHelp(HelpCommand):
         return await self.get_destination().send(embed=embed)
 
     async def subcommand_not_found(self, command: Command, string: str):
-        return f'Komenda `{command.qualified_name}` nieposiada podkomendy `{string}`'
+        return f'Komenda `{command.qualified_name}` nie posiada podkomendy `{string}`'
 
     async def command_not_found(self, string: str):
         return f'Komenda `{string}` nie istnieje'
