@@ -3,7 +3,10 @@ from nextcord.ext import commands
 import requests
 from datetime import datetime
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+from timezonefinder import TimezoneFinder
+import pytz
 
 plt.rcParams['figure.facecolor'] = '#313338'
 plt.rcParams['axes.facecolor'] = '#313338'
@@ -14,90 +17,39 @@ plt.rcParams['ytick.color'] = '#ffffff'
 plt.rc('axes',edgecolor='#ffffff')
 
 weather_codes = {
-    '0': 'Nie występują żadne znaczące zjawiska pogodowe',
-    '1': 'Chmury na ogół zanikają lub stają się cieńsze (podczas ostatniej godziny)',
-    '2': 'Stan nieba na ogól bez zmian (podczas ostatniej godziny)',
-    '3': 'Chmury w stadium tworzenia się lub rozwoju (podczas ostatniej godziny)',
-    '4': 'Dym, zmętnienie lub pył w powietrzu, widzialność równa lub większa od 1 km',
-    '5': 'Dym, zmętnienie lub pył w powietrzu, widzialność mniejsza niż 1 km',
-    '10': 'Zamglenie',
-    '11': 'Pył diamentowy',
-    '12': 'Błyskawica odległa',
-    '18': 'Nawałnica',
-    '20': 'Mgła, w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '21': 'Opad, w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '22': 'Mżawka lub Śnieg ziarnisty, w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '23': 'Deszcz (niemarznący), w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '24': 'Śnieg, w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '25': 'Marznący Deszcz lub Mżawka, w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '26': 'Burza (z lub bez Opadu), w miejscu obserwacji w ciągu ostatniej godziny, lecz nie w czasie dokonywania obserwacji',
-    '27': 'Niska zamieć śnieżna lub wichura piaskowa',
-    '28': 'Niska zamieć śnieżna lub wichura piaskowa, widzialność 1 km lub więcej',
-    '29': 'Niska zamieć śnieżna lub wichura piaskowa, widzialność poniżej 1 km',
-    '30': 'Mgła',
-    '31': 'Mgła lub Mgła lodowa w płatach',
-    '32': 'Mgła lub Mgła lodowa, rzedniejąca w ciągu ostatniej godziny',
-    '33': 'Mgła lub Mgła lodowa, bez dostrzegalnych zmian w ciągu ostatniej godziny',
-    '34': 'Mgła lub Mgła lodowa, gęstniejąca w ciągu ostatniej godziny',
-    '35': 'Mgła osadzająca szadź',
-    '40': 'Opad',
-    '41': 'Opad, słaby lub umiarkowany',
-    '42': 'Opad, silny',
-    '43': 'Opad ciekły, słaby lub umiarkowany',
-    '44': 'Opad ciekły, silny',
-    '45': 'Opad w postaci stałej, słaby lub umiarkowany',
-    '46': 'Opad w postaci stałej, silny',
-    '47': 'Opad marznący, słaby lub umiarkowany',
-    '48': 'Opad marznący, silny',
-    '50': 'Mżawka',
-    '51': 'Mżawka nie marznąca, słaba',
-    '52': 'Mżawka nie marznąca, umiarkowana',
-    '53': 'Mżawka nie marznąca, silna',
-    '54': 'Mżawka marznąca, słaba',
-    '55': 'Mżawka marznąca, umiarkowana',
-    '56': 'Mżawka marznąca, silna',
-    '57': 'Mżawka z Deszczem, słaba',
-    '58': 'Mżawka z Deszczem, umiarkowana lub silna',
-    '60': 'Deszcz',
-    '61': 'Deszcz nie marznący, słaby',
-    '62': 'Deszcz nie marznący, umiarkowany',
-    '63': 'Deszcz nie marznący, silny',
-    '64': 'Deszcz marznący, słaby',
-    '65': 'Deszcz marznący, umiarkowany',
-    '66': 'Deszcz marznący, silny',
-    '67': 'Deszcz (lub Mżawka) ze Śniegiem, słaby',
-    '68': 'Deszcz (lub Mżawka) ze Śniegiem, umiarkowany lub silny',
-    '70': 'Śnieg',
-    '71': 'Śnieg, słaby',
-    '72': 'Śnieg, umiarkowany',
-    '73': 'Śnieg silny',
-    '74': 'Ziarna lodowe, słabe',
-    '75': 'Ziarna lodowe, umiarkowane',
-    '76': 'Ziarna lodowe, silne',
-    '77': 'Śnieg ziarnisty',
-    '78': 'Kryształki lodowe',
-    '80': 'Przelotny Deszcz lub Deszcz z przerwami',
-    '81': 'Przelotny Deszcz lub Deszcz z przerwami, słaby',
-    '82': 'Przelotny Deszcz lub Deszcz z przerwami, umiarkowany',
-    '83': 'Przelotny Deszcz lub Deszcz z przerwami, silny',
-    '84': 'Przelotny Deszcz lub Deszcz z przerwami, gwałtowny',
-    '85': 'Przelotny Śnieg lub Śnieg z przerwami, słaby',
-    '86': 'Przelotny Śnieg lub Śnieg z przerwami, umiarkowany',
-    '87': 'Przelotny Śnieg lub Śnieg z przerwami, silny',
-    '89': 'Grad',
-    '90': 'Burza',
-    '91': 'Burza słaba lub umiarkowana, bez Opadu',
-    '92': 'Burza słaba lub umiarkowana, z Przelotnym Deszczem lub Śniegiem',
-    '93': 'Burza słaba lub umiarkowana, z Gradem',
-    '94': 'Burza silna, bez Opadu',
-    '95': 'Burza silna, z Przelotnym Deszczem i/lub Śniegiem',
-    '96': 'Burza silna, z Gradem',
-    '99': 'Trąba (tornado)',
+    0: 'clear-sky.png',
+    1: 'mainly-clear.png',
+    2: 'partialy-cloudy.png',
+    3: 'overcast.png',
+    45: 'fog.png',
+    48: 'fog.png',
+    51: 'drizzle.png',
+    53: 'drizzle.png',
+    55: 'drizzle.png',
+    56: 'drizzle-snow.png',
+    57: 'drizzle-snow.png',
+    61: 'rain.png',
+    63: 'rain.png',
+    65: 'rain.png',
+    66: 'rain-snow.png',
+    67: 'rain-snow.png',
+    71: 'snow.png',
+    73: 'snow.png',
+    75: 'snow.png',
+    77: 'snow.png',
+    80: 'rain.png',
+    81: 'rain.png',
+    82: 'rain.png',
+    85: 'rain-snow.png',
+    86: 'rain-snow.png',
+    96: 'thunderstorm.png',
+    96: 'thunderstorm-rain.png',
+    99: 'thunderstorm-rain.png'
 }
 
 
 def get_location(location):
-    url = "https://nominatim.openstreetmap.org/search?q=" + location + '&format=jsonv2&limit=1'
+    url = "https://nominatim.openstreetmap.org/search?q=" + location + '&format=jsonv2&limit=1&accept-language=pl'
     r = requests.get(url)
     r = r.json()
     
@@ -105,14 +57,19 @@ def get_location(location):
         r = r[0]
     else:
         return 0
+    
+    time_zone = TimezoneFinder()
+    time_zone = time_zone.timezone_at(lng=float(r['lon']), lat=float(r['lat']))
 
     data = {
         'name': r['display_name'],
         'latitude': r['lat'],
-        'longitude': r['lon']
+        'longitude': r['lon'],
+        'timezone': time_zone
     }
 
     return data
+
 
 
 def send_weather_request(location):
@@ -127,6 +84,20 @@ def send_weather_request(location):
     return weather
 
 
+def send_daily_request(location):
+    lat = location['latitude']
+    lot = location['longitude']
+
+    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,showers_sum,snowfall_sum,precipitation_probability_max&current_weather=true&timezone=Europe%2FBerlin'
+
+    r = requests.get(url)
+    weather = r.json()
+    daily = weather['daily']
+    now = weather['current_weather']
+
+    return daily, now
+
+
 def send_temperature_request(location):
     lat = location['latitude']
     lot = location['longitude']
@@ -137,6 +108,29 @@ def send_temperature_request(location):
     weather = weather['hourly']
 
     return weather
+
+
+def prepare_daily(weather):
+
+    data = {}
+
+    for i in range(len(weather['time'])):
+        day = {
+            'time': weather['time'][i],
+            'code': weather['weathercode'][i],
+            'temperature_max': weather['temperature_2m_max'][i],
+            'temperature_min': weather['temperature_2m_min'][i],
+            'sunrise': weather['sunrise'][i],
+            'sunset': weather['sunset'][i],
+            'rain': weather['rain_sum'][i],
+            'shower': weather['showers_sum'][i],
+            'snow': weather['snowfall_sum'][i],
+            'precipitation_probability': weather['precipitation_probability_max'][i]
+        }
+
+        data[i] = day
+
+    return data
 
 
 def prepare_weather(location, weather):
@@ -165,7 +159,7 @@ def prepare_weather(location, weather):
         'temperature': str(weather['temperature']) + ' °C',
         'wind_speed': str(weather['windspeed']) + ' km/h',
         'wind_direction': wind_direction,
-        'state': weather_codes[str(weather['weathercode'])]  
+        'state': weather_codes[weather['weathercode']]  
     }
     
     return data
@@ -222,6 +216,83 @@ def create_graph(weather):
     return fig
 
 
+def create_image(location, daily, now):
+
+    week = {
+        0: "Poniedziałek",
+        1: "Wtorek",
+        2: "Środa",
+        3: "Czwartek",
+        4: "Piątek",
+        5: "Sobota",
+        6: "Niedziela"
+    }
+    
+    background = Image.open('pychan/commands/utilities/meteo_assets/template.png')
+
+    base_time = datetime.now()
+    local_time = base_time.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+
+    img = background.copy()
+
+    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 40)
+    
+    tmp = location['name'].split(', ')
+    title = tmp[0] + ', ' + tmp [-2] + ', ' + tmp[-1]
+
+    d = ImageDraw.Draw(img)
+    d.multiline_text((30,20), title, font = meteo_font, fill = (255,255,255))
+
+    d.text((1085,20), "Czas Lokalny", font = meteo_font, fill = (255,255,255))
+    
+    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 30)
+    d.text((30,70), str(now['temperature'])+ "°C", font=meteo_font, fill=(255,255,255))
+    d.text((1080,70), str(local_time)[10:16], font = meteo_font, fill = (255,255,255))
+
+    x_tmp = 150
+   
+    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 30)
+    for i in range(7):
+        y_tmp = 160
+
+        week_day = datetime.strptime(daily[i]['time'], '%Y-%m-%d')
+        d.text((x_tmp - 55,y_tmp), week[week_day.weekday()], font=meteo_font, fill=(255,255,255))
+        d.text((x_tmp - 55,y_tmp + 70), str(daily[i]['time'][-5:]), font=meteo_font, fill=(255,255,255))
+
+        #Weather Icon
+        icon_path = 'pychan/commands/utilities/meteo_assets/weather-icons/' + weather_codes[daily[i]['code']]
+        icon = Image.open(icon_path)
+        img.paste(icon, (x_tmp - 55, y_tmp + 140), icon)
+        icon.close()
+        
+        y_tmp = 495
+
+        #Temperature Max
+        d.text((x_tmp - 10 ,y_tmp + 5), str(daily[i]['temperature_max']) + "°C", font=meteo_font, fill=(255,255,255))
+
+        #Temperature Min
+        d.text((x_tmp - 10 ,y_tmp + 75), str(daily[i]['temperature_min']) + "°C", font=meteo_font, fill=(255,255,255))
+
+        #Percipitation % 
+        d.text((x_tmp - 10,y_tmp + 150), str(daily[i]['precipitation_probability']) + "%", font=meteo_font, fill=(255,255,255))
+
+        #Sunrise
+        base_sunrise = datetime.strptime(daily[i]['sunrise'], '%Y-%m-%dT%H:%M')
+        local_sunrise = base_sunrise.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+
+        d.text((x_tmp - 10,y_tmp + 220), str(local_sunrise)[11:16], font=meteo_font, fill=(255,255,255))
+
+        #Sunset
+        base_sunset = datetime.strptime(daily[i]['sunset'], '%Y-%m-%dT%H:%M')
+        local_sunset = base_sunset.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        d.text((x_tmp - 10,y_tmp + 295), str(local_sunset)[11:16], font=meteo_font, fill=(255,255,255))
+        
+        x_tmp += 200
+
+
+    return img
+
+
 class Meteo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -259,14 +330,18 @@ class Meteo(commands.Cog):
             else:
                 weather = send_weather_request(location)
                 weather = prepare_weather(location, weather)
+
+                file_name = 'pychan/commands/utilities/meteo_assets/weather-icons/' + weather['state']
+                file = nextcord.File(file_name, filename=weather['state'])
+
                 embed = nextcord.Embed(title="Meteo \u2602")
+                embed.set_thumbnail(url='attachment://' + weather['state'])
                 embed.add_field(name="Lokalizacja", value=weather['name'], inline=False)
                 embed.add_field(name="Temperatura", value=weather['temperature'], inline=False)
                 embed.add_field(name="Prędkość Wiatru", value=weather['wind_speed'], inline=False)
                 embed.add_field(name="Kierunek Wiatru", value=weather['wind_direction'], inline=False)
-                embed.add_field(name="Stan", value=weather['state'], inline=False)
 
-                await ctx.send(embed=embed)
+                await ctx.send(embed=embed, file=file)
             
         else:
             await ctx.send("Proszę podać lokalizację")
@@ -294,7 +369,6 @@ class Meteo(commands.Cog):
                 bytes = BytesIO()
                 f.savefig(bytes, format='PNG')
                 bytes.seek(0)
-                dfile = nextcord.File(bytes, filename="image.png")
                 await ctx.send("***Meteo Temperatura \U0001F321***")
                 await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
                 
@@ -309,5 +383,35 @@ class Meteo(commands.Cog):
                 # for x in weather['temperature']:
                 #     await ctx.send(x)
 
+        else:
+            await ctx.send("Proszę podać lokalizację")
+
+    @meteo.command(
+            pass_context=True,
+            name='week',
+            usage='TODO',
+            help=   """
+                    TODO
+                    """
+        )
+
+
+    async def week(self, ctx, *, search):
+        if len(search) != 0:
+            location = get_location(search)
+            if location == 0:
+                await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
+            else:
+                daily, now = send_daily_request(location)
+                daily = prepare_daily(daily)
+                image = create_image(location, daily, now)
+
+                bytes = BytesIO()
+                image.save(bytes, format='PNG')
+                bytes.seek(0)
+
+                await ctx.send("***Meteo Week \U0001F321***")
+                await ctx.send(file=nextcord.File(fp=bytes, filename=(location['name'] + '.png')))
+                
         else:
             await ctx.send("Proszę podać lokalizację")
