@@ -1,11 +1,8 @@
 import nextcord
 from nextcord import Colour, Embed
-import asyncio
 
 from pychan import database
 from .modals import CategoryModal
-
-#zastap semafory ta 1 funkcja kek
 
 class AddCategoryAndAnswer(nextcord.ui.View):
     def __init__(self, viewYouCanEdit: nextcord.Message, question: str, answers: list[str]):
@@ -18,7 +15,7 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         self.viewYouCanEdit = viewYouCanEdit
         self.question = question
         self.answers = answers
-        # todo zrobic tak ze jak c d sa puste to ich nie dawac | jak c puste a d cos ma to zamien d na c
+        
         self.selectOdpPopr = nextcord.ui.StringSelect(
             min_values = 1,
             max_values = 1,
@@ -47,15 +44,14 @@ class AddCategoryAndAnswer(nextcord.ui.View):
     @nextcord.ui.button(label = "Dodaj kategorię", style=nextcord.ButtonStyle.blurple)
     async def addCategoryB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
-        #this modal should change first value of our strlist
-        #todo
-        semaf = asyncio.Semaphore(1)
-        modal = CategoryModal(semaf)
-        await semaf.acquire()
+
+        modal = CategoryModal()
         await interaction.response.send_modal(modal)
-        #await modal.wait()
-        async with semaf:
-            self.category = modal.categoryStr
+        
+        #below line to check if getting correct category
+        await modal.wait()
+
+        self.category = modal.categoryStr
     
     @nextcord.ui.button(label = "Gotowe", style=nextcord.ButtonStyle.green)
     async def endAdding(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
@@ -74,12 +70,22 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             await interaction.send(embed=Embed(title=keyE.args[0]))
             return
 
-        result = [self.question, self.answers, self.selectOdpPopr.values[0], self.category]
+        self.correct = self.selectOdpPopr.values[0]
+        result = [self.question, self.answers, self.correct, self.category]
         final_view = successfulQuestion(result)
         await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed)
 
 
-        #todo dodawanie do bazy
+        #dodawanie do bazy
+        question = database.QuizQuestion(question=self.question, category=self.category)
+        letterToNum = {"A": 0, "B": 1, "C": 2, "D": 3}
+        numToCorrect = {letterToNum[self.correct]: True}
+        correct_list = []
+        for x in range(len(self.answers)):
+            correct_list.append(numToCorrect.get(x, False))
+        question.answers = [database.QuizAnswer(answer=a , correct=s) for (a,s) in zip(self.answers, correct_list)]
+        database.session.add(question)
+        database.session.commit()
         self.stop()
 
 class successfulQuestion(nextcord.ui.View):
@@ -109,4 +115,7 @@ class startQuiz(nextcord.ui.View):
         self.embed = Embed( title = question.question,
                             color = Colour.blurple()
                             )
-        self.listOfButtons = []
+        self.points = 0
+
+
+        

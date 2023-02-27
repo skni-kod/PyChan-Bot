@@ -10,14 +10,10 @@ class Quiz(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(name = "quiz", category = "Gry")
+    @commands.command(name = "quiz", category = "Gry", pass_context = True)
     async def quiz(self, ctx: commands.Context):
-        '''Komendy do  quizu'''
-
-    #TODO statystki, dodawanie pytan
-    @quiz.command(name="start", pass_context = True)
-    async def start(self, ctx):
         '''Wyswietla menu quizu'''
+        
         embed = Embed(
                 title = f"Rozpocznij quiz, dodaj pytanie do bazy lub wyświetl ranking",
                 color = Colour.green(), 
@@ -26,9 +22,7 @@ class Quiz(commands.Cog):
         viewYouCanEdit = await ctx.send(embed=embed)
         starter = MenuButtons(viewYouCanEdit)
         await viewYouCanEdit.edit(view=starter)
-        
-        #await nextcord.Interaction.response.send_message(view=starter, embed=embed)
-        #  
+
         await starter.wait()
         
 
@@ -37,26 +31,29 @@ class MenuButtons(nextcord.ui.View):
         super().__init__()
         self.value = None
         self.viewYouCanEdit = viewYouCanEdit
+        
 
     #start
     @nextcord.ui.button(label = "Start", style=nextcord.ButtonStyle.green)
-    async def startB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        #await interaction.response.send_message('inicjalizuje draus.exe', ephemeral=False)
+    async def startB(self, bbutton: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
 
-        question = database.QuizQuestion(question="W celu odczytania tekstu wpisanego w oknie edycji należy użyć funkcji:", category="Systemy Operacyjne")
-        question.answers.append(database.QuizAnswer(answer="GetWindowText", correct=True))
-        question.answers.append(database.QuizAnswer(answer="SetWindowText", correct=False))
-        question.answers.append(database.QuizAnswer(answer="sscanf", correct=False))
+        points = [0]
+        all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+        quesitions = all_questions[:5]
+        for question in quesitions:
+            quizView = startQuiz(question)
 
-        quizView = startQuiz(question)
-        for i, ans in enumerate(question.answers):
-            button = nextcord.ui.Button(style=nextcord.ButtonStyle.blurple,
-                                        label=ans.answer)
-            quizView.listOfButtons.append(button)
-            quizView.add_item(button)
+            for ans in question.answers:
+                button = AnswerButton(ans, points)
+                quizView.add_item(button)
 
-        await self.viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
+            await self.viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
+            await quizView.wait()
+            print(points[0],"koncowe")
+
+        quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]}")
+        await self.viewYouCanEdit.edit(view=None, embed=quiz_summary)
         self.stop()
 
     #add
@@ -67,16 +64,30 @@ class MenuButtons(nextcord.ui.View):
         mod = EmbedModal(self.viewYouCanEdit)
         await interaction.response.send_modal(mod)
 
-        self.stop()
+        #self.stop()
 
     #ranking
     @nextcord.ui.button(label = "Ranking", style=nextcord.ButtonStyle.red)
     async def rankingB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
-        self.stop()
+        #self.stop()
 
-#todo move this to modals file
+class AnswerButton(nextcord.ui.Button):
+    def __init__(self, answer: database.QuizAnswer, points: list[int]):
+        super().__init__(style=nextcord.ButtonStyle.blurple, label = answer.answer)
+        self.ButtonAnswer = answer
+        self.points = points
 
+    @nextcord.ui.button()
+    async def callback(self, interaction: nextcord.Interaction): #button dodaj i zalatw interaction
+        print(self.ButtonAnswer.answer)
+        print(self.ButtonAnswer.correct)
+
+        if(self.ButtonAnswer.correct):
+            self.points[0] += 1
+        # moze tak lepiej self.view.points += 1
+        self.view.stop()
+        
 
 
     '''second modal
