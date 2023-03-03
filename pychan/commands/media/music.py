@@ -23,6 +23,8 @@ class PlayingMusic(commands.Cog):
         self.FFMPEG_OPTIONS = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.queue = []
+        self.queue_embed = nextcord.Embed(
+            title='🎶 **Kolejka** 🎶', color=Color.blue())
 
     def get_colour(self, id):
         """Function returns main colour of song thumbnail"""
@@ -45,6 +47,7 @@ class PlayingMusic(commands.Cog):
                 embed = self.queue[0]['embed']
                 URL = self.queue[0]['url']
                 self.queue.pop(0)
+                self.queue_embed.remove_field(0)
                 voice.play(FFmpegOpusAudio(
                     URL, **self.FFMPEG_OPTIONS), after=lambda p: self.manage_queue())
                 await ctx.send(embed=embed)
@@ -113,7 +116,9 @@ class PlayingMusic(commands.Cog):
             await asyncio.sleep(0.2)
             await self.manage_queue()
         else:
-            await ctx.send(embed=nextcord.Embed(title="**Już coś gram, ale piosenka została dodana do kolejki! 🎵**", color=Color.blue()))
+            self.queue_embed.add_field(
+                name=title, value=duration, inline=False)
+            await ctx.send(embed=self.queue_embed)
 
     @playing_music.command(
         name='skip',
@@ -130,3 +135,21 @@ class PlayingMusic(commands.Cog):
                 await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
         except:
             await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
+
+    @playing_music.command(
+        name='queue',
+        usage='',
+        help="""Bot wyświetla aktualny stan kolejki"""
+    )
+    async def queue(self, ctx):
+        await ctx.send(embed=self.queue_embed)
+
+    @playing_music.command(
+        name='clear',
+        usage='',
+        help="""Bot czyści całą kolejkę"""
+    )
+    async def clear(self, ctx):
+        self.queue_embed.clear_fields()
+        self.queue = []
+        await ctx.send(embed=nextcord.Embed(title="**Kolejka została wyczyszczona! ♻️**", color=Color.red()))
