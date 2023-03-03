@@ -13,6 +13,7 @@ from colorthief import ColorThief
 from io import BytesIO
 
 import asyncio
+import random
 
 
 class PlayingMusic(commands.Cog):
@@ -153,3 +154,24 @@ class PlayingMusic(commands.Cog):
         self.queue_embed.clear_fields()
         self.queue = []
         await ctx.send(embed=nextcord.Embed(title="**Kolejka została wyczyszczona! ♻️**", color=Color.red()))
+
+    @playing_music.command(
+        name='shuffle',
+        usage='',
+        help="""Bot przemieszuje całą kolejkę"""
+    )
+    async def shuffle(self, ctx):
+        if len(self.queue) == 0 or len(self.queue_embed.fields) == 0:
+            await ctx.channel.send(embed=nextcord.Embed(title="Najpierw dodaj piosenki do kolejki, aby użyć tej komendy!", color=Color.red()))
+            return
+        temp_list = list(zip(self.queue, self.queue_embed.fields))
+        random.shuffle(temp_list)
+        new_queue, new_embed_fields = zip(*temp_list)
+        new_queue, new_embed_fields = list(
+            new_queue), list(new_embed_fields)
+        self.queue = new_queue
+        self.queue_embed.clear_fields()
+        for field in new_embed_fields:
+            self.queue_embed.add_field(
+                name=field.name, value=field.value, inline=False)
+        await ctx.send(embed=nextcord.Embed(title="Kolejka została przemieszana!", color=Color.green()))
