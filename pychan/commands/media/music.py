@@ -129,13 +129,45 @@ class PlayingMusic(commands.Cog):
     async def skip(self, ctx):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
         try:
-            if voice.is_playing() and ctx.guild.voice_client in self.bot.voice_clients:
+            if (voice.is_playing() or voice.is_paused()) and ctx.guild.voice_client in self.bot.voice_clients:
                 voice.stop()
                 await ctx.send(embed=nextcord.Embed(title="**Piosenka pominięta! 😢**", color=Color.dark_gold()))
             else:
                 await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
         except:
             await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
+
+    @playing_music.command(
+        name='pause',
+        usage='',
+        help="""Bot zatrzymuje piosenkę"""
+    )
+    async def pause(self, ctx):
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+        try:
+            if voice.is_playing():
+                voice.pause()
+                await ctx.send(embed=nextcord.Embed(title="**Piosenka zatrzymana! ⏸️**", color=Color.dark_gold()))
+            else:
+                await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
+        except:
+            await ctx.send(embed=nextcord.Embed(title="**Aktualnie nie gram muzyki!**", color=Color.dark_green()))
+
+    @playing_music.command(
+        name='resume',
+        usage='',
+        help="""Bot wznawia piosenkę"""
+    )
+    async def resume(self, ctx):
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+        try:
+            if voice.is_paused() and ctx.guild.voice_client in self.bot.voice_clients:
+                voice.resume()
+                await ctx.send(embed=nextcord.Embed(title="**Piosenka wznowiona! ▶️**", color=Color.dark_gold()))
+            else:
+                await ctx.send(embed=nextcord.Embed(title="**Piosenka nie jest zatrzymana lub nic nie gram!**", color=Color.dark_green()))
+        except:
+            await ctx.send(embed=nextcord.Embed(title="**Piosenka nie jest zatrzymana lub nic nie gram!**", color=Color.dark_green()))
 
     @playing_music.command(
         name='queue',
