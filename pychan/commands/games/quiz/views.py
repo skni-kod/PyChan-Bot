@@ -28,16 +28,24 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             ])
         self.add_item(self.selectOdpPopr)
 
-        # todo pobieranie kategorii z bazy
+        # todo pobieranie kategorii z bazy do StringSelect
+        all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+        #set to not repeat the category, albo sqlem wyciagnij??
+        category_set = {que.category for que in all_questions}
+
         self.selectCategory = nextcord.ui.StringSelect(
             min_values = 0,
             max_values = 1,
             placeholder = "Wybierz kategorie",
+
             options=[
-                nextcord.SelectOption(label="JAIO"),
-                nextcord.SelectOption(label="Systemy Operacyjne"),
-                nextcord.SelectOption(label="C++"),
-                nextcord.SelectOption(label="Podstawy Elektroniki")
+            
+                nextcord.SelectOption(label = categ) for categ in category_set
+                
+                # nextcord.SelectOption(label="JAIO"),
+                # nextcord.SelectOption(label="Systemy Operacyjne"),
+                # nextcord.SelectOption(label="C++"),
+                # nextcord.SelectOption(label="Podstawy Elektroniki")
             ])
         self.add_item(self.selectCategory)
 
@@ -84,8 +92,12 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         for x in range(len(self.answers)):
             correct_list.append(numToCorrect.get(x, False))
         question.answers = [database.QuizAnswer(answer=a , correct=s) for (a,s) in zip(self.answers, correct_list)]
-        database.session.add(question)
-        database.session.commit()
+
+        #!!!!!!!!!!!!!!!!!
+        #uncomment when ready
+        #database.session.add(question)
+        #database.session.commit()
+
         self.stop()
 
 class successfulQuestion(nextcord.ui.View):
