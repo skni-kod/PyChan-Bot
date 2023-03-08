@@ -20,33 +20,21 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             min_values = 1,
             max_values = 1,
             placeholder = "Wybierz poprawną odpowiedź",
-            options=[
-                nextcord.SelectOption(label="A"),
-                nextcord.SelectOption(label="B"),
-                nextcord.SelectOption(label="C"),
-                nextcord.SelectOption(label="D")
-            ])
+            options=[nextcord.SelectOption(label=odp) for odp in answers])
         self.add_item(self.selectOdpPopr)
 
-        # todo pobieranie kategorii z bazy do StringSelect
         all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
-        #set to not repeat the category, albo sqlem wyciagnij??
+        #albo sqlem wyciagnij??
+
+        #set to not repeat the category
         category_set = {que.category for que in all_questions}
 
         self.selectCategory = nextcord.ui.StringSelect(
             min_values = 0,
             max_values = 1,
             placeholder = "Wybierz kategorie",
-
-            options=[
-            
-                nextcord.SelectOption(label = categ) for categ in category_set
-                
-                # nextcord.SelectOption(label="JAIO"),
-                # nextcord.SelectOption(label="Systemy Operacyjne"),
-                # nextcord.SelectOption(label="C++"),
-                # nextcord.SelectOption(label="Podstawy Elektroniki")
-            ])
+            options=[nextcord.SelectOption(label = categ) for categ in category_set])
+        
         self.add_item(self.selectCategory)
 
     @nextcord.ui.button(label = "Dodaj kategorię", style=nextcord.ButtonStyle.blurple)
@@ -56,7 +44,6 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         modal = CategoryModal()
         await interaction.response.send_modal(modal)
         
-        #below line to check if getting correct category
         await modal.wait()
 
         self.category = modal.categoryStr
@@ -65,38 +52,36 @@ class AddCategoryAndAnswer(nextcord.ui.View):
     async def endAdding(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
         
-        #psarwdz czy nie wybrano opcji c lub d jak jej nie podano
         try:
-            if len(self.selectCategory.values) != 0: #not empty
-                self.category = self.selectCategory.values[0]
-            elif self.category == "":
-                raise KeyError("Nie wybrano kategorii")
+            if self.category == "":
+                if len(self.selectCategory.values) == 0:
+                    raise KeyError("Nie wybrano kategorii")
+                else:
+                    self.category = self.selectCategory.values[0]
 
             if len(self.selectOdpPopr.values) == 0:
                 raise KeyError("Nie wybrano poprawnej odpowiedzi")
         except KeyError as keyE:
-            await interaction.send(embed=Embed(title=keyE.args[0]))
+            await interaction.send(embed=Embed(title=keyE.args[0]), delete_after=15)
             return
 
         self.correct = self.selectOdpPopr.values[0]
         result = [self.question, self.answers, self.correct, self.category]
         final_view = successfulQuestion(result)
-        await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed)
+        await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed_for_all)
+        await interaction.response.send_message(embed=final_view.embed, ephemeral = True)
 
 
         #dodawanie do bazy
         question = database.QuizQuestion(question=self.question, category=self.category)
-        letterToNum = {"A": 0, "B": 1, "C": 2, "D": 3}
-        numToCorrect = {letterToNum[self.correct]: True}
+        ansToBool = {self.correct:True}
         correct_list = []
-        for x in range(len(self.answers)):
-            correct_list.append(numToCorrect.get(x, False))
+        for ans in self.answers:
+            correct_list.append(ansToBool.get(ans, False))
         question.answers = [database.QuizAnswer(answer=a , correct=s) for (a,s) in zip(self.answers, correct_list)]
 
-        #!!!!!!!!!!!!!!!!!
-        #uncomment when ready
-        #database.session.add(question)
-        #database.session.commit()
+        database.session.add(question)
+        database.session.commit()
 
         self.stop()
 
@@ -116,6 +101,9 @@ class successfulQuestion(nextcord.ui.View):
 
         self.embed = Embed( title = "Udało się dodać pytanie",
                             description = description,
+                            color = Colour.green()
+                            )
+        self.embed_for_all = Embed( title = "Udało się dodać pytanie",
                             color = Colour.green()
                             )
 

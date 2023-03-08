@@ -94,12 +94,11 @@ class AnswerButton(nextcord.ui.Button):
         self.points = points
 
     @nextcord.ui.button()
-    async def callback(self, interaction: nextcord.Interaction): #button dodaj i zalatw interaction
+    async def callback(self, interaction: nextcord.Interaction):
         print(self.ButtonAnswer.answer)
         print(self.ButtonAnswer.correct)
 
         if(self.ButtonAnswer.correct):
             self.points[0] += 1
-        # moze tak lepiej self.view.points += 1
         self.view.stop()
  
