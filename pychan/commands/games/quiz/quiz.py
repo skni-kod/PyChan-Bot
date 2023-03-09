@@ -3,6 +3,7 @@ from nextcord import Colour, Embed
 import nextcord
 from asyncio import sleep, Semaphore
 from random import randint
+from random import shuffle
 
 from sqlalchemy import select
 
@@ -42,12 +43,9 @@ class Quiz(commands.Cog):
             # all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
             all_questions = database.session.scalars(select(database.QuizQuestion)).all()
 
-        number_of_questions = len(all_questions)
-        questions_in_game = min(5, number_of_questions)
-        random_num = {randint(0, number_of_questions)}
-        while len(random_num) < questions_in_game:
-            random_num.add(randint(0, number_of_questions - 1))
-        questions = [all_questions[q] for q in random_num]
+        questions = list(all_questions)
+        shuffle(questions)
+        questions = questions[:5]
 
         for question in questions:
             quizView = startQuiz(question)
