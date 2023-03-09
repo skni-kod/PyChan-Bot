@@ -2,6 +2,7 @@ from nextcord.ext import commands
 from nextcord import Colour, Embed
 import nextcord
 from asyncio import sleep, Semaphore
+from random import randint
 
 from pychan import database
 from .modals import EmbedModal
@@ -38,8 +39,14 @@ class Quiz(commands.Cog):
         async with self.semaphore:
             all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
 
-        quesitions = all_questions[:5]
-        for question in quesitions:
+        questions_in_game = 5
+        number_of_questions = len(all_questions)
+        random_num = {randint(0, number_of_questions)}
+        while len(random_num) < questions_in_game:
+            random_num.add(randint(0, number_of_questions - 1))
+        questions = [all_questions[q] for q in random_num]
+
+        for question in questions:
             quizView = startQuiz(question)
 
             for ans in question.answers:

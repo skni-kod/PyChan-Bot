@@ -12,7 +12,8 @@ class CategoryModal(nextcord.ui.Modal):
     async def callback(self, interaction: nextcord.Interaction):
         if self.category.value != "":
             self.categoryStr = self.category.value
-            await interaction.response.send_message(embed = nextcord.Embed(title="Dodano nową kategorię"), delete_after=15)
+            await interaction.response.send_message(embed = nextcord.Embed(title="Dodano nową kategorię",
+                                                        color=nextcord.Colour.green()), delete_after=15)
         self.stop()
 
 class EmbedModal(nextcord.ui.Modal):
