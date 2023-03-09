@@ -1,7 +1,7 @@
 from nextcord.ext import commands
 from nextcord import Colour, Embed
 import nextcord
-from asyncio import sleep
+from asyncio import sleep, Semaphore
 
 from pychan import database
 from .modals import EmbedModal
@@ -10,6 +10,7 @@ from .views import startQuiz, AddCategoryAndAnswer
 class Quiz(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.semaphore = Semaphore(1)
 
     @commands.group(name = "quiz", category = "Gry", pass_context = True)
     async def quiz(self, ctx: commands.Context):
@@ -33,7 +34,10 @@ class Quiz(commands.Cog):
             await sleep(1)
         
         points = [0]
-        all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+
+        async with self.semaphore:
+            all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+
         quesitions = all_questions[:5]
         for question in quesitions:
             quizView = startQuiz(question)
@@ -59,16 +63,17 @@ class Quiz(commands.Cog):
             )
 
         viewYouCanEdit = await ctx.send(embed=embed)
-        starter = MenuButtons(viewYouCanEdit)
+        starter = MenuButtons(viewYouCanEdit, self.semaphore)
         await viewYouCanEdit.edit(view=starter)
 
         await starter.wait()
 
 class MenuButtons(nextcord.ui.View):
-    def __init__(self, viewYouCanEdit: nextcord.Message):
+    def __init__(self, viewYouCanEdit: nextcord.Message, semaphore : Semaphore):
         super().__init__()
         self.value = None
         self.viewYouCanEdit = viewYouCanEdit
+        self.semaphore = semaphore
         self.answers = []
 
     #add
@@ -92,8 +97,9 @@ class MenuButtons(nextcord.ui.View):
         await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
         await newView.wait()
 
-        #database.session.add(newView.ready_question)
-        #database.session.commit()
+        async with self.semaphore:
+            database.session.add(newView.ready_question)
+            database.session.commit()
 
         self.stop()
 
