@@ -8,14 +8,14 @@ class AddCategoryAndAnswer(nextcord.ui.View):
     def __init__(self, viewYouCanEdit: nextcord.Message, question: str, answers: list[str]):
         super().__init__()
         self.value = None
-        self.newCategory = False
         self.category = ""
         self.correct = ""
 
         self.viewYouCanEdit = viewYouCanEdit
         self.question = question
         self.answers = answers
-        
+        self.ready_question : database.QuizQuestion
+
         self.selectOdpPopr = nextcord.ui.StringSelect(
             min_values = 1,
             max_values = 1,
@@ -71,8 +71,6 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed_for_all)
         await interaction.response.send_message(embed=final_view.embed, ephemeral = True)
 
-
-        #dodawanie do bazy
         question = database.QuizQuestion(question=self.question, category=self.category)
         ansToBool = {self.correct:True}
         correct_list = []
@@ -80,9 +78,8 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             correct_list.append(ansToBool.get(ans, False))
         question.answers = [database.QuizAnswer(answer=a , correct=s) for (a,s) in zip(self.answers, correct_list)]
 
-        database.session.add(question)
-        database.session.commit()
-
+        self.ready_question = question
+        
         self.stop()
 
 class successfulQuestion(nextcord.ui.View):

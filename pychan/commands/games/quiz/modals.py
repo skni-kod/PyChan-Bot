@@ -10,17 +10,16 @@ class CategoryModal(nextcord.ui.Modal):
         self.add_item(self.category)
 
     async def callback(self, interaction: nextcord.Interaction):
-        self.categoryStr = self.category.value
+        if self.category.value != "":
+            self.categoryStr = self.category.value
+            await interaction.response.send_message(embed = nextcord.Embed(title="Dodano nową kategorię"), delete_after=15)
         self.stop()
 
-#this import should be after CategoryModal(circular import error)
-from .views import AddCategoryAndAnswer
 class EmbedModal(nextcord.ui.Modal):
     '''Modal to add new question with answers'''
-    def __init__(self, viewYouCanEdit: nextcord.Message):
+    def __init__(self):
         super().__init__("Dodaj pytnie do quizu!")
-        
-        self.viewYouCanEdit = viewYouCanEdit
+        self.answers = []
 
         self.embedTitle = nextcord.ui.TextInput(
             label = "Pytanie", min_length = 3, max_length = 124,
@@ -49,23 +48,10 @@ class EmbedModal(nextcord.ui.Modal):
         self.add_item(self.embedOdpD)
 
     async def callback(self, interaction: nextcord.Interaction):
-        #pass data and change view
-        newEmbed = nextcord.Embed(
-                title = f"Jeszcze chwila!",
-                description = "Dodaj poprawną odpowiedź oraz kategorię",
-                color = nextcord.Colour.green(), 
-            )
-        
-        answers = [self.embedOdpA.value, self.embedOdpB.value,]
+        self.answers = [self.embedOdpA.value, self.embedOdpB.value,]
         if self.embedOdpC.value != "":
-            answers.append(self.embedOdpC.value)
+            self.answers.append(self.embedOdpC.value)
         if self.embedOdpD.value != "":
-            answers.append(self.embedOdpD.value)
-    
-        newView = AddCategoryAndAnswer(self.viewYouCanEdit,
-                                    self.embedTitle.value, 
-                                    answers)
-        await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
-        
+            self.answers.append(self.embedOdpD.value)
         self.stop()
 

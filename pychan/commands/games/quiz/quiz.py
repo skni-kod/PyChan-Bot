@@ -5,7 +5,7 @@ from asyncio import sleep
 
 from pychan import database
 from .modals import EmbedModal
-from .views import startQuiz
+from .views import startQuiz, AddCategoryAndAnswer
 
 class Quiz(commands.Cog):
     def __init__(self, bot):
@@ -44,7 +44,6 @@ class Quiz(commands.Cog):
 
             await viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
             await quizView.wait()
-            print(points[0],"koncowe")
 
         quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]}")
         await viewYouCanEdit.edit(view=None, embed=quiz_summary)
@@ -70,14 +69,31 @@ class MenuButtons(nextcord.ui.View):
         super().__init__()
         self.value = None
         self.viewYouCanEdit = viewYouCanEdit
+        self.answers = []
 
     #add
     @nextcord.ui.button(label = "Dodaj", style=nextcord.ButtonStyle.blurple)
     async def addB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.value = True
 
-        mod = EmbedModal(self.viewYouCanEdit)
+        mod = EmbedModal()
         await interaction.response.send_modal(mod)
+        await mod.wait()
+
+        newEmbed = nextcord.Embed(
+                title = f"Jeszcze chwila!",
+                description = "Dodaj poprawną odpowiedź oraz kategorię",
+                color = nextcord.Colour.green(), 
+            )
+        
+        newView = AddCategoryAndAnswer(self.viewYouCanEdit,
+                                    mod.embedTitle.value, 
+                                    mod.answers)
+        await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
+        await newView.wait()
+
+        #database.session.add(newView.ready_question)
+        #database.session.commit()
 
         self.stop()
 
@@ -95,9 +111,6 @@ class AnswerButton(nextcord.ui.Button):
 
     @nextcord.ui.button()
     async def callback(self, interaction: nextcord.Interaction):
-        print(self.ButtonAnswer.answer)
-        print(self.ButtonAnswer.correct)
-
         if(self.ButtonAnswer.correct):
             self.points[0] += 1
         self.view.stop()
