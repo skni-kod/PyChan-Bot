@@ -4,6 +4,8 @@ import nextcord
 from asyncio import sleep, Semaphore
 from random import randint
 
+from sqlalchemy import select
+
 from pychan import database
 from .modals import EmbedModal
 from .views import startQuiz, AddCategoryAndAnswer
@@ -37,10 +39,11 @@ class Quiz(commands.Cog):
         points = [0]
 
         async with self.semaphore:
-            all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+            # all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+            all_questions = database.session.scalars(select(database.QuizQuestion)).all()
 
-        questions_in_game = 5
         number_of_questions = len(all_questions)
+        questions_in_game = min(5, number_of_questions)
         random_num = {randint(0, number_of_questions)}
         while len(random_num) < questions_in_game:
             random_num.add(randint(0, number_of_questions - 1))

@@ -1,5 +1,6 @@
 import nextcord
 from nextcord import Colour, Embed
+from sqlalchemy import select
 
 from pychan import database
 from .modals import CategoryModal
@@ -23,11 +24,14 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             options=[nextcord.SelectOption(label=odp) for odp in answers])
         self.add_item(self.selectOdpPopr)
 
-        all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
+        all_questions = database.session.scalars(select(database.QuizQuestion)).all()
         #albo sqlem wyciagnij??
 
         #set to not repeat the category
         category_set = {que.category for que in all_questions}
+
+        if len(category_set) == 0:
+            category_set.add('Inne')
 
         self.selectCategory = nextcord.ui.StringSelect(
             min_values = 0,
@@ -71,7 +75,7 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         await self.viewYouCanEdit.edit(view = final_view, embed = final_view.embed_for_all)
         await interaction.response.send_message(embed=final_view.embed, ephemeral = True)
 
-        question = database.QuizQuestion(question=self.question, category=self.category)
+        question = database.QuizQuestion(question=self.question, category=self.category, guild_id=interaction.guild_id)
         ansToBool = {self.correct:True}
         correct_list = []
         for ans in self.answers:
