@@ -63,6 +63,7 @@ class AoC(commands.Cog):
             await ctx.send_help("aoc")
 
     @aoc.command(name='start')
+    @commands.has_permissions(administrator=True)
     async def start(self, ctx: Context, leaderboard_id: int):
         '''Rozpoczyna śledzenie rankingu na tym kanale'''
         if self.tracked_channels.get(ctx.channel.id) is not None:
@@ -73,6 +74,7 @@ class AoC(commands.Cog):
             self.loop.restart()
 
     @aoc.command(name='stop')
+    @commands.has_permissions(administrator=True)
     async def stop(self, ctx: Context):
         '''Zatrzymuje śledzenie rankinku na tym kanale'''
         if self.tracked_channels.get(ctx.channel.id) is not None:
@@ -82,6 +84,7 @@ class AoC(commands.Cog):
             await ctx.reply("Śledzenie nawet nie jest włączone!")
 
     @aoc.command(name='lista')
+    @commands.has_permissions(administrator=True)
     async def list(self, ctx: Context):
         '''Wyświetla listę kanałów z śledzeniem rankingów'''
         embed = Embed(color=Color.dark_purple())

@@ -2,56 +2,59 @@ from typing import Literal, Optional, Union
 from nextcord import Guild, Member, User
 from nextcord.ext.commands.bot import Bot
 from nextcord.message import Message
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Boolean, ForeignKey, create_engine, Column, Integer, String, insert, select, update
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import ForeignKey, create_engine, insert, select, update
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 import config
 
-Base = declarative_base()
 engine = create_engine(config.sqlalchemy_db_url, echo=config.database_echo)
 session = sessionmaker(bind=engine)()
+
+
+class Base(DeclarativeBase):
+    pass
 
 # Stats and settings for guild members
 
 
 class GuildMember(Base):
     __tablename__ = 'guild_members'
-    member_id = Column(Integer, primary_key=True)
-    guild_id = Column(Integer)
-    coins = Column(Integer, default=0)
+    member_id: Mapped[int] = mapped_column(primary_key=True)
+    guild_id: Mapped[int] = mapped_column()
+    coins: Mapped[int] = mapped_column(default=0)
 
 # Stats and settings for users across all guilds
 
 
 class DiscordUser(Base):
-    __tablename__ = 'members'
-    member_id = Column(Integer, primary_key=True)
-    osu_username = Column(String)
-    osrs_username = Column(String)
-    lol_username = Column(String)
+    __tablename__ = 'discord_users'
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+    osu_username: Mapped[Optional[str]] = mapped_column()
+    osrs_username: Mapped[Optional[str]] = mapped_column()
+    lol_username: Mapped[Optional[str]] = mapped_column()
 
 
 class GuildSettings(Base):
     __tablename__ = 'guild_settings'
-    guild_id = Column(Integer, primary_key=True)
-    prefix = Column(String, default=config.default_prefix)
-
-
-class QuizAnswer(Base):
-    __tablename__ = 'quiz_answers'
-    id = Column(Integer, primary_key=True)
-    question_id = Column(Integer, ForeignKey('quiz_questions.id'))
-    answer = Column(String)
-    correct = Column(Boolean)
+    guild_id: Mapped[int] = mapped_column(primary_key=True)
+    prefix: Mapped[str] = mapped_column(default=config.default_prefix)
 
 
 class QuizQuestion(Base):
     __tablename__ = 'quiz_questions'
-    id = Column(Integer, primary_key=True)
-    answers: list[QuizAnswer] = relationship("QuizAnswer")
-    guild_id = Column(Integer)
-    question = Column(String)
-    category = Column(String)
+    question_id: Mapped[int] = mapped_column(primary_key=True)
+    answers: Mapped[list["QuizAnswer"]] = relationship()
+    guild_id: Mapped[int] = mapped_column()
+    question: Mapped[str] = mapped_column()
+    category: Mapped[str] = mapped_column()
+
+
+class QuizAnswer(Base):
+    __tablename__ = 'quiz_answers'
+    answer_id: Mapped[int] = mapped_column(primary_key=True)
+    question_id: Mapped[int] = mapped_column(
+        ForeignKey('quiz_questions.question_id'))
+    answer: Mapped[str] = mapped_column()
+    correct: Mapped[bool] = mapped_column()
 
 
 def create_database():
@@ -83,23 +86,21 @@ def set_guild_prefix(guild: Guild, prefix: str):
 
 
 def set_game_username(member: Union[User, Member], username: str, game: Literal['osu', 'lol', 'osrs']):
-    tag = session.query(DiscordUser) \
-        .filter(DiscordUser.member_id == member.id).one_or_none()
-
-    if not tag:
-        member = DiscordUser(member_id=member.id)
-        setattr(member, game + '_username', username)
-        session.add(member)
+    select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
+    user = session.scalar(select_stmt)
+    if not user:
+        user = DiscordUser(user_id=member.id)
+        setattr(user, game + '_username', username)
+        session.add(user)
     else:
-        tag.osu_username = username
-
+        user.osu_username = username
     session.commit()
 
 
 def get_game_username(member: Union[User, Member], game: Literal['osu', 'lol', 'osrs']) -> Optional[str]:
-    tag = session.query(DiscordUser).filter(
-        DiscordUser.member_id == member.id).one_or_none()
-    if not tag:
+    select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
+    user = session.scalar(select_stmt)
+    if not user:
         return None
     else:
-        return getattr(tag, game + '_username')
+        return getattr(user, game + '_username')

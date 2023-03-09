@@ -15,6 +15,7 @@ class ChangePrefix(commands.Cog):
         return arg
 
     @commands.command(category='Narzędzia')
+    @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: commands.Context, *, prefix: Optional[str]):
         '''Ustawia prefix dla tego serwera'''
         if not ctx.guild:
