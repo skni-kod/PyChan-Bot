@@ -5,8 +5,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
-from timezonefinder import TimezoneFinder
-import pytz
+
 
 plt.rcParams['figure.facecolor'] = '#313338'
 plt.rcParams['axes.facecolor'] = '#313338'
@@ -58,25 +57,20 @@ def get_location(location):
     else:
         return 0
     
-    time_zone = TimezoneFinder()
-    time_zone = time_zone.timezone_at(lng=float(r['lon']), lat=float(r['lat']))
-
     data = {
         'name': r['display_name'],
         'latitude': r['lat'],
-        'longitude': r['lon'],
-        'timezone': time_zone
+        'longitude': r['lon']
     }
 
     return data
-
 
 
 def send_weather_request(location):
     lat = location['latitude']
     lot = location['longitude']
 
-    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=rain&current_weather=true&timezone=Europe%2FBerlin'      
+    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=rain&current_weather=true&timezone=auto'      
     r = requests.get(url)
     weather = r.json()
     weather = weather['current_weather']
@@ -88,7 +82,7 @@ def send_daily_request(location):
     lat = location['latitude']
     lot = location['longitude']
 
-    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,showers_sum,snowfall_sum,precipitation_probability_max&current_weather=true&timezone=Europe%2FBerlin'
+    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,showers_sum,snowfall_sum,precipitation_probability_max&current_weather=true&timezone=auto'
 
     r = requests.get(url)
     weather = r.json()
@@ -98,16 +92,41 @@ def send_daily_request(location):
     return daily, now
 
 
-def send_temperature_request(location):
+def send_hourly_request(location, type):
     lat = location['latitude']
     lot = location['longitude']
 
-    url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=temperature_2m&timezone=Europe%2FBerlin'
+    if type == 'temperature':
+        url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=temperature_2m&current_weather=true&timezone=auto'
+        unit = 'temperature_2m'
+    elif type == 'pressure':
+        url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=surface_pressure&current_weather=true&timezone=auto'
+        unit = 'surface_pressure'
+    elif type == 'precipitation':
+        url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lot + '&hourly=precipitation_probability,rain,showers,snowfall&current_weather=true&timezone=auto'
+
     r = requests.get(url)
     weather = r.json()
-    weather = weather['hourly']
 
-    return weather
+    if type == 'precipitation':
+        settings = {
+            'unit': {
+                    'unit_rain': weather['hourly_units']['rain'],
+                    'unit_showers': weather['hourly_units']['showers'],
+                    'unit_snowfall': weather['hourly_units']['snowfall'],
+                    'unit_probability': weather['hourly_units']['precipitation_probability']
+            },
+            'now': weather['current_weather']['time']
+        }
+    else:
+        settings = {
+            'unit': weather['hourly_units'][unit],
+            'now': weather['current_weather']['time']
+        }
+
+    weather = weather['hourly']
+  
+    return weather, settings
 
 
 def prepare_daily(weather):
@@ -165,12 +184,11 @@ def prepare_weather(location, weather):
     return data
 
 
-def prepare_temperature(location, weather):
+def prepare_hourly(location, weather, type, settings):
     tmp = weather['time']
     time = []
-    temperature = []    
-    now = datetime.now()
-    current_time = now.strftime("%Y-%m-%dT%H:00")
+    y = []    
+    current_time = settings['now']
     stop = 0
 
     for i in range(len(tmp)):
@@ -178,22 +196,22 @@ def prepare_temperature(location, weather):
             if str(tmp[i]) >= current_time:
                 stop += 1
                 time.append(tmp[i][5:10] + ' ' + tmp[i][-5:])
-                temperature.append(weather['temperature_2m'][i])
+                y.append(weather[type][i])
     
     data = {
     'name': location['name'],
     'time': time,
-    'temperature': temperature,
+    'y': y,
     }
 
     return data
 
 
-def create_graph(weather):
-    x_set = weather['time']
-    y_set = weather['temperature']
+def create_graph(weather, unit):
 
-    # x_set = np.asarray(x_set)
+
+    x_set = weather['time']
+    y_set = weather['y']
     
     fig = plt.figure()
 
@@ -202,7 +220,7 @@ def create_graph(weather):
 
 
     for x,y in zip(x_set,y_set):
-        label = str(y) + '°C'
+        label = str(y) + unit
         plt.annotate(label,
                      (x,y),
                      textcoords='offset points', xytext=(0,-10), color='white', ha='center')
@@ -230,10 +248,16 @@ def create_image(location, daily, now):
     
     background = Image.open('pychan/commands/utilities/meteo_assets/template.png')
 
-    base_time = datetime.now()
-    local_time = base_time.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+    
+    minutes = str(datetime.now().minute)
+
+    if len(minutes) == 1:
+        minutes = '0' + minutes
+
+    local_hour = now['time'][-5:-3] + ':' + minutes
 
     img = background.copy()
+    background.close()
 
     meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 40)
     
@@ -247,7 +271,7 @@ def create_image(location, daily, now):
     
     meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 30)
     d.text((30,70), str(now['temperature'])+ "°C", font=meteo_font, fill=(255,255,255))
-    d.text((1080,70), str(local_time)[10:16], font = meteo_font, fill = (255,255,255))
+    d.text((1085,70), local_hour, font = meteo_font, fill = (255,255,255))
 
     x_tmp = 150
    
@@ -277,15 +301,12 @@ def create_image(location, daily, now):
         d.text((x_tmp - 10,y_tmp + 150), str(daily[i]['precipitation_probability']) + "%", font=meteo_font, fill=(255,255,255))
 
         #Sunrise
-        base_sunrise = datetime.strptime(daily[i]['sunrise'], '%Y-%m-%dT%H:%M')
-        local_sunrise = base_sunrise.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
-
-        d.text((x_tmp - 10,y_tmp + 220), str(local_sunrise)[11:16], font=meteo_font, fill=(255,255,255))
+        sunrise = datetime.strptime(daily[i]['sunrise'], '%Y-%m-%dT%H:%M')
+        d.text((x_tmp - 10,y_tmp + 220), str(sunrise)[11:16], font=meteo_font, fill=(255,255,255))
 
         #Sunset
-        base_sunset = datetime.strptime(daily[i]['sunset'], '%Y-%m-%dT%H:%M')
-        local_sunset = base_sunset.astimezone(pytz.timezone(location['timezone'])).strftime('%Y-%m-%d %H:%M:%S %Z%z')
-        d.text((x_tmp - 10,y_tmp + 295), str(local_sunset)[11:16], font=meteo_font, fill=(255,255,255))
+        sunset = datetime.strptime(daily[i]['sunset'], '%Y-%m-%dT%H:%M')
+        d.text((x_tmp - 10,y_tmp + 295), str(sunset)[11:16], font=meteo_font, fill=(255,255,255))
         
         x_tmp += 200
 
@@ -363,28 +384,113 @@ class Meteo(commands.Cog):
             if location == 0:
                 await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
             else:
-                weather = send_temperature_request(location)
-                weather = prepare_temperature(location, weather)
-                f = create_graph(weather)
+                weather, settings = send_hourly_request(location, 'temperature')
+                weather = prepare_hourly(location, weather, 'temperature_2m', settings)
+                f = create_graph(weather, settings['unit'])
                 bytes = BytesIO()
                 f.savefig(bytes, format='PNG')
                 bytes.seek(0)
                 await ctx.send("***Meteo Temperatura \U0001F321***")
                 await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
                 
-                # embed = nextcord.Embed(title="Meteo Temperatura \U0001F321")
-                # embed.add_field(name="Lokalizacja", value=weather['name'], inline=False)
-                # for x in weather['temperature']:
-                #     embed.add_field(name = x[:11], value= x[-9:] , inline=False)
-
-                # await ctx.send(embed=embed)
-                # await ctx.send("Temperatura \u1f321")
-                # await ctx.send(weather['name'])
-                # for x in weather['temperature']:
-                #     await ctx.send(x)
+                bytes.close()
 
         else:
             await ctx.send("Proszę podać lokalizację")
+
+
+    @meteo.command(
+        pass_context=True,
+        name='ciśnienie',
+        usage='TODO',
+        help=   """
+                TODO
+                """
+    )
+
+
+    async def ciśnienie(self, ctx, *, search):
+        if len(search) != 0:
+            location = get_location(search)
+            if location == 0:
+                await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
+            else:
+                weather, settings = send_hourly_request(location, 'pressure')
+                weather = prepare_hourly(location, weather, 'surface_pressure', settings)
+                f = create_graph(weather, settings['unit'])
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                await ctx.send("***Meteo Ciśnienie***")
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                
+                bytes.close()
+
+        else:
+            await ctx.send("Proszę podać lokalizację")
+
+    
+    @meteo.command(
+        pass_context=True,
+        name='opady',
+        usage='TODO',
+        help=   """
+                TODO
+                """
+    )
+
+
+    async def opady(self, ctx, *, search):
+        if len(search) != 0:
+            location = get_location(search)
+            if location == 0:
+                await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
+            else:
+                weather, settings = send_hourly_request(location, 'precipitation')
+
+                await ctx.send("***Meteo Opady\n***")
+
+                await ctx.send("***Prawdopodobieństwo Opadów***")
+                weather_probability = prepare_hourly(location, weather, 'precipitation_probability', settings)
+                f = create_graph(weather_probability, settings['unit']['unit_probability'])
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                bytes.close()
+
+                await ctx.send("***Suma Przelotnych Opadów***")
+                weather_probability = prepare_hourly(location, weather, 'showers', settings)
+                f = create_graph(weather_probability, settings['unit']['unit_showers'])
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                bytes.close()
+
+                await ctx.send("***Suma Opadów Deszczu***")
+                weather_probability = prepare_hourly(location, weather, 'rain', settings)
+                f = create_graph(weather_probability, settings['unit']['unit_rain'])
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                bytes.close()
+
+                
+                await ctx.send("***Suma Opadów Śniegu***")
+                weather_probability = prepare_hourly(location, weather, 'snowfall', settings)
+                f = create_graph(weather_probability, settings['unit']['unit_snowfall'])
+                bytes = BytesIO()
+                f.savefig(bytes, format='PNG')
+                bytes.seek(0)
+                await ctx.send(file=nextcord.File(fp=bytes, filename='image.png'))
+                bytes.close()
+
+        else:
+            await ctx.send("Proszę podać lokalizację")
+
+
 
     @meteo.command(
             pass_context=True,
@@ -412,6 +518,9 @@ class Meteo(commands.Cog):
 
                 await ctx.send("***Meteo Week \U0001F321***")
                 await ctx.send(file=nextcord.File(fp=bytes, filename=(location['name'] + '.png')))
+
+                image.close()
+                bytes.close()
                 
         else:
             await ctx.send("Proszę podać lokalizację")
