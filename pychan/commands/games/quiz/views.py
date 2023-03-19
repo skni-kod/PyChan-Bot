@@ -24,22 +24,23 @@ class AddCategoryAndAnswer(nextcord.ui.View):
             options=[nextcord.SelectOption(label=odp) for odp in answers])
         self.add_item(self.selectOdpPopr)
 
-        all_questions = database.session.scalars(select(database.QuizQuestion)).all()
-        #albo sqlem wyciagnij??
+        with database.session() as session:
+            all_questions = session.scalars(select(database.QuizQuestion)).all()
+            #albo sqlem wyciagnij??
 
-        #set to not repeat the category
-        category_set = {que.category for que in all_questions}
+            #set to not repeat the category
+            category_set = {que.category for que in all_questions}
 
-        if len(category_set) == 0:
-            category_set.add('Inne')
+            if len(category_set) == 0:
+                category_set.add('Inne')
 
-        self.selectCategory = nextcord.ui.StringSelect(
-            min_values = 0,
-            max_values = 1,
-            placeholder = "Wybierz kategorie",
-            options=[nextcord.SelectOption(label = categ) for categ in category_set])
-        
-        self.add_item(self.selectCategory)
+            self.selectCategory = nextcord.ui.StringSelect(
+                min_values = 0,
+                max_values = 1,
+                placeholder = "Wybierz kategorie",
+                options=[nextcord.SelectOption(label = categ) for categ in category_set])
+            
+            self.add_item(self.selectCategory)
 
     @nextcord.ui.button(label = "Dodaj kategorię", style=nextcord.ButtonStyle.blurple)
     async def addCategoryB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):

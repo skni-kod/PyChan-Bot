@@ -39,26 +39,25 @@ class Quiz(commands.Cog):
         
         points = [0]
 
-        async with self.semaphore:
-            # all_questions: list[database.QuizQuestion] = database.session.query(database.QuizQuestion).all()
-            all_questions = database.session.scalars(select(database.QuizQuestion)).all()
+        with database.session() as session:
+            all_questions = session.scalars(select(database.QuizQuestion)).all()
 
-        questions = list(all_questions)
-        shuffle(questions)
-        questions = questions[:5]
+            questions = list(all_questions)
+            shuffle(questions)
+            questions = questions[:5]
 
-        for question in questions:
-            quizView = startQuiz(question)
+            for question in questions:
+                quizView = startQuiz(question)
 
-            for ans in question.answers:
-                button = AnswerButton(ans, points)
-                quizView.add_item(button)
+                for ans in question.answers:
+                    button = AnswerButton(ans, points)
+                    quizView.add_item(button)
 
-            await viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
-            await quizView.wait()
+                await viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
+                await quizView.wait()
 
-        quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]}")
-        await viewYouCanEdit.edit(view=None, embed=quiz_summary)
+            quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]}")
+            await viewYouCanEdit.edit(view=None, embed=quiz_summary)
         
     
     @quiz.command(name="menu", pass_context = True)
@@ -105,9 +104,9 @@ class MenuButtons(nextcord.ui.View):
         await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
         await newView.wait()
 
-        async with self.semaphore:
-            database.session.add(newView.ready_question)
-            database.session.commit()
+        with database.session() as session:
+            session.add(newView.ready_question)
+            session.commit()
 
         self.stop()
 
