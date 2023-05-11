@@ -111,7 +111,6 @@ pipeline{
 		        unstash 'kubernetes'
                 withCredentials([file(credentialsId: 'k8s-kubeconfig', variable: 'CONFIG')]) {
                         sh """
-        	    		    mv k8s/* .
         	    		    kubectl --kubeconfig=$CONFIG apply -f pychan-deployment.yaml
                   		"""
                 }
