@@ -96,8 +96,8 @@ pipeline{
                 label 'host'
             }
             steps {
-		        sh 'sed -i "s|harbor.skni.edu.pl/library/pychan:latest|harbor.skni.edu.pl/library/pychan:${BUILD_ID}|g" k8s/pychan-deployment.yaml'
-                stash name: 'kubernetes', includes: 'k8s/**'
+		        sh 'sed -i "s|harbor.skni.edu.pl/library/pychan:latest|harbor.skni.edu.pl/library/pychan:${BUILD_ID}|g" pychan-deployment.yaml'
+                stash name: 'kubernetes', includes: 'pychan-deployment.yaml'
             }
         }
         stage('Deploy'){
@@ -113,7 +113,6 @@ pipeline{
                         sh """
         	    		    mv k8s/* .
         	    		    kubectl --kubeconfig=$CONFIG apply -f pychan-deployment.yaml
-        	    		    kubectl --kubeconfig=$CONFIG apply -f pychan-service.yaml	
                   		"""
                 }
             }
