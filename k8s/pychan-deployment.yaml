@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pychan-deployment
+  namespace: pychan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pychan
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pychan
+    spec:
+      containers:
+      - name: pychan
+        image: harbor.skni.edu.pl/library/pychan:latest
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: regcred
+
