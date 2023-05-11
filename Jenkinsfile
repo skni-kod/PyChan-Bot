@@ -26,7 +26,8 @@ pipeline{
                 -Dsonar.projectKey=$PROJECT_NAME \
                 -Dsonar.sources=. \
                 -Dsonar.sourceEncoding=UTF-8 \
-                -Dsonar.language=python """
+                -Dsonar.language=python \
+		-Dsonar.python.version=3.10 """
                 }
             }
         }
