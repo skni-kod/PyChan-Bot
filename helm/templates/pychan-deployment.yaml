@@ -25,6 +25,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /app/config.py
+          subPath: config.py
       volumes:
       - name: config
         secret:
