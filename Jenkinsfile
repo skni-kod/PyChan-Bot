@@ -52,9 +52,7 @@ pipeline{
                 label 'kaniko'
             }
             steps{
-                sh """
-                    /kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
-                """
+                sh "/kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
             }
         }
 
