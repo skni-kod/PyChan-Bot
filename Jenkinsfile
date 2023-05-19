@@ -50,12 +50,9 @@ pipeline{
                 label 'kaniko'
             }
             steps{
-                withCredentials([file(credentialsId: 'pychan-config', variable: 'PC_CONFIG')]) {
-                    sh """
-                        /busybox/cp $PC_CONFIG config.py
-                        /kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
-                    """
-                }
+                sh """
+                    /kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
+                """
             }
         }
 
