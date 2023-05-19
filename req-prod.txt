@@ -6,6 +6,7 @@ ossapi
 networkx
 python-osrsapi
 Pillow
+PyNaCl
 yt-dlp
 Unidecode
 validators
