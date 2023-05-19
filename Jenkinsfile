@@ -52,10 +52,28 @@ pipeline{
                 label 'kaniko'
             }
             steps{
-                sh "/kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
+                container('kaniko'){
+                    sh "/kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --destination=$IMAGE:$BUILD_ID"
+                }
             }
         }
-
+        stage('Scan image') {
+            agent{
+                label 'trivy'
+            }
+            steps {
+                container('trivy'){
+                    withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                        // Scan all vuln levels
+                        sh 'mkdir -p reports'
+                        sh "trivy image --format json -o reports/python.json --username $USER --password $PASSWD $IMAGE:$BUILD_ID"
+                        // Scan again and fail on CRITICAL vulns
+                        sh "trivy image --exit-code 1 --severity CRITICAL --username $USER --password $PASSWD  $IMAGE:$BUILD_ID"
+		                archiveArtifacts 'reports/python.json'
+                    }
+                }
+            }
+        }
         stage('Deploy'){
 	        agent {
 	            label 'helm'
