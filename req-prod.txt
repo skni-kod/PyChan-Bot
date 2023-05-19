@@ -1,0 +1,14 @@
+nextcord==2.3.3
+nextcord[voice]
+sqlalchemy
+tabulate
+ossapi
+networkx
+python-osrsapi
+Pillow
+PyNaCl
+yt-dlp
+Unidecode
+validators
+colorthief
+pg8000
