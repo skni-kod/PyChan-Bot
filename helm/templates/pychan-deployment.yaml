@@ -4,7 +4,7 @@ metadata:
   name: pychan-deployment
   namespace: pychan
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: pychan
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: pychan
-        image: harbor.skni.edu.pl/library/pychan:latest
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
         imagePullPolicy: Always
       imagePullSecrets:
       - name: regcred
