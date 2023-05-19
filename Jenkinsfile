@@ -37,12 +37,14 @@ pipeline{
                 label 'trivy'
             }
             steps {
-                // Scan all vuln levels
-                sh 'mkdir -p reports'
-                sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format json -o reports/php.json .'
-                // Scan again and fail on CRITICAL vulns
-                sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL .'
-		        archiveArtifacts 'reports/python.json'
+                container('trivy'){
+                    // Scan all vuln levels
+                    sh 'mkdir -p reports'
+                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format json -o reports/python.json .'
+                    // Scan again and fail on CRITICAL vulns
+                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL .'
+		            archiveArtifacts 'reports/python.json'
+                }
             }
         }
         stage('Build'){
