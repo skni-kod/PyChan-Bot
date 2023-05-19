@@ -12,7 +12,7 @@ pipeline{
             }
             environment {
                 ORGANIZATION = "SKNI-KOD"
-                PROJECT_NAME = "Pychan-Bot"
+                PROJECT_NAME = "PyChan-Bot"
                 SONAR_SERVER = "https://sonar.skni.edu.pl"
             }
             steps{
