@@ -1,5 +1,5 @@
 FROM python:3.10-alpine
-RUN apk update && apk add g++ jpeg-dev zlib-dev libjpeg make ffmpeg py3-matplotlib
+RUN apk update && apk add g++ jpeg-dev zlib-dev libjpeg make ffmpeg py3-matplotlib p3-pynacl py3-numpy
 WORKDIR /app
 COPY . .
 RUN --mount=type=cache,target=/root/.cache/pip \
