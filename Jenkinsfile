@@ -8,120 +8,88 @@ pipeline{
     stages{
         stage('Sonar'){
             agent{
-                label 'host'
+                label 'sonar'
             }
             environment {
-                SCANNER_HOME = tool 'Scanner'
                 ORGANIZATION = "SKNI-KOD"
                 PROJECT_NAME = "PyChan-Bot"
+                SONAR_SERVER = "https://sonar.skni.edu.pl"
             }
             steps{
-                withCredentials([file(credentialsId: 'pychan-config', variable: 'PC_CONFIG')]) {
-                    sh """
-                    rm -rf .env
-                    cp $PC_CONFIG config.py"""
-                }
-                withSonarQubeEnv('Sonarqube') {
-                sh """$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
-                -Dsonar.projectKey=$PROJECT_NAME \
-                -Dsonar.sources=. \
-                -Dsonar.sourceEncoding=UTF-8 \
-                -Dsonar.language=python \
-		-Dsonar.python.version=3.10 """
+                container('sonarqube') {
+                    withCredentials([string(credentialsId: 'sonar', variable: 'TOKEN')]) {
+                        sh """sonar-scanner -Dsonar.organization=$ORGANIZATION \
+                            -Dsonar.projectKey=$PROJECT_NAME \
+                            -Dsonar.host.url=$SONAR_SERVER \
+                            -Dsonar.login=$TOKEN \
+                            -Dsonar.sources=. \
+                            -Dsonar.exclusions=./helm/**/* \
+                            -Dsonar.sourceEncoding=UTF-8 \
+                            -Dsonar.language=python \
+                            -Dsonar.python.version=3.10
+                        """
+                    }
                 }
             }
         }
-/*        stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }*/
         stage('Scan source') {
             agent{
-                label 'host'
+                label 'trivy'
             }
             steps {
-                // Scan all vuln levels
-                sh 'mkdir -p reports'
-                sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format json -o reports/php.json .'
-                // Scan again and fail on CRITICAL vulns
-                sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL .'
-		        archiveArtifacts 'reports/php.json'
+                container('trivy'){
+                    // Scan all vuln levels
+                    sh 'mkdir -p reports'
+                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format json -o reports/python.json .'
+                    // Scan again and fail on CRITICAL vulns
+                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL .'
+		            archiveArtifacts 'reports/python.json'
+                }
             }
         }
         stage('Build'){
             agent{
-                label 'host'
+                label 'kaniko'
             }
             steps{
-                    sh """
-                    docker build -t $IMAGE:$BUILD_ID .
-                    """
+                container('kaniko'){
+                    sh "/kaniko/executor --context=\$(pwd) --dockerfile=\$(pwd)/Dockerfile --cache=true --destination=$IMAGE:$BUILD_ID"
+                }
             }
         }
         stage('Scan image') {
             agent{
-                label 'host'
+                label 'trivy'
             }
             steps {
-                sh 'mkdir -p reports'
-                sh 'trivy image --format json -o reports/image.json $IMAGE:$BUILD_ID '
-                // Scan again and fail on CRITICAL vulns
-                sh 'trivy image --exit-code 1 --severity CRITICAL  $IMAGE:$BUILD_ID '
-		        archiveArtifacts 'reports/image.json'
-            }
-        }
-        stage('Push to registry - back'){
-            agent{
-                label 'host'
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'passwd', usernameVariable: 'username')]) {
-                    sh """
-                    docker login -u $username -p $passwd  ${env.REGISTRY}
-                       docker push $IMAGE:$BUILD_ID
-                       docker tag $IMAGE:$BUILD_ID $IMAGE:latest
-                       docker push $IMAGE:latest
-                       docker image rm $IMAGE:latest
-                       docker image rm $IMAGE:$BUILD_ID
-                    """
+                container('trivy'){
+                    withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                        // Scan all vuln levels
+                        sh 'mkdir -p reports'
+                        sh "trivy image --format json -o reports/python-image.json --username $USER --password $PASSWD $IMAGE:$BUILD_ID"
+                        // Scan again and fail on CRITICAL vulns
+                        sh "trivy image --exit-code 1 --severity CRITICAL --username $USER --password $PASSWD  $IMAGE:$BUILD_ID"
+		                archiveArtifacts 'reports/python-image.json'
+                    }
                 }
-            }
-        }
-        stage('Update k8s config') {
-            agent{
-                label 'host'
-            }
-            steps {
-		        sh 'sed -i "s|harbor.skni.edu.pl/library/pychan:latest|harbor.skni.edu.pl/library/pychan:${BUILD_ID}|g" pychan-deployment.yaml'
-                stash name: 'kubernetes', includes: 'pychan-deployment.yaml'
             }
         }
         stage('Deploy'){
-	    agent {
-	        docker {
-	            image 'bitnami/kubectl:latest'
-	            args "--entrypoint=''"
+	        agent {
+	            label 'helm'
 	        }
-	    }
             steps{
-		        unstash 'kubernetes'
-                withCredentials([file(credentialsId: 'k8s-kubeconfig', variable: 'CONFIG')]) {
-                        sh """
-        	    		    kubectl --kubeconfig=$CONFIG apply -f pychan-deployment.yaml
-                  		"""
+        		container(name: 'helm', shell: '/bin/sh') {
+                    withCredentials([file(credentialsId: 'k8s-ca', variable: 'MY_CA'), string(credentialsId: 'k8s-token', variable: 'MY_TOKEN')]) { 
+                    sh """
+                        kubectl config set-cluster mycluster --server=https://kubernetes.default --certificate-authority=${MY_CA}
+                        kubectl config set-credentials jenkins-robot --token=${MY_TOKEN}
+                        kubectl config set-context mycontext --cluster=mycluster --user=jenkins-robot
+                        kubectl config use-context mycontext
+                        helm upgrade --install --namespace pychan --set image.tag=${BUILD_ID} pychan ./helm
+                    """
+                    }
                 }
-            }
-        }
-    }
-    post {
-        always {
-            node('host') {
-                deleteDir()
             }
         }
     }
