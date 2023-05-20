@@ -33,17 +33,19 @@ pipeline{
             }
         }
         stage('Scan source') {
-            agent{
+	        agent{
                 label 'trivy'
             }
             steps {
                 container('trivy'){
+                    withCredentials([file(credentialsId: 'html.tpl', variable: 'TEMPLATE')]) {
+                        sh "cp $TEMPLATE html.tpl"
+                    }
                     // Scan all vuln levels
-                    sh 'mkdir -p reports'
-                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format json -o reports/python.json .'
+                    sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --format template --template @./html.tpl -o report-app.html .'
                     // Scan again and fail on CRITICAL vulns
                     sh 'trivy filesystem --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL .'
-		            archiveArtifacts 'reports/python.json'
+		            archiveArtifacts 'report-app.html'
                 }
             }
         }
@@ -64,12 +66,14 @@ pipeline{
             steps {
                 container('trivy'){
                     withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                        withCredentials([file(credentialsId: 'html.tpl', variable: 'TEMPLATE')]) {
+                            sh "cp $TEMPLATE html.tpl"
+                        }
                         // Scan all vuln levels
-                        sh 'mkdir -p reports'
-                        sh "trivy image --format json -o reports/python-image.json --username $USER --password $PASSWD $IMAGE:$BUILD_ID"
+                        sh 'trivy image --format template --template @./html.tpl -o report-image.html --username $USER --password $PASSWD $IMAGE:$BUILD_ID'
                         // Scan again and fail on CRITICAL vulns
                         sh "trivy image --exit-code 1 --severity CRITICAL --username $USER --password $PASSWD  $IMAGE:$BUILD_ID"
-		                archiveArtifacts 'reports/python-image.json'
+		                archiveArtifacts 'report-image.html'
                     }
                 }
             }
