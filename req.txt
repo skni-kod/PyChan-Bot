@@ -12,3 +12,4 @@ yt-dlp
 Unidecode
 validators
 colorthief
+asyncpraw
