@@ -1,4 +1,4 @@
 ---
 image:
-  name: harbor.skni.edu.pl/library/pychan
+  name: nexus.skni.edu.pl:1180/pychan-bot
   tag: latest
