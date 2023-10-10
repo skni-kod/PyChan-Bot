@@ -21,19 +21,19 @@ class Chomsky(commands.Cog):
     async def chomsky(self, ctx, *, rules: str):
 
 
-        symbole_terminalne = []
-        Reguły_produkcji = []
-        oznaczenia_symboli = []
-        reguly = rules
+        terminal_symbols = []
+        production_rules = []
+        start_symbols = []
+        input_rules = rules
         stan = str("początek")
-        reguly.strip()
-        reguly = reguly.replace(",", " ")
-        reguly = reguly.replace(";", " ; ")
-        reguly = reguly.replace(">", " > ")
-        reguly = reguly.split()
+        input_rules.strip()
+        input_rules = input_rules.replace(",", " ")
+        input_rules = input_rules.replace(";", " ; ")
+        input_rules = input_rules.replace(">", " > ")
+        input_rules = input_rules.split()
         zmienna_pomocnicza = -1
-        for i in range(0, len(reguly)):
-            match reguly[i]:
+        for i in range(0, len(input_rules)):
+            match input_rules[i]:
                 case ";":
                     stan = ";"
                     zmienna_pomocnicza = zmienna_pomocnicza + 1
@@ -42,153 +42,153 @@ class Chomsky(commands.Cog):
                 case _:
                     match stan:
                         case "początek":
-                            symbole_terminalne.append(reguly[i])
+                            terminal_symbols.append(input_rules[i])
                         case ";":
-                            oznaczenia_symboli.append(reguly[i])
-                            Reguły_produkcji.append([])
+                            start_symbols.append(input_rules[i])
+                            production_rules.append([])
                         case ">":
-                            Reguły_produkcji[zmienna_pomocnicza].append(reguly[i])
+                            production_rules[zmienna_pomocnicza].append(input_rules[i])
 
         # Nie zmieniać
-        symbole = []
-        for i in range(0, len(Reguły_produkcji)):
-            for x in range(0, len(Reguły_produkcji[i])):
-                for a in range(0, len(Reguły_produkcji[i][x])):
-                    if Reguły_produkcji[i][x][a] not in symbole:
-                        symbole.append(Reguły_produkcji[i][x][a])
+        symbols = []
+        for i in range(0, len(production_rules)):
+            for x in range(0, len(production_rules[i])):
+                for a in range(0, len(production_rules[i][x])):
+                    if production_rules[i][x][a] not in symbols:
+                        symbols.append(production_rules[i][x][a])
 
         """
         Skracanie długości produkcji do pordukowania
         1-2 symboli
         """
-        for i in range(0, len(Reguły_produkcji)):
-            for x in range(0, len(Reguły_produkcji[i])):
-                if len(Reguły_produkcji[i][x]) == 1:
+        for i in range(0, len(production_rules)):
+            for x in range(0, len(production_rules[i])):
+                if len(production_rules[i][x]) == 1:
                     pass
-                elif len(Reguły_produkcji[i][x]) == 2:
+                elif len(production_rules[i][x]) == 2:
                     pass
                 else:
-                    while len(Reguły_produkcji[i][x]) > 2:
-                        nowy_symbol_wejściowy = chr(random.randint(65, 91))
-                        if nowy_symbol_wejściowy in oznaczenia_symboli:
-                            nowy_symbol_wejściowy = chr(random.randint(65, 90))
+                    while len(production_rules[i][x]) > 2:
+                        new_sybol = chr(random.randint(65, 91))
+                        if new_sybol in start_symbols:
+                            new_sybol = chr(random.randint(65, 90))
                         else:
 
-                            element = Reguły_produkcji[i][x][:-2] + nowy_symbol_wejściowy
-                            lista_pomocnicza = [Reguły_produkcji[i][x][-2:]]
-                            Reguły_produkcji.append(lista_pomocnicza)
-                            Reguły_produkcji[i][x] = element
-                        oznaczenia_symboli.append(nowy_symbol_wejściowy)
+                            element = production_rules[i][x][:-2] + new_sybol
+                            temp_list = [production_rules[i][x][-2:]]
+                            production_rules.append(temp_list)
+                            production_rules[i][x] = element
+                        start_symbols.append(new_sybol)
 
         """
         zamiana reguł produkcji produkujących 2 symbole w tym co najmniej 1 terminalny"
         """
 
-        for i in range(0, len(symbole_terminalne)):
+        for i in range(0, len(terminal_symbols)):
             zmienna_pomocnicza = 0
-            for x in range(0, len(Reguły_produkcji)):
-                if len(Reguły_produkcji[x]) == 1 and Reguły_produkcji[x][0] == symbole_terminalne[i]:
+            for x in range(0, len(production_rules)):
+                if len(production_rules[x]) == 1 and production_rules[x][0] == terminal_symbols[i]:
                     zmienna_pomocnicza = 1
 
             if zmienna_pomocnicza == 0:
-                nowy_symbol_wejściowy = chr(random.randint(65, 90))
-                if nowy_symbol_wejściowy in oznaczenia_symboli:
-                    nowy_symbol_wejściowy = chr(random.randint(65, 90))
+                new_sybol = chr(random.randint(65, 90))
+                if new_sybol in start_symbols:
+                    new_sybol = chr(random.randint(65, 90))
                 else:
-                    lista_pomocnicza = [symbole_terminalne[i]]
-                    Reguły_produkcji.append(lista_pomocnicza)
-                    oznaczenia_symboli.append(nowy_symbol_wejściowy)
+                    temp_list = [terminal_symbols[i]]
+                    production_rules.append(temp_list)
+                    start_symbols.append(new_sybol)
 
-        for i in range(0, len(Reguły_produkcji)):
-            for x in range(0, len(Reguły_produkcji[i])):
-                for a in range(0, len(Reguły_produkcji[i][x])):
-                    if Reguły_produkcji[i][x][a] in symbole_terminalne and len(Reguły_produkcji[i][x]) != 1:
-                        for z in range(0, len(symbole_terminalne)):
-                            for b in range(0, len(Reguły_produkcji)):
-                                for c in range(0, len(Reguły_produkcji[b])):
-                                    if Reguły_produkcji[b][c] == symbole_terminalne[z] and len(
-                                            Reguły_produkcji[b]) == 1:
-                                        Reguły_produkcji[i][x] = Reguły_produkcji[i][x].replace(
-                                            symbole_terminalne[z], oznaczenia_symboli[b])
+        for i in range(0, len(production_rules)):
+            for x in range(0, len(production_rules[i])):
+                for a in range(0, len(production_rules[i][x])):
+                    if production_rules[i][x][a] in terminal_symbols and len(production_rules[i][x]) != 1:
+                        for z in range(0, len(terminal_symbols)):
+                            for b in range(0, len(production_rules)):
+                                for c in range(0, len(production_rules[b])):
+                                    if production_rules[b][c] == terminal_symbols[z] and len(
+                                            production_rules[b]) == 1:
+                                        production_rules[i][x] = production_rules[i][x].replace(
+                                            terminal_symbols[z], start_symbols[b])
                     else:
                         pass
 
         """
         zastosowanie lematu 1
         """
-        for i in range(0, len(Reguły_produkcji)):
-            for x in range(0, len(Reguły_produkcji[i])):
-                for a in range(0, len(Reguły_produkcji[i][x])):
-                    if len(Reguły_produkcji[i][x]) == 1:
-                        for b in range(0, len(Reguły_produkcji)):
-                            if Reguły_produkcji[i][x] == oznaczenia_symboli[b]:
-                                Reguły_produkcji[i].pop(x)
+        for i in range(0, len(production_rules)):
+            for x in range(0, len(production_rules[i])):
+                for a in range(0, len(production_rules[i][x])):
+                    if len(production_rules[i][x]) == 1:
+                        for b in range(0, len(production_rules)):
+                            if production_rules[i][x] == start_symbols[b]:
+                                production_rules[i].pop(x)
                                 x = x - 1
-                                for c in range(0, len(Reguły_produkcji[b])):
-                                    Reguły_produkcji[i].append(Reguły_produkcji[b][c])
+                                for c in range(0, len(production_rules[b])):
+                                    production_rules[i].append(production_rules[b][c])
 
         """
         usnięcie lambdy
         """
         # lambda tymczasowo oznaczona symbolem ^
-        for i in range(0, len(Reguły_produkcji)):
-            for x in reversed(range(0, len(Reguły_produkcji[i]))):
-                if "^" in Reguły_produkcji[i][x]:
-                    for a in range(0, len(Reguły_produkcji)):
-                        for b in range(0, len(Reguły_produkcji[a])):
-                            if oznaczenia_symboli[i] in Reguły_produkcji[a][b]:
-                                Reguły_produkcji[a][b] = Reguły_produkcji[a][b].replace(oznaczenia_symboli[i],
-                                                                                        Reguły_produkcji[i][x])
-                                Reguły_produkcji[i].pop(x)
-        for i in range(0, len(Reguły_produkcji)):
-            for x in reversed(range(0, len(Reguły_produkcji[i]))):
-                if "^" in Reguły_produkcji[i][x]:
-                    Reguły_produkcji[i][x] = Reguły_produkcji[i][x].replace("^", "")
+        for i in range(0, len(production_rules)):
+            for x in reversed(range(0, len(production_rules[i]))):
+                if "^" in production_rules[i][x]:
+                    for a in range(0, len(production_rules)):
+                        for b in range(0, len(production_rules[a])):
+                            if start_symbols[i] in production_rules[a][b]:
+                                production_rules[a][b] = production_rules[a][b].replace(start_symbols[i],
+                                                                                        production_rules[i][x])
+                                production_rules[i].pop(x)
+        for i in range(0, len(production_rules)):
+            for x in reversed(range(0, len(production_rules[i]))):
+                if "^" in production_rules[i][x]:
+                    production_rules[i][x] = production_rules[i][x].replace("^", "")
 
         """
         usuwanie syboli bezuzytecznych
 
         """
-        symbole_bezużyteczne = []
-        symbole_użyteczne = [oznaczenia_symboli[0]]
-        for i in range(0, len(oznaczenia_symboli)):
-            lista_pomocnicza = []
-            for x in range(0, len(Reguły_produkcji[i])):
-                if oznaczenia_symboli[i] in Reguły_produkcji[i][x]:
-                    lista_pomocnicza.append("0")
+        useless_symbols = []
+        usefull_symbols = [start_symbols[0]]
+        for i in range(0, len(start_symbols)):
+            temp_list = []
+            for x in range(0, len(production_rules[i])):
+                if start_symbols[i] in production_rules[i][x]:
+                    temp_list.append("0")
                 else:
-                    lista_pomocnicza.append("1")
-            if "1" not in lista_pomocnicza:
-                symbole_bezużyteczne.append(oznaczenia_symboli[i])
+                    temp_list.append("1")
+            if "1" not in temp_list:
+                useless_symbols.append(start_symbols[i])
 
-        for i in range(0, len(symbole_użyteczne)):
-            index = oznaczenia_symboli.index(symbole_użyteczne[i])
-            for x in range(0, len(Reguły_produkcji[index])):
-                for a in range(0, len(Reguły_produkcji[index][x])):
-                    if Reguły_produkcji[index][x][a] in oznaczenia_symboli:
-                        symbole_użyteczne.append(Reguły_produkcji[index][x][a])
+        for i in range(0, len(usefull_symbols)):
+            index = start_symbols.index(usefull_symbols[i])
+            for x in range(0, len(production_rules[index])):
+                for a in range(0, len(production_rules[index][x])):
+                    if production_rules[index][x][a] in start_symbols:
+                        usefull_symbols.append(production_rules[index][x][a])
 
-        for i in range(0, len(symbole)):
-            if symbole[i] not in symbole_użyteczne and symbole[i] not in symbole_terminalne and symbole[
-                i] not in symbole_bezużyteczne:
-                symbole_bezużyteczne.append(symbole[i])
+        for i in range(0, len(symbols)):
+            if symbols[i] not in usefull_symbols and symbols[i] not in terminal_symbols and symbols[
+                i] not in useless_symbols:
+                useless_symbols.append(symbols[i])
 
-        for i in range(0, len(symbole)):
-            if symbole[i] not in symbole_użyteczne:
-                symbole_bezużyteczne.append(symbole[i])
+        for i in range(0, len(symbols)):
+            if symbols[i] not in usefull_symbols:
+                useless_symbols.append(symbols[i])
 
-        for u in range(0, len(symbole_bezużyteczne)):
+        for u in range(0, len(useless_symbols)):
             i = 0
             x = 0
-            while i < len(Reguły_produkcji):
-                while x < len(Reguły_produkcji[i]):
-                    if symbole_bezużyteczne[u] in Reguły_produkcji[i][x]:
-                        Reguły_produkcji[i].pop(x)
+            while i < len(production_rules):
+                while x < len(production_rules[i]):
+                    if useless_symbols[u] in production_rules[i][x]:
+                        production_rules[i].pop(x)
                         x = x - 1
                     x = x + 1
-                if symbole_bezużyteczne[u] == oznaczenia_symboli[i]:
-                    Reguły_produkcji.pop(i)
-                    oznaczenia_symboli.pop(i)
+                if useless_symbols[u] == start_symbols[i]:
+                    production_rules.pop(i)
+                    start_symbols.pop(i)
                     i = i - 1
                 i = i + 1
 
@@ -200,10 +200,10 @@ class Chomsky(commands.Cog):
             description=""
         )
 
-        for i in range(0, len(Reguły_produkcji)):
-            embed.description += f"{oznaczenia_symboli[i]} -> "
-            for x in range(0, len(Reguły_produkcji[i]) - 1):
-                embed.description += f"{Reguły_produkcji[i][x]} | "
-            embed.description += f"{Reguły_produkcji[i][-1]}\n"
+        for i in range(0, len(production_rules)):
+            embed.description += f"{start_symbols[i]} -> "
+            for x in range(0, len(production_rules[i]) - 1):
+                embed.description += f"{production_rules[i][x]} | "
+            embed.description += f"{production_rules[i][-1]}\n"
 
         await ctx.send(embed=embed)

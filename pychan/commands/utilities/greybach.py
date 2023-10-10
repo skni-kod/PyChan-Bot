@@ -15,172 +15,172 @@ class Greybach(commands.Cog):
         help=""
     )
     async def chomsky(self, ctx, *, rules: str):
-        def usuwanie_regul_bezuzytecznych(zmienna1, zmienna2, zmienna3):
+        def delete_useless_rules(r, s, t):
             """
                 sprawdzenie które symbole się redukuja
             """
-            symbole_red = []
-            for i in (range(len(zmienna2))):
-                for x in range(len(zmienna1[i])):
-                    if zmienna2[i] not in zmienna1[i][x]:
-                        symbole_red.append(zmienna2[i])
+            reduction_symbols = []
+            for i in (range(len(s))):
+                for x in range(len(r[i])):
+                    if s[i] not in r[i][x]:
+                        reduction_symbols.append(s[i])
                         break
 
             """
                 sprawdzenie ktore symbole są produkowane
             """
-            symbole_prod = [zmienna2[0]]
+            symbols_produced = [s[0]]
             while True:
-                lista_pomocznicza = symbole_prod.copy()
-                for i in range(0, len(symbole_prod)):
-                    index = zmienna2.index(symbole_prod[i])
-                    for x in range(len(zmienna1[index])):
-                        for y in range(len(zmienna1[index][x])):
-                            if zmienna1[index][x][y] in zmienna2 and zmienna1[index][x][y] not in symbole_prod:
-                                symbole_prod.append(zmienna1[index][x][y])
+                lista_pomocznicza = symbols_produced.copy()
+                for i in range(0, len(symbols_produced)):
+                    index = s.index(symbols_produced[i])
+                    for x in range(len(r[index])):
+                        for y in range(len(r[index][x])):
+                            if r[index][x][y] in s and r[index][x][y] not in symbols_produced:
+                                symbols_produced.append(r[index][x][y])
 
-                if lista_pomocznicza == symbole_prod:
+                if lista_pomocznicza == symbols_produced:
                     break
             """
                 sprawdzenie czy symbole sa uzyteczne oraz usuiecie symboli bezuzytecznych
             """
-            for i in reversed(range(len(zmienna2))):
-                if zmienna2[i] not in symbole_red:
-                    symbole_prod.pop(i)
+            for i in reversed(range(len(s))):
+                if s[i] not in reduction_symbols:
+                    symbols_produced.pop(i)
 
-            for i in reversed(range(len(zmienna2))):
-                if zmienna2[i] not in symbole_prod:
-                    zmienna1.pop(i)
-                    zmienna2.pop(i)
+            for i in reversed(range(len(s))):
+                if s[i] not in symbols_produced:
+                    r.pop(i)
+                    s.pop(i)
                     continue
                 else:
-                    for x in reversed(range(len(zmienna1[i]))):
-                        for y in range(len(zmienna1[i][x])):
-                            if zmienna1[i][x][y] not in symbole_prod and zmienna1[i][x][y] not in zmienna3:
-                                zmienna1[i].pop(x)
+                    for x in reversed(range(len(r[i]))):
+                        for y in range(len(r[i][x])):
+                            if r[i][x][y] not in symbols_produced and r[i][x][y] not in t:
+                                r[i].pop(x)
                                 break
 
 
         """
          wprowadzanie danych
         """
-        terminalne = []
-        reguly_prod = []
-        symbole_pocz = []
-        reguly = rules
+        terminal_symbols = []
+        production_rules = []
+        start_symbols = []
+        input_rules = rules
         stan = str("początek")
-        reguly.strip()
-        reguly = reguly.replace(",", " ")
-        reguly = reguly.replace(";", " ; ")
-        reguly = reguly.replace(">", " > ")
-        reguly = reguly.split()
-        zmienna_pomocnicza = -1
-        for i in range(0, len(reguly)):
-            match reguly[i]:
+        input_rules.strip()
+        input_rules = input_rules.replace(",", " ")
+        input_rules = input_rules.replace(";", " ; ")
+        input_rules = input_rules.replace(">", " > ")
+        input_rules = input_rules.split()
+        temp = -1
+        for i in range(0, len(input_rules)):
+            match input_rules[i]:
                 case ";":
                     stan = ";"
-                    zmienna_pomocnicza = zmienna_pomocnicza + 1
+                    temp = temp + 1
                 case ">":
                     stan = ">"
                 case _:
                     match stan:
                         case "początek":
-                            terminalne.append(reguly[i])
+                            terminal_symbols.append(input_rules[i])
                         case ";":
-                            symbole_pocz.append(reguly[i])
-                            reguly_prod.append([])
+                            start_symbols.append(input_rules[i])
+                            production_rules.append([])
                         case ">":
-                            reguly_prod[zmienna_pomocnicza].append(reguly[i])
+                            production_rules[temp].append(input_rules[i])
 
         """
             usuwanie lambdy
         """
-        usuwanie_regul_bezuzytecznych(reguly_prod, symbole_pocz, terminalne)
+        delete_useless_rules(production_rules, start_symbols, terminal_symbols)
 
-        for i in range(len(reguly_prod)):
-            for x in range(len(reguly_prod[i])):
-                if "^" in reguly_prod[i][x]:
-                    for a in range(len(reguly_prod)):
-                        for b in range(len(reguly_prod[a])):
-                            if symbole_pocz[i] in reguly_prod[a][b]:
-                                reguly_prod[a][b] = reguly_prod[a][b].replace(symbole_pocz[i], reguly_prod[i][x])
-                                reguly_prod[i].pop(x)
-        for i in range(0, len(reguly_prod)):
-            for x in range(0, len(reguly_prod[i])):
-                if "^" in reguly_prod[i][x]:
-                    reguly_prod[i][x] = reguly_prod[i][x].replace("^", "")
+        for i in range(len(production_rules)):
+            for x in range(len(production_rules[i])):
+                if "^" in production_rules[i][x]:
+                    for a in range(len(production_rules)):
+                        for b in range(len(production_rules[a])):
+                            if start_symbols[i] in production_rules[a][b]:
+                                production_rules[a][b] = production_rules[a][b].replace(start_symbols[i], production_rules[i][x])
+                                production_rules[i].pop(x)
+        for i in range(0, len(production_rules)):
+            for x in range(0, len(production_rules[i])):
+                if "^" in production_rules[i][x]:
+                    production_rules[i][x] = production_rules[i][x].replace("^", "")
 
         """
             lemat 2
         """
 
-        for i in range(len(reguly_prod)):
-            lista_pomocznicza = []
-            for x in range(len((reguly_prod[i]))):
-                if reguly_prod[i][x][0] == symbole_pocz[i]:
-                    lista_pomocznicza.append("alfa")
+        for i in range(len(production_rules)):
+            temp_list = []
+            for x in range(len((production_rules[i]))):
+                if production_rules[i][x][0] == start_symbols[i]:
+                    temp_list.append("alfa")
                 else:
-                    lista_pomocznicza.append("beta")
+                    temp_list.append("beta")
 
-            if "alfa" not in lista_pomocznicza:
+            if "alfa" not in temp_list:
                 continue
             else:
-                reguly_prod.append([])
+                production_rules.append([])
                 while True:
-                    nowy_symbol = chr(random.randint(65, 90))
-                    if nowy_symbol not in symbole_pocz:
+                    new_sybol = chr(random.randint(65, 90))
+                    if new_sybol not in start_symbols:
                         break
-                symbole_pocz.append(nowy_symbol)
-                for x in reversed(range(len(lista_pomocznicza))):
-                    if lista_pomocznicza[x] == "alfa":
-                        reguly_prod[-1].append(reguly_prod[i][x][1:] + symbole_pocz[-1])
-                        reguly_prod[-1].append(reguly_prod[i][x][1:])
+                start_symbols.append(new_sybol)
+                for x in reversed(range(len(temp_list))):
+                    if temp_list[x] == "alfa":
+                        production_rules[-1].append(production_rules[i][x][1:] + start_symbols[-1])
+                        production_rules[-1].append(production_rules[i][x][1:])
                     else:
-                        reguly_prod[i].append(reguly_prod[i][x]+symbole_pocz[-1])
-                        reguly_prod[i].append(reguly_prod[i][x])
-                    reguly_prod[i].pop(x)
+                        production_rules[i].append(production_rules[i][x]+start_symbols[-1])
+                        production_rules[i].append(production_rules[i][x])
+                    production_rules[i].pop(x)
 
         """
             pozostale przeksztalcenia
         """
         while True:
-            lista_pomocznicza = copy.deepcopy(reguly_prod)
+            temp_list = copy.deepcopy(production_rules)
 
-            for i in range(len(terminalne)):
+            for i in range(len(terminal_symbols)):
                 flag = "0"
-                for x in range(len(reguly_prod)):
-                    if len(reguly_prod[x]) == 1 and reguly_prod[x][0] == terminalne[i]:
+                for x in range(len(production_rules)):
+                    if len(production_rules[x]) == 1 and production_rules[x][0] == terminal_symbols[i]:
                         flag = "1"
                 if flag == "1":
                     continue
                 while True:
-                    nowy_symbol = chr(random.randint(65, 90))
-                    if nowy_symbol not in symbole_pocz:
+                    new_sybol = chr(random.randint(65, 90))
+                    if new_sybol not in start_symbols:
                         break
-                symbole_pocz.append(nowy_symbol)
-                reguly_prod.append([terminalne[i]])
+                start_symbols.append(new_sybol)
+                production_rules.append([terminal_symbols[i]])
 
-            for i in range(len(reguly_prod)):
-                for x in range(len(reguly_prod[i])):
-                    for y in range(1, len(reguly_prod[i][x])):
-                        if reguly_prod[i][x][y] in terminalne:
-                            for z in range(len(reguly_prod)):
-                                if len(reguly_prod[z]) == 1 and reguly_prod[z][0] == reguly_prod[i][x][y]:
-                                    reguly_prod[i][x] = reguly_prod[i][x].replace(reguly_prod[i][x][y], symbole_pocz[z])
+            for i in range(len(production_rules)):
+                for x in range(len(production_rules[i])):
+                    for y in range(1, len(production_rules[i][x])):
+                        if production_rules[i][x][y] in terminal_symbols:
+                            for z in range(len(production_rules)):
+                                if len(production_rules[z]) == 1 and production_rules[z][0] == production_rules[i][x][y]:
+                                    production_rules[i][x] = production_rules[i][x].replace(production_rules[i][x][y], start_symbols[z])
 
-            for i in range(len(reguly_prod)):
-                for x in reversed(range(len(reguly_prod[i]))):
-                    if reguly_prod[i][x][0] != symbole_pocz[i] and reguly_prod[i][x][0] in symbole_pocz:
-                        for y in range(len(symbole_pocz)):
-                            if symbole_pocz[y] == reguly_prod[i][x][0]:
-                                for z in range(len(reguly_prod[y])):
-                                    reguly_prod[i].append(reguly_prod[y][z]+reguly_prod[i][x][1:])
-                                reguly_prod[i].pop(x)
+            for i in range(len(production_rules)):
+                for x in reversed(range(len(production_rules[i]))):
+                    if production_rules[i][x][0] != start_symbols[i] and production_rules[i][x][0] in start_symbols:
+                        for y in range(len(start_symbols)):
+                            if start_symbols[y] == production_rules[i][x][0]:
+                                for z in range(len(production_rules[y])):
+                                    production_rules[i].append(production_rules[y][z]+production_rules[i][x][1:])
+                                production_rules[i].pop(x)
 
-            if reguly_prod == lista_pomocznicza:
+            if production_rules == temp_list:
                 break
 
-        usuwanie_regul_bezuzytecznych(reguly_prod, symbole_pocz, terminalne)
+        delete_useless_rules(production_rules, start_symbols, terminal_symbols)
 
         embed = nextcord.Embed(
             title=f"Gramatyka Greybach",
@@ -188,11 +188,11 @@ class Greybach(commands.Cog):
             description=""
         )
 
-        for i in range(0, len(reguly_prod)):
-            embed.description += f"{symbole_pocz[i]} -> "
-            for x in range(0, len(reguly_prod[i]) - 1):
-                embed.description += f"{reguly_prod[i][x]} | "
-            embed.description += f"{reguly_prod[i][-1]}\n"
+        for i in range(0, len(production_rules)):
+            embed.description += f"{start_symbols[i]} -> "
+            for x in range(0, len(production_rules[i]) - 1):
+                embed.description += f"{production_rules[i][x]} | "
+            embed.description += f"{production_rules[i][-1]}\n"
 
         await ctx.send(embed=embed)
 
