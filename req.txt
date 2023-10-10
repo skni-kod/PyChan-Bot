@@ -12,4 +12,5 @@ yt-dlp
 Unidecode
 validators
 colorthief
+pg8000
 asyncpraw

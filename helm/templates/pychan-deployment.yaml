@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pychan-deployment
+  namespace: pychan
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: pychan
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pychan
+    spec:
+      containers:
+      - name: pychan
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config
+          mountPath: /app/config.py
+          subPath: config.py
+      volumes:
+      - name: config
+        secret:
+          secretName: pychan-config
+      imagePullSecrets:
+      - name: nexus
+
