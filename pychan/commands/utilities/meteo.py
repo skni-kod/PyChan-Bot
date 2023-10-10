@@ -5,7 +5,9 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+from os import path
 
+directory_path = path.dirname(__file__)
 
 plt.rcParams['figure.facecolor'] = '#313338'
 plt.rcParams['axes.facecolor'] = '#313338'
@@ -41,7 +43,7 @@ weather_codes = {
     82: 'rain.png',
     85: 'rain-snow.png',
     86: 'rain-snow.png',
-    96: 'thunderstorm.png',
+    95: 'thunderstorm.png',
     96: 'thunderstorm-rain.png',
     99: 'thunderstorm-rain.png'
 }
@@ -246,9 +248,9 @@ def create_image(location, daily, now):
         6: "Niedziela"
     }
     
-    background = Image.open('pychan/commands/utilities/meteo_assets/template.png')
+    background_path = path.join(directory_path, 'meteo_assets/template.png')
+    background = Image.open(background_path)
 
-    
     minutes = str(datetime.now().minute)
 
     if len(minutes) == 1:
@@ -259,7 +261,8 @@ def create_image(location, daily, now):
     img = background.copy()
     background.close()
 
-    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 40)
+    font_path = path.join(directory_path, 'meteo_assets/NotoSans-Medium.ttf')
+    meteo_font = ImageFont.truetype(font_path, 40)
     
     tmp = location['name'].split(', ')
     title = tmp[0] + ', ' + tmp [-2] + ', ' + tmp[-1]
@@ -269,13 +272,13 @@ def create_image(location, daily, now):
 
     d.text((1085,20), "Czas Lokalny", font = meteo_font, fill = (255,255,255))
     
-    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 30)
+    meteo_font = ImageFont.truetype(font_path, 30)
     d.text((30,70), str(now['temperature'])+ "°C", font=meteo_font, fill=(255,255,255))
     d.text((1085,70), local_hour, font = meteo_font, fill = (255,255,255))
 
     x_tmp = 150
    
-    meteo_font = ImageFont.truetype('pychan/commands/utilities/meteo_assets/NotoSans-Medium.ttf', 30)
+    meteo_font = ImageFont.truetype(font_path, 30)
     for i in range(7):
         y_tmp = 160
 
@@ -284,7 +287,8 @@ def create_image(location, daily, now):
         d.text((x_tmp - 55,y_tmp + 70), str(daily[i]['time'][-5:]), font=meteo_font, fill=(255,255,255))
 
         #Weather Icon
-        icon_path = 'pychan/commands/utilities/meteo_assets/weather-icons/' + weather_codes[daily[i]['code']]
+        icon_path_tmp = 'meteo_assets/weather-icons/' + weather_codes[daily[i]['code']]
+        icon_path = path.join(directory_path, icon_path_tmp)
         icon = Image.open(icon_path)
         img.paste(icon, (x_tmp - 55, y_tmp + 140), icon)
         icon.close()
@@ -336,9 +340,9 @@ class Meteo(commands.Cog):
     @meteo.command(
         pass_context=True,
         name='teraz',
-        usage='TODO',
+        usage='<lokalizacja>',
         help=   """
-                TODO
+                Sprawdź aktualną pogodę w danej lokalizacji
                 """
         )
 
@@ -371,9 +375,9 @@ class Meteo(commands.Cog):
     @meteo.command(
         pass_context=True,
         name='temperatura',
-        usage='TODO',
+        usage='<lokalizacja>',
         help=   """
-                TODO
+                Sprawdź godzinową temperaturę w danej lokalizacji (24h)
                 """
     )
 
@@ -402,9 +406,9 @@ class Meteo(commands.Cog):
     @meteo.command(
         pass_context=True,
         name='ciśnienie',
-        usage='TODO',
+        usage='<lokalizacja>',
         help=   """
-                TODO
+                Sprawdź godzinową wartość ciśnienia w danej lokalizacji (24h)
                 """
     )
 
@@ -433,9 +437,9 @@ class Meteo(commands.Cog):
     @meteo.command(
         pass_context=True,
         name='opady',
-        usage='TODO',
+        usage='<lokalizacja>',
         help=   """
-                TODO
+                Sprawdź godzinowe przewidywania dla różnych opadów w danej lokalizacji (24h)
                 """
     )
 
@@ -495,9 +499,9 @@ class Meteo(commands.Cog):
     @meteo.command(
             pass_context=True,
             name='week',
-            usage='TODO',
+            usage='<lokalizacja>',
             help=   """
-                    TODO
+                    Tygodniowa prognoza pogody dla danej lokalizacji
                     """
         )
 
@@ -505,6 +509,7 @@ class Meteo(commands.Cog):
     async def week(self, ctx, *, search):
         if len(search) != 0:
             location = get_location(search)
+
             if location == 0:
                 await ctx.send("Nie znaleziono lokalizacji, spróbuj ponownie")
             else:
