@@ -5,7 +5,7 @@ import asyncprawcore
 from config import reddit_client_id, reddit_client_secret, reddit_user_agent, reddit_refresh_token
 
 export = { "reddit": None }
-
+noRepeatsCache = []
 
 class Reddit(commands.Cog):
     
@@ -22,9 +22,7 @@ class Reddit(commands.Cog):
              """
     )
     async def reddit(self, ctx, *, sub: str):
-        
         unsafeChannel = ctx.channel.is_nsfw()
-        noRepeatsCache = []
         embed = nextcord.Embed(
                 title=f"r/{sub}",
                 color=nextcord.Color.red()
@@ -62,9 +60,9 @@ class Reddit(commands.Cog):
             return
         
         async for post in data.hot(limit=100):
-            if(post.id in noRepeatsCache):
-                continue
             if(post.stickied):
+                continue
+            if(post.id in noRepeatsCache):
                 continue
             noRepeatsCache.append(post.id)
             if(len(noRepeatsCache) > 20):
