@@ -25,11 +25,10 @@ class AddCategoryAndAnswer(nextcord.ui.View):
         self.add_item(self.selectOdpPopr)
 
         with database.session() as session:
-            all_questions = session.scalars(select(database.QuizQuestion)).all()
-            #albo sqlem wyciagnij??
+            all_categories = session.scalars(select(database.QuizQuestion.category)).all()
 
             #set to not repeat the category
-            category_set = {que.category for que in all_questions}
+            category_set = set(all_categories)
 
             if len(category_set) == 0:
                 category_set.add('Inne')
@@ -48,7 +47,6 @@ class AddCategoryAndAnswer(nextcord.ui.View):
 
         modal = CategoryModal()
         await interaction.response.send_modal(modal)
-        
         await modal.wait()
 
         self.category = modal.categoryStr
@@ -118,6 +116,4 @@ class startQuiz(nextcord.ui.View):
                             color = Colour.blurple()
                             )
         self.points = 0
-
-
         

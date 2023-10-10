@@ -13,7 +13,8 @@ class CategoryModal(nextcord.ui.Modal):
         if self.category.value != "":
             self.categoryStr = self.category.value
             await interaction.response.send_message(embed = nextcord.Embed(title="Dodano nową kategorię",
-                                                        color=nextcord.Colour.green()), delete_after=15)
+                                                    description="Nie trzeba wybierać na nowo kategorii", 
+                                                    color=nextcord.Colour.green()), delete_after=15)
         self.stop()
 
 class EmbedModal(nextcord.ui.Modal):
@@ -54,5 +55,10 @@ class EmbedModal(nextcord.ui.Modal):
             self.answers.append(self.embedOdpC.value)
         if self.embedOdpD.value != "":
             self.answers.append(self.embedOdpD.value)
-        self.stop()
 
+        answers_set = set(self.answers)
+        if len(answers_set) < 2:
+            await interaction.send(embed=nextcord.Embed(title="Złe parametry", description="Być może podałeś jednakowe odpowiedzi"),
+                            delete_after=15)
+        else:
+            self.stop()

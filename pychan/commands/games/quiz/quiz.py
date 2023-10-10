@@ -2,11 +2,9 @@ from nextcord.ext import commands
 from nextcord import Colour, Embed
 import nextcord
 from asyncio import sleep, Semaphore
-from random import randint
 from random import shuffle
 
 from sqlalchemy import select
-
 from pychan import database
 from .modals import EmbedModal
 from .views import startQuiz, AddCategoryAndAnswer
@@ -56,7 +54,7 @@ class Quiz(commands.Cog):
                 await viewYouCanEdit.edit(view=quizView, embed=quizView.embed)
                 await quizView.wait()
 
-            quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]}")
+            quiz_summary = Embed(title=f"Gratulacje, ilość punktów to: {points[0]} / 5")
             await viewYouCanEdit.edit(view=None, embed=quiz_summary)
         
     
@@ -65,7 +63,7 @@ class Quiz(commands.Cog):
         '''Dodawanie pytan, ranking'''
 
         embed = Embed(
-                title = f"Dodaj pytanie do bazy lub wyświetl ranking",
+                title = f"Dodaj pytanie do bazy",
                 color = Colour.green(), 
             )
 
@@ -102,18 +100,14 @@ class MenuButtons(nextcord.ui.View):
                                     mod.embedTitle.value, 
                                     mod.answers)
         await self.viewYouCanEdit.edit(view = newView, embed=newEmbed)
-        await newView.wait()
+        timeout = await newView.wait()
 
-        with database.session() as session:
-            session.add(newView.ready_question)
-            session.commit()
-
-        self.stop()
-
-    #ranking
-    @nextcord.ui.button(label = "Ranking", style=nextcord.ButtonStyle.red)
-    async def rankingB(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        self.value = True
+        if not timeout:
+            with database.session() as session:
+                with session.begin():
+                    session.add(newView.ready_question)
+                # inner context calls session.commit(), if there were no exceptions
+        
         self.stop()
 
 class AnswerButton(nextcord.ui.Button):
@@ -127,4 +121,3 @@ class AnswerButton(nextcord.ui.Button):
         if(self.ButtonAnswer.correct):
             self.points[0] += 1
         self.view.stop()
- 
