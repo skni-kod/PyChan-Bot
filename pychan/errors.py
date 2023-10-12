@@ -22,7 +22,8 @@ class Errors(Cog):
             case MissingPermissions():
                 embed = Embed(color=Color.dark_purple())
                 embed.add_field(name='Brak uprawnień',
-                                value='Brakujące uprawinienia to: `' + ', '.join(error.missing_permissions) + '`',
+                                value='Brakujące uprawinienia to: `' +
+                                ', '.join(error.missing_permissions) + '`',
                                 inline=False)
                 await ctx.send(embed=embed)
             case CommandInvokeError():
@@ -31,5 +32,3 @@ class Errors(Cog):
             case _:
                 print("COŚ SERIO POSZŁO NIE TAK")
                 raise error
-
-

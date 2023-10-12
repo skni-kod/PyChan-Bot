@@ -81,9 +81,9 @@ class LoL(commands.Cog):
                 str(x + 1) + " : " + nameChampion[str(dataHelp["championId"])]
             )
 #             name = str(nameChampion[str(dataHelp["championId"])])
-   
-#             pictureChampionLink.append("http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/" + name + ".png")            
-            
+
+#             pictureChampionLink.append("http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/" + name + ".png")
+
             championMastery += (
                 "\nLVL Mastery : "
                 + str(dataHelp["championLevel"])
@@ -91,10 +91,9 @@ class LoL(commands.Cog):
                 + str(dataHelp["championPoints"])
                 + "\n\n"
             )
-        
 
-        iconLink = "http://ddragon.leagueoflegends.com/cdn/12.23.1/img/profileicon/"+ str(data["profileIconId"]) +".png"
-        
+        iconLink = "http://ddragon.leagueoflegends.com/cdn/12.23.1/img/profileicon/" + \
+            str(data["profileIconId"]) + ".png"
 
         embed = nextcord.Embed(
             title=f'{data["name"]}', color=nextcord.Color.dark_blue())
@@ -104,15 +103,13 @@ class LoL(commands.Cog):
 
         embed.add_field(name="Ranga : ", value=f"{rangaPlayer}", inline=False)
 
-        embed.set_thumbnail(url = iconLink)
+        embed.set_thumbnail(url=iconLink)
 
         embed.add_field(
             name="Champion top 3 Mastery : ", value=f"{championMastery}", inline=False
         )
 
         await ctx.send(embed=embed)
-
-
 
     @lol.command(
         pass_context=True,
@@ -122,7 +119,7 @@ class LoL(commands.Cog):
     )
     async def mecze(self, ctx, name, numberMatch):
         headers = {"X-Riot-Token": riot_token}
-        
+
         embed = nextcord.Embed(
             title=f'{"Trochę to zajmie"}', color=nextcord.Color.green()
         )
