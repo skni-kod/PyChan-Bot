@@ -13,7 +13,7 @@ class CategoryModal(nextcord.ui.Modal):
         if self.category.value != "":
             self.categoryStr = self.category.value
             await interaction.response.send_message(embed = nextcord.Embed(title="Dodano nową kategorię",
-                                                    description="Nie trzeba wybierać na nowo kategorii", 
+                                                    description=self.categoryStr,
                                                     color=nextcord.Colour.green()), delete_after=15)
         self.stop()
 
