@@ -57,7 +57,7 @@ class EmbedModal(nextcord.ui.Modal):
             self.answers.append(self.embedOdpD.value)
 
         answers_set = set(self.answers)
-        if len(answers_set) < 2:
+        if len(answers_set) < len(self.answers):
             await interaction.send(embed=nextcord.Embed(title="Złe parametry", description="Być może podałeś jednakowe odpowiedzi"),
                             delete_after=15)
         else:
