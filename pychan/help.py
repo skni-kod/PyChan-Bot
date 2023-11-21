@@ -56,7 +56,7 @@ class PyChanHelp(HelpCommand):
         embed = Embed(title=group.name, color=Color.dark_purple())
         embed.description = f'Wpisz `{self.context.prefix}help {group.name} <komenda>` aby dowiedzieć się więcej o danej podkomendzie'
         embed.add_field(name="Dostępne podkomendy", value=', '.join(
-            list(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
+            set(map(lambda c: f'`{c.name}`', group.all_commands.values()))))
 
         return await self.get_destination().send(embed=embed)
 

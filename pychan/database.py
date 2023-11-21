@@ -3,11 +3,13 @@ from nextcord import Guild, Member, User
 from nextcord.ext.commands.bot import Bot
 from nextcord.message import Message
 from sqlalchemy import ForeignKey, create_engine, insert, select, update
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
 import config
 
 engine = create_engine(config.sqlalchemy_db_url, echo=config.database_echo)
-session = sessionmaker(bind=engine)()
+
+def session() -> Session:
+    return Session(engine)
 
 
 class Base(DeclarativeBase):
@@ -64,43 +66,46 @@ def create_database():
 def get_guild_prefix(_: Bot, message: Message) -> str:
     if not message.guild:
         return ''
-    return session.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == message.guild.id)) or config.default_prefix
+    with session() as s:
+        return s.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == message.guild.id)) or config.default_prefix
 
 
 def set_guild_prefix(guild: Guild, prefix: str):
-    tag = session.scalar(
-        select(GuildSettings.prefix)
-        .where(GuildSettings.guild_id == guild.id))
+    with session() as s:
+        tag = s.scalar(
+            select(GuildSettings.prefix)
+            .where(GuildSettings.guild_id == guild.id))
 
-    stmt = None
-    if not tag:
-        stmt = insert(GuildSettings) \
-            .values(guild_id=guild.id, prefix=prefix)
-    else:
-        stmt = update(GuildSettings) \
-            .values(prefix=prefix) \
-            .where(GuildSettings.guild_id == guild.id)
-
-    session.execute(stmt)
-    session.commit()
+        stmt = None
+        if not tag:
+            stmt = insert(GuildSettings) \
+                .values(guild_id=guild.id, prefix=prefix)
+        else:
+            stmt = update(GuildSettings) \
+                .values(prefix=prefix) \
+                .where(GuildSettings.guild_id == guild.id)
+        s.execute(stmt)
+        s.commit()
 
 
 def set_game_username(member: Union[User, Member], username: str, game: Literal['osu', 'lol', 'osrs']):
-    select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
-    user = session.scalar(select_stmt)
-    if not user:
-        user = DiscordUser(user_id=member.id)
-        setattr(user, game + '_username', username)
-        session.add(user)
-    else:
-        user.osu_username = username
-    session.commit()
+    with session() as s:
+        select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
+        user = s.scalar(select_stmt)
+        if not user:
+            user = DiscordUser(user_id=member.id)
+            setattr(user, game + '_username', username)
+            s.add(user)
+        else:
+            user.osu_username = username
+        s.commit()
 
 
 def get_game_username(member: Union[User, Member], game: Literal['osu', 'lol', 'osrs']) -> Optional[str]:
-    select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
-    user = session.scalar(select_stmt)
-    if not user:
-        return None
-    else:
-        return getattr(user, game + '_username')
+    with session() as s:
+        select_stmt = select(DiscordUser).where(DiscordUser.user_id == member.id)
+        user = s.scalar(select_stmt)
+        if not user:
+            return None
+        else:
+            return getattr(user, game + '_username')
