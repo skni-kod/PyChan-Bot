@@ -1,5 +1,5 @@
 nextcord==2.3.3
-nextcord[voice]
+nextcord[voice]==2.3.3
 sqlalchemy
 tabulate
 ossapi

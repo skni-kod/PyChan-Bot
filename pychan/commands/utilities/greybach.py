@@ -11,7 +11,7 @@ class Greybach(commands.Cog):
         pass_context=True,
         name="greybach",
         usage="<reguly>",
-        category="Nauka",
+        category="Others",
         help=""
     )
     async def chomsky(self, ctx, *, rules: str):
@@ -195,3 +195,4 @@ class Greybach(commands.Cog):
             embed.description += f"{production_rules[i][-1]}\n"
 
         await ctx.send(embed=embed)
+
