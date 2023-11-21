@@ -3,6 +3,7 @@
 import nextcord
 from nextcord.ext import commands
 from config import discord_token
+from pychan.commands.text.reddit import Reddit
 from pychan import database, status
 from pychan.core import Core
 from pychan.help import PyChanHelp
@@ -31,6 +32,12 @@ def main():
 
     bot.run(discord_token)
 
+def cleanup():
+    database.close_database()
+    Reddit.reddit.close()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        cleanup()
