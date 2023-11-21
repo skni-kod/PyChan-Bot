@@ -1,7 +1,10 @@
 import nextcord
 from nextcord.ext import commands
-import asyncpraw
-import asyncprawcore
+try:
+    import asyncpraw
+    import asyncprawcore
+except:
+  print("not working no module install")
 from config import reddit_client_id, reddit_client_secret, reddit_user_agent, reddit_refresh_token
 
 export = { "reddit": None }
