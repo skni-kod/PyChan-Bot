@@ -57,14 +57,15 @@ def get_guild_prefix(_: Bot, message: Message) -> str:
     if not message.guild:
         return ''
     with Session() as s:
-        return s.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == message.guild.id)) or config.default_prefix
+        return s.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == str(message.guild.id))) or config.default_prefix
 
 
 def set_guild_prefix(guild: Guild, prefix: str):
     with Session() as s:
         tag = s.scalar(
             select(GuildSettings.prefix)
-            .where(GuildSettings.guild_id == guild.id))
+            .where(GuildSettings.guild_id == str(guild.id))
+        )
 
         stmt = None
         if not tag:
@@ -73,7 +74,7 @@ def set_guild_prefix(guild: Guild, prefix: str):
         else:
             stmt = update(GuildSettings) \
                 .values(prefix=prefix) \
-                .where(GuildSettings.guild_id == guild.id)
+                .where(GuildSettings.guild_id == str(guild.id))
         s.execute(stmt)
         s.commit()
 
