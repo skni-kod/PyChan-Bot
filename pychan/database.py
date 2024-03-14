@@ -48,6 +48,12 @@ class QuizAnswer(Base):
     answer = Column(String)
     correct = Column(Boolean)
 
+class Autoresponse(Base):
+    __tablename__ = 'autoresponses'
+    response_id = Column(Integer, primary_key=True)
+    guild_id = Column(String, nullable=False)
+    trigger = Column(String, nullable=False)
+    response = Column(String, nullable=False)
 
 def create_database():
     Base.metadata.create_all(engine)
