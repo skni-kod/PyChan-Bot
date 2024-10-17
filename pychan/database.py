@@ -62,6 +62,7 @@ def get_guild_prefix(_: Bot, message: Message) -> str:
             select(GuildSettings.prefix)
             .where(GuildSettings.guild_id == guild_id)
         )
+        return tag or config.default_prefix
 
 
 def set_guild_prefix(guild: Guild, prefix: str):
