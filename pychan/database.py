@@ -70,7 +70,7 @@ def set_guild_prefix(guild: Guild, prefix: str):
         stmt = None
         if not tag:
             stmt = insert(GuildSettings) \
-                .values(guild_id=guild.id, prefix=prefix)
+                .values(guild_id=str(guild.id), prefix=prefix)
         else:
             stmt = update(GuildSettings) \
                 .values(prefix=prefix) \
