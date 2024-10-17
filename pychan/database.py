@@ -57,7 +57,11 @@ def get_guild_prefix(_: Bot, message: Message) -> str:
     if not message.guild:
         return ''
     with Session() as s:
-        return s.scalar(select(GuildSettings.prefix).where(GuildSettings.guild_id == str(message.guild.id))) or config.default_prefix
+        guild_id = str(message.guild.id)
+        tag = s.scalar(
+            select(GuildSettings.prefix)
+            .where(GuildSettings.guild_id == guild_id)
+        )
 
 
 def set_guild_prefix(guild: Guild, prefix: str):
