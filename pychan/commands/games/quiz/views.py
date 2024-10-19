@@ -13,7 +13,7 @@ class SelectCategoryView (nextcord.ui.View):
 
         self.viewYouCanEdit = viewYouCanEdit
 
-        with database.session() as session:
+        with database.Session() as session:
             all_categories = session.scalars(select(database.QuizQuestion.category)).all()
 
             #set to not repeat the category

@@ -37,7 +37,7 @@ class Quiz(commands.Cog):
         
         points = [0]
 
-        with database.session() as session:
+        with database.Session() as session:
             all_questions = session.scalars(select(database.QuizQuestion)).all()
 
             questions = list(all_questions)
@@ -129,7 +129,7 @@ class MenuButtons(nextcord.ui.View):
             correct_list.append(ansToBool.get(ans, False))
         readyQuestion.answers = [database.QuizAnswer(answer=a , correct=s) for (a,s) in zip(self.answers, correct_list)]
         
-        with database.session() as session:
+        with database.Session() as session:
             with session.begin():
                 session.add(readyQuestion)
             # inner context calls session.commit(), if there were no exceptions
