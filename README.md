@@ -1,5 +1,5 @@
 # PyChan
- 
+  
 ## Instalowanie wymaganych pakietów  
 ```python -m pip install -r req.txt```
 
