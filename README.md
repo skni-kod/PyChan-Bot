@@ -19,7 +19,7 @@ Uruchom terminal w katalogu PyChan i wpisz `python main.py`
 ## Używanie bota
 Po zaproszeniu bota na serwer można użyć komendy `help` aby wyświetlić listę wszystkich komend.
 
-## Struktura projektu
+## Struktura projektu 
 ```text
 ├── main.py              # Punkt wejścia
 ├── config.py            # Plik konfiguracyjny, należy go ręcznie utworzyć na podstawie config.py.sample
