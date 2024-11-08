@@ -24,7 +24,10 @@ class TempVoice(commands.Cog):
         pass
 
 
-    @tempvoice.command()
+    @tempvoice.command(
+        help="Tworzy tymczasowy kanał głosowy na długość podaną przez użytkownika, domyślnie 30 minut",
+        aliases = ['c', 'stworz', 's']
+    )
     async def create(self, ctx: commands.Context, delete_after: int = 30):
 
         try:
@@ -40,7 +43,10 @@ class TempVoice(commands.Cog):
         except nextcord.Forbidden:
             await ctx.send("Nie mam permisji do stworzenia tego kanału")
 
-    @tempvoice.command()
+    @tempvoice.command(
+        help="Usuwa podany kanał głosowy, jeżeli nie podano kanału, to usuwa kanał na którym jesteś",
+        aliases = ['d', 'usun', 'u']
+    )
     async def delete(self, ctx: commands.Context, channel: Union[nextcord.VoiceChannel, nextcord.StageChannel, None]):
         if channel is None:
             channel = ctx.author.voice
