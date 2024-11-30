@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          script: |
+            cd /home/pychan/PyChan-Bot
+            git checkout master
+            git pull
+            docker build -t pychan .
+            cd ../
+            docker compose up -d
+            echo "$(date): actions build success" >> actions-logs.txt
