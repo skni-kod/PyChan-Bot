@@ -22,4 +22,4 @@ jobs:
             docker build -t pychan .
             cd ../
             docker compose up -d
-            echo "$(date): actions build success" >> actions-logs.txt
+            docker system prune -f
