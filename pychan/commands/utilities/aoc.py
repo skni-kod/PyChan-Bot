@@ -34,7 +34,6 @@ class AoCMember:
         self.last_star_ts: int = last_star_ts
         self.completion: Completion = completion
 
-
 class TrackedChannel:
     def __init__(self, leaderboard_id: int, messages: List[Message]) -> None:
         self.leaderboard_id = leaderboard_id
@@ -112,9 +111,6 @@ class AoC(commands.Cog):
 
     @tasks.loop(minutes=15)
     async def loop(self):
-        # timezone issue :clown:
-        tomorrow = datetime.combine(date.today(), time(6, 0))
-        tomorrow += timedelta(days=1)
         for _, tracked_channel in self.tracked_channels.items():
             data = self.fetch_data(tracked_channel.leaderboard_id)
             extracted_data = self.parse_data(data)
@@ -157,7 +153,12 @@ class AoC(commands.Cog):
 
     def split_message(self, rows: List[str]) -> List[str]:
         messages = []
-        current_message = '```\n'
+        tomorrow = datetime.combine(date.today(), time(6, 0))
+        tomorrow += timedelta(days=1)
+        current_message = f'# AoC {datetime.today().year} Leaderboard\n \
+                    Ostatnia aktualizacja: <t:{int(datetime.today().timestamp())}:R>\n \
+                    Czas do następnego wyzwania: <t:{int(tomorrow.timestamp())}:R> \
+                            ```\n'
         for row in rows:
             if len(current_message) + len(row) + 4 > 2000:  # 4 for closing ```
                 current_message += '```'
