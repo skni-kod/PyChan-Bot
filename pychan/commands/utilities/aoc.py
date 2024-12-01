@@ -93,19 +93,7 @@ class AoC(commands.Cog):
     async def force_update(self, ctx: Context):
         '''Wymusza natychmiastowe zaktualizowanie rankingu'''
         if self.tracked_channels.get(ctx.channel.id) is not None:
-            tracked_channel = self.tracked_channels[ctx.channel.id]
-            data = self.fetch_data(tracked_channel.leaderboard_id)
-            extracted_data = self.parse_data(data)
-            rows = self.get_rows(extracted_data)
-            messages = self.split_message(rows)
-            for i, msg in enumerate(tracked_channel.messages):
-                if i < len(messages):
-                    await msg.edit(content=messages[i])
-                else:
-                    await msg.delete()
-            for i in range(len(tracked_channel.messages), len(messages)):
-                new_msg = await tracked_channel.messages[0].channel.send(messages[i])
-                tracked_channel.messages.append(new_msg)
+            self.loop.restart()
         else:
             await ctx.reply("Śledzenie nawet nie jest włączone!")
 
