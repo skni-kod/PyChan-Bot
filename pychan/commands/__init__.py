@@ -1,5 +1,6 @@
 from nextcord.ext import commands
 
+from .economy import Economy
 from .media import Media
 from .science import Science
 from .sknikod import SKNIKOD
@@ -17,3 +18,4 @@ class Commands(commands.Cog):
         self.bot.add_cog(Text(bot))
         self.bot.add_cog(Utilities(bot))
         self.bot.add_cog(Games(bot))
+        self.bot.add_cog(Economy(bot))

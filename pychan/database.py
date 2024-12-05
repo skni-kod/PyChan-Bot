@@ -13,8 +13,9 @@ Base = declarative_base()
 
 class GuildMember(Base):
     __tablename__ = 'guild_members'
-    member_id = Column(String, primary_key=True)
-    guild_id = Column(String)
+    member_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    guild_id = Column(Integer)
     coins = Column(Integer, default=0)
 
 
@@ -83,6 +84,16 @@ def set_guild_prefix(guild: Guild, prefix: str):
         s.execute(stmt)
         s.commit()
 
+
+def get_guild_member(session, user_id: int, guild_id: int) -> GuildMember:
+    '''Creates a guild member if doesn't exist and returns it'''
+    select_stmt = select(GuildMember).where(GuildMember.user_id == user_id and GuildMember.guild_id == guild_id)
+    member = session.scalar(select_stmt)
+    if not member:
+        member = GuildMember(user_id=user_id, guild_id=guild_id)
+        session.add(member)
+    session.commit()
+    return member
 
 def set_game_username(member: Union[User, Member], username: str, game: Literal['osu', 'lol', 'osrs']):
     with Session() as s:
