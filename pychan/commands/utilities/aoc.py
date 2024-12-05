@@ -12,7 +12,7 @@ import requests
 
 
 class Completion:
-    def __init__(self, stars: str) -> None:  # whatever
+    def __init__(self, stars: str) -> None:
         self.stars = stars
 
     @classmethod
@@ -34,17 +34,10 @@ class AoCMember:
         self.last_star_ts: int = last_star_ts
         self.completion: Completion = completion
 
-
 class TrackedChannel:
     def __init__(self, leaderboard_id: int, messages: List[Message]) -> None:
         self.leaderboard_id = leaderboard_id
         self.messages = messages
-
-# TODO:
-# - split tracker into multiple messages to prevent going over the character limit
-# - cache requests for potential duplicate trackers across different channels
-# - formatting is stinky
-
 
 class AoC(commands.Cog):
     def __init__(self, bot: Bot):
@@ -95,20 +88,31 @@ class AoC(commands.Cog):
             embed.description += f'<#{channel_id}> → https://discord.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}/\n'
         await ctx.reply(embed=embed)
 
+    @aoc.command(name='forceupdate')
+    @commands.has_permissions(administrator=True)
+    async def force_update(self, ctx: Context):
+        '''Wymusza natychmiastowe zaktualizowanie rankingu'''
+        if self.tracked_channels.get(ctx.channel.id) is not None:
+            self.loop.restart()
+        else:
+            await ctx.reply("Śledzenie nawet nie jest włączone!")
+
     @tasks.loop(minutes=15)
     async def loop(self):
-        # timezone issue :clown:
-        tomorrow = datetime.combine(date.today(), time(6, 0))
-        tomorrow += timedelta(days=1)
         for _, tracked_channel in self.tracked_channels.items():
             data = self.fetch_data(tracked_channel.leaderboard_id)
             extracted_data = self.parse_data(data)
             rows = self.get_rows(extracted_data)
-
-            for msg in tracked_channel.messages:
-                await msg.edit(content='```\n' + ''.join(rows) + '\n```' +
-                               f'**Ostatnia aktualizacja** <t:{int(datetime.today().timestamp())}:R>\n' +
-                               f'**Kolejne wyzwanie** <t:{int(tomorrow.timestamp())}:R>')
+            
+            messages = self.split_message(rows)
+            for i, msg in enumerate(tracked_channel.messages):
+                if i < len(messages):
+                    await msg.edit(content=messages[i])
+                else:
+                    await msg.delete()
+            for i in range(len(tracked_channel.messages), len(messages)):
+                new_msg = await tracked_channel.messages[0].channel.send(messages[i])
+                tracked_channel.messages.append(new_msg)
 
     def fetch_data(self, leaderboard_id):
         leaderboard_id = int(leaderboard_id)
@@ -134,3 +138,21 @@ class AoC(commands.Cog):
             rows.append(row_format.format(i + 1, m.name,
                         m.local_score, m.completion.stars.rstrip()))
         return rows
+
+    def split_message(self, rows: List[str]) -> List[str]:
+        messages = []
+        tomorrow = datetime.combine(date.today(), time(6, 0))
+        tomorrow += timedelta(days=1)
+        current_message = f'# AoC {datetime.today().year} Leaderboard\n \
+                    Ostatnia aktualizacja: <t:{int(datetime.today().timestamp())}:R>\n \
+                    Czas do następnego wyzwania: <t:{int(tomorrow.timestamp())}:R> \
+                            ```\n'
+        for row in rows:
+            if len(current_message) + len(row) + 4 > 2000:  # 4 for closing ```
+                current_message += '```'
+                messages.append(current_message)
+                current_message = '```\n'
+            current_message += row
+        current_message += '```'
+        messages.append(current_message)
+        return messages

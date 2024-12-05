@@ -1,6 +1,6 @@
 # PyChan
   
-## Instalowanie wymaganych pakietów  
+## Instalowanie wymaganych pakietów
 ```python -m pip install -r req.txt```
 
 Aby w pełni korzystać z muzycznych funkcji bota, należy oddzielnie pobrać [FFmpeg](https://ffmpeg.org/).
