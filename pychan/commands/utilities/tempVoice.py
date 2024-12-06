@@ -76,7 +76,7 @@ class TempVoice(commands.Cog):
             #Find channel in limit list and delete it
             for key in self.list:
                 if self.list[key] == channel.id:
-                    del self.list[key]
+                    self.list.pop(key)
             await channel.delete()
         except nextcord.Forbidden:
             await ctx.reply("Nie mam permisji do usunięcia tego kanału")
@@ -92,7 +92,6 @@ class TempVoice(commands.Cog):
 
     @tasks.loop(hours=1)
     async def check_temp_voice(self):
-        # Might remove the loop and only check it on on_ready as it might break the limit function
         for guild in self.bot.guilds:
             for channel in guild.voice_channels:
                 if self.check_if_temp_voice_empty(channel) and self.is_channel_overdue(channel):
@@ -112,5 +111,5 @@ class TempVoice(commands.Cog):
         return len(channel.members) <= 0 and channel.name.startswith("Temp Voice Channel")
     
     def is_channel_overdue(self, channel: nextcord.VoiceChannel):
-        # Checks if channel is older than 1 hour
+        """Checks if channel is older than 1 hour"""
         return channel.created_at - datetime.datetime.now(datetime.UTC) > datetime.timedelta(hours=1)
