@@ -4,9 +4,11 @@ from nextcord.ext import commands, tasks
 import asyncio
 import datetime
 
+
 class TempVoice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.list = {}
 
     @commands.group(
         pass_context=True,
@@ -30,18 +32,25 @@ class TempVoice(commands.Cog):
     async def create(self, ctx: commands.Context, delete_after: int = 30):
 
         try:
+            if ctx.author.id in self.list:
+                await ctx.reply("Możesz stworzyć tylko jeden tymczasowy kanał na raz")
+                return
+
             vc = await ctx.guild.create_voice_channel(name=f"Temp Voice Channel {datetime.datetime.today().strftime('%H:%M')}", category=ctx.channel.category)
+            self.list[ctx.author.id] = vc.id
             await ctx.reply(f"Stworzono {vc.mention}\nJeżeli nikogo nie będzie na kanale za {delete_after} minut, zostanie on usunięty")
             while True:
                 await asyncio.sleep(delete_after*60) # in minutes
-                print(len(vc.members))
                 if vc is None:
                     break
                 if len(vc.members) == 0:
                     try:
                         await vc.delete()
+                        self.list.pop(ctx.author.id)
                     except nextcord.NotFound:
                         #Channel was deleted earlier
+                        if ctx.author.id in self.list:
+                            self.list.pop(ctx.author.id)
                         pass
                     break
         except nextcord.Forbidden:
@@ -53,7 +62,7 @@ class TempVoice(commands.Cog):
     )
     async def delete(self, ctx: commands.Context, channel: Union[nextcord.VoiceChannel, nextcord.StageChannel, None]):
         if channel is None:
-            channel = ctx.author.voice
+            channel = ctx.author.voice.channel
         if channel is None:
             await ctx.reply("Nie jesteś na kanale głosowym")
             return
@@ -64,6 +73,10 @@ class TempVoice(commands.Cog):
 
         try:
             await ctx.reply(f"Usunięto {channel.name}")
+            #Find channel in limit list and delete it
+            for key in self.list:
+                if self.list[key] == channel.id:
+                    del self.list[key]
             await channel.delete()
         except nextcord.Forbidden:
             await ctx.reply("Nie mam permisji do usunięcia tego kanału")
@@ -79,9 +92,10 @@ class TempVoice(commands.Cog):
 
     @tasks.loop(hours=1)
     async def check_temp_voice(self):
+        # Might remove the loop and only check it on on_ready as it might break the limit function
         for guild in self.bot.guilds:
             for channel in guild.voice_channels:
-                if self.check_if_temp_voice_empty(channel):
+                if self.check_if_temp_voice_empty(channel) and self.is_channel_overdue(channel):
                     # TODO
                     # Implement if no issues are found during testing
 
@@ -96,8 +110,7 @@ class TempVoice(commands.Cog):
 
     def check_if_temp_voice_empty(self, channel: nextcord.VoiceChannel):
         return len(channel.members) <= 0 and channel.name.startswith("Temp Voice Channel")
-
-    def extract_params_from_name(self, name: str):
-        # TODO
-        # If limit per user is implemented
-        pass
+    
+    def is_channel_overdue(self, channel: nextcord.VoiceChannel):
+        # Checks if channel is older than 1 hour
+        return channel.created_at - datetime.datetime.now(datetime.UTC) > datetime.timedelta(hours=1)
