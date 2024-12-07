@@ -74,9 +74,9 @@ class TempVoice(commands.Cog):
         try:
             await ctx.reply(f"Usunięto {channel.name}")
             #Find channel in limit list and delete it
-            for key in self.list:
-                if self.list[key] == channel.id:
-                    self.list.pop(key)
+            key = self.get_user_id_from_channel_id(channel.id)
+            if key:
+                self.list.pop(key)
             await channel.delete()
         except nextcord.Forbidden:
             await ctx.reply("Nie mam permisji do usunięcia tego kanału")
@@ -99,7 +99,13 @@ class TempVoice(commands.Cog):
                     # Implement if no issues are found during testing
 
                     # Danger !!!
-                    #await channel.delete()
+                    """
+                    key = self.get_user_id_from_channel_id(channel.id)
+                    if key:
+                        self.list.pop(key)
+                    await channel.delete()
+                    """
+
                     print(f"Channel {channel.name} should be deleted")
 
 
@@ -113,3 +119,10 @@ class TempVoice(commands.Cog):
     def is_channel_overdue(self, channel: nextcord.VoiceChannel):
         """Checks if channel is older than 1 hour"""
         return channel.created_at - datetime.datetime.now(datetime.UTC) > datetime.timedelta(hours=1)
+
+    def get_user_id_from_channel_id(self, channel_id: int) -> Union[int, None]:
+        for key in self.list:
+            if self.list[key] == channel_id:
+                return key
+
+        return None
