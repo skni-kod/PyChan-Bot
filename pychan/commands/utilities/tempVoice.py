@@ -113,14 +113,19 @@ class TempVoice(commands.Cog):
     async def on_ready(self):
         self.check_temp_voice.start()
 
-    def check_if_temp_voice_empty(self, channel: nextcord.VoiceChannel):
+    def check_if_temp_voice_empty(self, channel: nextcord.VoiceChannel) -> bool:
+        """Checks if channel is a temp voice channel and if there is no memebers connected to it"""
         return len(channel.members) <= 0 and channel.name.startswith("Temp Voice Channel")
     
-    def is_channel_overdue(self, channel: nextcord.VoiceChannel):
+    def is_channel_overdue(self, channel: nextcord.VoiceChannel) -> bool:
         """Checks if channel is older than 1 hour"""
         return channel.created_at - datetime.datetime.now(datetime.UTC) > datetime.timedelta(hours=1)
 
     def get_user_id_from_channel_id(self, channel_id: int) -> Union[int, None]:
+        """
+        Returns user_id of a temp voice channel author
+        Returns None if no author is found
+        """
         for key in self.list:
             if self.list[key] == channel_id:
                 return key
