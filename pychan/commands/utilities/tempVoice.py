@@ -119,7 +119,7 @@ class TempVoice(commands.Cog):
     
     def is_channel_overdue(self, channel: nextcord.VoiceChannel) -> bool:
         """Checks if channel is older than 1 hour"""
-        return datetime.datetime.now(datetime.UTC) - channel.created_at > datetime.timedelta(hours=1)
+        return datetime.datetime.now(datetime.timezone.UTC) - channel.created_at > datetime.timedelta(hours=1)
 
     def get_user_id_from_channel_id(self, channel_id: int) -> Union[int, None]:
         """
