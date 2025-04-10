@@ -95,18 +95,10 @@ class TempVoice(commands.Cog):
         for guild in self.bot.guilds:
             for channel in guild.voice_channels:
                 if self.check_if_temp_voice_empty(channel) and self.is_channel_overdue(channel):
-                    # TODO
-                    # Implement if no issues are found during testing
-
-                    # Danger !!!
-                    """
                     key = self.get_user_id_from_channel_id(channel.id)
                     if key:
                         self.list.pop(key)
                     await channel.delete()
-                    """
-
-                    print(f"Channel {channel.name} should be deleted")
 
 
     @commands.Cog.listener()
