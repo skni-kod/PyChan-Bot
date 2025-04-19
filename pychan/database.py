@@ -48,6 +48,11 @@ class QuizAnswer(Base):
     answer = Column(String)
     correct = Column(Boolean)
 
+class GuildDropdownRoles(Base):
+    __tablename__ = 'guild_dropdown_roles'
+    guild_id = Column(String, primary_key=True)
+    role_id = Column(String, primary_key=True)
+
 
 def create_database():
     Base.metadata.create_all(engine)
