@@ -73,32 +73,25 @@ def get_guild_roles(guild: nextcord.Guild) -> List[nextcord.Role]:
 
 def add_guild_role(role: nextcord.Role) -> bool:
     with database.Session() as session:
-        result = session.execute(select(database.GuildDropdownRoles).where(
-            database.GuildDropdownRoles.guild_id == str(role.guild.id),
-            database.GuildDropdownRoles.role_id == str(role.id)
-        )).first()
-
-        if result:
+        try:
+            new_role = database.GuildDropdownRoles(guild_id=str(role.guild.id), role_id=str(role.id))
+            session.add(new_role)
+            session.commit()
+        except Exception:
+            session.rollback()
             return False
-
-        new_role = database.GuildDropdownRoles(guild_id=str(role.guild.id), role_id=str(role.id))
-        session.add(new_role)
-        session.commit()
     return True
 
 def remove_guild_role(role: nextcord.Role) -> bool:
     with database.Session() as session:
         result = session.execute(
-            select(database.GuildDropdownRoles).where(
+            database.GuildDropdownRoles.__table__.delete().where(
                 database.GuildDropdownRoles.guild_id == str(role.guild.id),
                 database.GuildDropdownRoles.role_id == str(role.id)
             )
-        ).scalar_one_or_none()
-
-        if not result:
+        )
+        if result.rowcount == 0:
             return False
-
-        session.delete(result)
         session.commit()
     return True
 
