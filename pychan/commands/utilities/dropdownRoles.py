@@ -95,10 +95,10 @@ def remove_guild_role(role: nextcord.Role) -> bool:
         session.commit()
     return True
 
+
 class DropdownRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
 
     #TODO: Add admin check and remove guild_id
     @nextcord.slash_command(guild_ids=[381092165729910786])
@@ -115,8 +115,6 @@ class DropdownRoles(commands.Cog):
     # TODO: Add admin check and remove guild_id
     @nextcord.slash_command(guild_ids=[381092165729910786])
     async def remove_role(self, interaction: nextcord.Interaction):
-
-
         roles = get_guild_roles(interaction.guild)
 
         await interaction.send("Wybierz rolę do usunięcia", view=RolesDropdownRemoveView(roles), ephemeral=True)
