@@ -50,7 +50,7 @@ class QuizAnswer(Base):
 
 class GuildDropdownRoles(Base):
     __tablename__ = 'guild_dropdown_roles'
-    guild_id = Column(String, primary_key=True)
+    guild_id = Column(String, nullable=False)
     role_id = Column(String, primary_key=True)
 
 
