@@ -101,7 +101,7 @@ class DropdownRoles(commands.Cog):
         self.bot = bot
 
     #TODO: Add admin check and remove guild_id
-    @nextcord.slash_command(guild_ids=[381092165729910786])
+    @nextcord.slash_command(guild_ids=[381092165729910786], name="dodaj_role", description="Tylko administrator! Dodaj rolę do bazy danych aby użytkownicy mogli ją wybierać z listy.")
     async def add_roles(self, interaction: nextcord.Interaction, role: nextcord.Role):
         if role > interaction.guild.me.top_role or role > interaction.user.top_role:
             await interaction.response.send_message("Nie możesz dodać tej roli", ephemeral=True)
@@ -113,7 +113,7 @@ class DropdownRoles(commands.Cog):
         await interaction.send(f"Dodano {role.name} do bazy danych", ephemeral=True)
 
     # TODO: Add admin check and remove guild_id
-    @nextcord.slash_command(guild_ids=[381092165729910786])
+    @nextcord.slash_command(guild_ids=[381092165729910786], name="usun_role", description="Tylko Administrator! Usuń rolę z bazy danych listy rozwijanej.")
     async def remove_role(self, interaction: nextcord.Interaction):
         roles = get_guild_roles(interaction.guild)
 
@@ -121,7 +121,7 @@ class DropdownRoles(commands.Cog):
 
 
     # TODO: remove guild_id
-    @nextcord.slash_command(guild_ids=[381092165729910786])
+    @nextcord.slash_command(guild_ids=[381092165729910786], name="wybierz_role", description="Wybierz rolę z listy rozwijanej")
     async def dropdown_roles(self, interaction: nextcord.Interaction):
         roles = get_guild_roles(interaction.guild)
 
