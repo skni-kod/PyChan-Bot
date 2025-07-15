@@ -16,7 +16,7 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
           script: |
-            cd /home/pychan/PyChan-Bot
+            cd /home/kni/pychan/PyChan-Bot
             git checkout master
             git pull
             docker build -t pychan .
