@@ -2,24 +2,32 @@ name: Deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [master]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
+    uses: ./.github/workflows/build_push.yml
+
+  deploy:
+    needs: [build]
+    environment: production
     runs-on: self-hosted
     steps:
-      - name: Deploy
+      - name: Staging deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           port: ${{ secrets.REMOTE_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
+
             cd /home/kni/pychan/PyChan-Bot
-            git checkout master
-            git pull
-            docker build -t pychan .
-            cd ../
-            docker compose up -d
-            docker system prune -f
+
+            docker compose --file docker-compose.prod.yml pull && docker compose --file docker-compose.prod.yml up -d
+            docker system prune -a -f
