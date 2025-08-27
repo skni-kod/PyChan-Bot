@@ -27,7 +27,7 @@ jobs:
           script: |
             set -e
 
-            cd /home/kni/pychan/PyChan-Bot
+            cd /home/kni/pychan
 
             docker compose --file docker-compose.prod.yml pull && docker compose --file docker-compose.prod.yml up -d
             docker system prune -a -f
